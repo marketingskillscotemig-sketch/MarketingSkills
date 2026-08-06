@@ -4,8 +4,7 @@ Plataforma web desenvolvida para auxiliar estudantes e desenvolvedores a compree
 
 ## Objetivo
 
-O Market Skills busca reduzir a dificuldade que muitos estudantes enfrentam ao descobrir quais tecnologias o mercado realmente exige. A plataforma centraliza informações sobre vagas, apresenta tendências do mercado, compara competências do usuário com os requisitos das empresas e auxilia na criação de um plano de estudos direcionado. Esse objetivo está alinhado com o problema identificado durante a etapa de levantamento de requisitos do projeto. :contentReference[oaicite:0]{index=0}
-
+O Market Skills busca reduzir a dificuldade que muitos estudantes enfrentam ao descobrir quais tecnologias o mercado realmente exige. A plataforma centraliza informações sobre vagas, apresenta tendências do mercado, compara competências do usuário com os requisitos das empresas e auxilia na criação de um plano de estudos direcionado. Esse objetivo está alinhado com o problema identificado durante a etapa de levantamento de requisitos do projeto.
 ## Tecnologias Utilizadas
 
 ### Frontend
