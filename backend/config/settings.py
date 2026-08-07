@@ -39,6 +39,15 @@ class Config:
     SQLALCHEMY_DATABASE_URI = build_database_uri()
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+    SQLALCHEMY_ENGINE_OPTIONS = {
+        "pool_pre_ping": True,
+        "connect_args": {
+        "init_command": (
+        "SET SESSION default_storage_engine=InnoDB"
+            ),
+        },
+    }
+
     CORS_ORIGINS = [
         origin.strip()
         for origin in os.getenv(

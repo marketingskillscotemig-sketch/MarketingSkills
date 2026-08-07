@@ -6,6 +6,7 @@ from flask_cors import CORS
 from config.settings import Config
 from extensions import db, migrate
 from routes.health_routes import health_bp
+from routes.usuario_routes import usuario_bp
 
 
 def create_app() -> Flask:
@@ -20,8 +21,14 @@ def create_app() -> Flask:
     # Carrega as configurações definidas em config/settings.py.
     app.config.from_object(Config)
 
-    # Inicializa as extensões compartilhadas.
+    # Inicializa o SQLAlchemy.
     db.init_app(app)
+
+    # Importa as Models para registrá-las no metadata do SQLAlchemy.
+    # O import fica dentro da factory para evitar dependências circulares.
+    import models  # noqa: F401
+
+    # Inicializa o controle de migrations após as Models serem registradas.
     migrate.init_app(app, db)
 
     # Permite que o frontend autorizado acesse as rotas da API.
@@ -36,6 +43,7 @@ def create_app() -> Flask:
 
     # Registra as rotas da aplicação.
     app.register_blueprint(health_bp)
+    app.register_blueprint(usuario_bp)
 
     return app
 
