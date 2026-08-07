@@ -1,0 +1,43 @@
+# Ambientes virtuais Python
+.venv/
+venv/
+env/
+
+# Variáveis de ambiente e credenciais
+.env
+.env.local
+*.env.local
+
+# Cache e arquivos compilados do Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Arquivos locais de banco de dados
+*.db
+*.sqlite
+*.sqlite3
+instance/
+
+# Testes, cobertura e análise
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Logs
+*.log
+
+# Dependências e builds do frontend
+node_modules/
+dist/
+build/
+
+# Editores e IDEs
+.vscode/
+.idea/
+
+# Arquivos do sistema operacional
+.DS_Store
+Thumbs.db
+Desktop.ini

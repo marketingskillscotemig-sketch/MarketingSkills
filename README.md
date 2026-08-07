@@ -1,94 +1,69 @@
 # Market Skills
 
-## Sobre o projeto
+O Market Skills é uma plataforma web voltada para estudantes e desenvolvedores que desejam compreender melhor as exigências do mercado de tecnologia e planejar sua evolução profissional.
 
-O Market Skills é uma plataforma web desenvolvida para auxiliar estudantes e desenvolvedores a compreenderem as exigências do mercado de tecnologia. O sistema centraliza informações sobre vagas, compara habilidades do usuário com os requisitos do mercado e gera recomendações de estudo personalizadas.
+## Problema
 
-## Objetivo
+Profissionais e estudantes de desenvolvimento encontram informações dispersas sobre vagas, tecnologias exigidas, competências valorizadas e tendências do mercado.
 
-O objetivo do projeto é reduzir a dificuldade que estudantes encontram para descobrir quais tecnologias o mercado realmente exige, organizando essas informações em uma única plataforma e oferecendo direcionamento para o desenvolvimento profissional.
+Essa falta de organização dificulta:
 
-## Funcionalidades
+- a identificação das habilidades mais cobradas;
+- a comparação entre o perfil profissional e os requisitos das vagas;
+- a escolha dos próximos conteúdos a estudar;
+- a criação de um plano de desenvolvimento profissional;
+- o acompanhamento da própria evolução.
 
-- Cadastro e login de usuários.
-- Perfil profissional personalizado.
-- Busca e visualização de vagas.
-- Comparação entre habilidades do usuário e requisitos das vagas.
-- Roadmap de estudos personalizado.
-- Acompanhamento da evolução do usuário.
-- Visualização de tendências do mercado.
-- Alertas para novas oportunidades.
+## Proposta
 
-## Tecnologias Utilizadas
+O Market Skills pretende centralizar e organizar informações sobre o mercado de desenvolvimento de software, permitindo que o usuário:
+
+- cadastre suas competências e interesses;
+- visualize requisitos recorrentes em vagas;
+- compare suas habilidades com as exigências do mercado;
+- encontre oportunidades compatíveis com seu perfil;
+- receba sugestões de estudo;
+- acompanhe seu progresso;
+- consulte tendências de tecnologias e áreas de atuação.
+
+## Tecnologias
 
 ### Frontend
 
-- HTML5
-- CSS3
+- HTML
+- CSS
 - JavaScript
-- Bootstrap 5
 
 ### Backend
 
 - Python
 - Flask
+- Flask-SQLAlchemy
+- Flask-Migrate
+- Flask-Cors
+- PyMySQL
+- python-dotenv
 
-### Banco de Dados
+### Banco de dados
 
 - MySQL
 
-## Integrantes
+### Ferramentas
 
-- Alice Araújo
-- Arthur Bernard
-- Júlio C. Souza
-- Moisés Caldeira
-- Pedro Henrique
+- Git
+- GitHub
+- Figma
+- Visual Studio Code
 
-## Repositório
+## Arquitetura do backend
 
-https://github.com/marketingskillscotemig-sketch/MarketingSkills
-
-## Estrutura do Projeto
+O backend utiliza separação por responsabilidades:
 
 ```text
-MarketingSkills/
-│
-├── frontend/
-├── backend/
-├── database/
-├── docs/
-└── README.md
-```
-
-## Como executar
-
-1. Clone o repositório:
-   ```bash
-   git clone https://github.com/marketingskillscotemig-sketch/MarketingSkills.git
-   ```
-
-2. Acesse a pasta do projeto:
-   ```bash
-   cd MarketingSkills
-   ```
-
-3. Instale as dependências do backend:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. Configure o banco de dados MySQL.
-
-5. Execute a aplicação Flask:
-   ```bash
-   flask run
-   ```
-
-## Status
-
-🚧 Projeto em desenvolvimento.
-
-## Licença
-
-Projeto acadêmico desenvolvido para a disciplina de Projeto de Software do COTEMIG.
+Controller
+    ↓
+Service
+    ↓
+Model ou Repository
+    ↓
+MySQL
