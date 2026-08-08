@@ -88,6 +88,29 @@ class PerfilHabilidade(db.Model):
     def buscar_por_id(id):
         return db.session.get(PerfilHabilidade, id)
 
+    @staticmethod
+    def buscar_por_perfil_e_habilidade(
+        perfil_profissional_id,
+        habilidade_id,
+    ):
+        return db.session.execute(
+            db.select(PerfilHabilidade).where(
+                PerfilHabilidade.perfil_profissional_id
+                == perfil_profissional_id,
+                PerfilHabilidade.habilidade_id
+                == habilidade_id,
+            )
+        ).scalar_one_or_none()
+
+    @staticmethod
+    def listar_por_perfil(perfil_profissional_id):
+        return db.session.execute(
+            db.select(PerfilHabilidade).where(
+                PerfilHabilidade.perfil_profissional_id
+                == perfil_profissional_id
+            )
+        ).scalars().all()
+
     def to_dict(self):
         return {
             "id": self.id,

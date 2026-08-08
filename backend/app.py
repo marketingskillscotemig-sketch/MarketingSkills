@@ -11,6 +11,9 @@ from routes.habilidade_routes import habilidade_bp
 from routes.perfil_profissional_routes import (
     perfil_profissional_bp,
 )
+from routes.perfil_habilidade_routes import (
+    perfil_habilidade_bp,
+)
 
 
 def create_app() -> Flask:
@@ -50,6 +53,7 @@ def create_app() -> Flask:
     app.register_blueprint(usuario_bp)
     app.register_blueprint(habilidade_bp)
     app.register_blueprint(perfil_profissional_bp)
+    app.register_blueprint(perfil_habilidade_bp)
 
     return app
 
