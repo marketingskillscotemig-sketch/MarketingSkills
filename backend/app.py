@@ -22,6 +22,9 @@ from routes.requisito_vaga_routes import (
 from routes.plano_estudo_routes import (
     plano_estudo_bp,
 )
+from routes.etapa_estudo_routes import (
+    etapa_estudo_bp,
+)
 
 
 def create_app() -> Flask:
@@ -66,6 +69,7 @@ def create_app() -> Flask:
     app.register_blueprint(vaga_bp)
     app.register_blueprint(requisito_vaga_bp)
     app.register_blueprint(plano_estudo_bp)
+    app.register_blueprint(etapa_estudo_bp)
     return app
 
 

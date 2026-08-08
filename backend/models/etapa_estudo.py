@@ -115,6 +115,18 @@ class EtapaEstudo(db.Model):
     def buscar_por_id(id):
         return db.session.get(EtapaEstudo, id)
 
+    @staticmethod
+    def buscar_por_plano_e_ordem(
+        plano_estudo_id,
+        ordem,
+    ):
+        return db.session.execute(
+            db.select(EtapaEstudo).where(
+                EtapaEstudo.plano_estudo_id == plano_estudo_id,
+                EtapaEstudo.ordem == ordem,
+            )
+        ).scalar_one_or_none()
+
     def to_dict(self):
         return {
             "id": self.id,
