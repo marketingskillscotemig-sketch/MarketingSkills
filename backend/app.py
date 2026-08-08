@@ -16,6 +16,9 @@ from routes.perfil_habilidade_routes import (
 )
 from routes.empresa_routes import empresa_bp
 from routes.vaga_routes import vaga_bp
+from routes.requisito_vaga_routes import (
+    requisito_vaga_bp,
+)
 
 
 def create_app() -> Flask:
@@ -58,6 +61,7 @@ def create_app() -> Flask:
     app.register_blueprint(perfil_habilidade_bp)
     app.register_blueprint(empresa_bp)
     app.register_blueprint(vaga_bp)
+    app.register_blueprint(requisito_vaga_bp)
     return app
 
 

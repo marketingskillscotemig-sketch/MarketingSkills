@@ -104,6 +104,18 @@ class RequisitoVaga(db.Model):
     def buscar_por_id(id):
         return db.session.get(RequisitoVaga, id)
 
+    @staticmethod
+    def buscar_por_vaga_e_habilidade(
+        vaga_id,
+        habilidade_id,
+    ):
+        return db.session.execute(
+            db.select(RequisitoVaga).where(
+                RequisitoVaga.vaga_id == vaga_id,
+                RequisitoVaga.habilidade_id == habilidade_id,
+            )
+        ).scalar_one_or_none()
+
     def to_dict(self):
         return {
             "id": self.id,
