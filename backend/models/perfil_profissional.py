@@ -119,6 +119,14 @@ class PerfilProfissional(db.Model):
     def buscar_por_id(id):
         return db.session.get(PerfilProfissional, id)
 
+    @staticmethod
+    def buscar_por_usuario_id(usuario_id):
+        return db.session.execute(
+            db.select(PerfilProfissional).where(
+                PerfilProfissional.usuario_id == usuario_id
+            )
+        ).scalar_one_or_none()
+
     def to_dict(self):
         return {
             "id": self.id,

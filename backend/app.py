@@ -8,6 +8,9 @@ from extensions import db, migrate
 from routes.health_routes import health_bp
 from routes.usuario_routes import usuario_bp
 from routes.habilidade_routes import habilidade_bp
+from routes.perfil_profissional_routes import (
+    perfil_profissional_bp,
+)
 
 
 def create_app() -> Flask:
@@ -46,6 +49,7 @@ def create_app() -> Flask:
     app.register_blueprint(health_bp)
     app.register_blueprint(usuario_bp)
     app.register_blueprint(habilidade_bp)
+    app.register_blueprint(perfil_profissional_bp)
 
     return app
 
