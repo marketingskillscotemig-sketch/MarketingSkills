@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Vagas | Market Skills</title>
+
+    <link
+        rel="stylesheet"
+        href="../assets/css/styles.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../assets/css/vagas.css"
+    >
+</head>
+
+<body>
+
+    <header class="cabecalho-site">
+        <div class="conteudo-centralizado conteudo-navegacao">
+
+            <a
+                href="../index.html"
+                class="marca"
+            >
+                <span class="icone-marca">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+
+                <span class="texto-marca">
+                    Market<span>Skills</span>
+                </span>
+            </a>
+
+
+            <nav class="navegacao-principal">
+
+                <a href="../index.html">
+                    Home
+                </a>
+
+                <a href="../index.html#mercado">
+                    Mercado
+                </a>
+
+                <a
+                    href="./vagas.html"
+                    class="ativo"
+                >
+                    Vagas
+                </a>
+
+                <a href="./perfil.html">
+                    Perfil
+                </a>
+
+            </nav>
+
+
+            <div class="acoes-navegacao">
+
+                <a
+                    href="./perfil.html"
+                    class="botao botao-contorno"
+                >
+                    Meu perfil
+                </a>
+
+                <button
+                    id="botao-nova-vaga-topo"
+                    class="botao botao-principal"
+                    type="button"
+                >
+                    Nova vaga
+                </button>
+
+            </div>
+
+        </div>
+    </header>
+
+
+    <main class="pagina-vagas">
+
+        <div class="conteudo-centralizado">
+
+            <!-- CABEÇALHO -->
+
+            <section class="cabecalho-pagina">
+
+                <div>
+                    <span class="rotulo-destaque">
+                        Mercado e oportunidades
+                    </span>
+
+                    <h1>
+                        Organize vagas e entenda
+                        o que cada oportunidade exige.
+                    </h1>
+
+                    <p>
+                        Empresas, oportunidades e requisitos técnicos
+                        conectados em uma única visão do mercado.
+                    </p>
+                </div>
+
+                <div class="status-pagina">
+                    <span class="indicador-status"></span>
+                    Dados conectados à API
+                </div>
+
+            </section>
+
+
+            <!-- MÉTRICAS -->
+
+            <section class="grade-metricas-mercado">
+
+                <article class="cartao-metrica-mercado">
+                    <span>Empresas cadastradas</span>
+
+                    <strong id="metrica-empresas">
+                        0
+                    </strong>
+
+                    <small>
+                        organizações disponíveis
+                    </small>
+                </article>
+
+
+                <article class="cartao-metrica-mercado">
+                    <span>Vagas ativas</span>
+
+                    <strong id="metrica-vagas-ativas">
+                        0
+                    </strong>
+
+                    <small>
+                        oportunidades em aberto
+                    </small>
+                </article>
+
+
+                <article class="cartao-metrica-mercado">
+                    <span>Requisitos cadastrados</span>
+
+                    <strong id="metrica-requisitos">
+                        0
+                    </strong>
+
+                    <small>
+                        competências exigidas
+                    </small>
+                </article>
+
+            </section>
+
+
+            <!-- CONTEÚDO PRINCIPAL -->
+
+            <div class="grade-mercado">
+
+                <!-- EMPRESAS -->
+
+                <aside class="painel-empresas">
+
+                    <div class="cabecalho-bloco">
+
+                        <div>
+                            <span class="subtitulo-bloco">
+                                Organizações
+                            </span>
+
+                            <h2>Empresas</h2>
+                        </div>
+
+                        <button
+                            id="botao-nova-empresa"
+                            class="botao-icone"
+                            type="button"
+                            title="Cadastrar empresa"
+                        >
+                            +
+                        </button>
+
+                    </div>
+
+
+                    <button
+                        id="botao-todas-empresas"
+                        class="filtro-todas-empresas ativo"
+                        type="button"
+                    >
+                        Todas as empresas
+                    </button>
+
+
+                    <div
+                        id="lista-empresas"
+                        class="lista-empresas"
+                    >
+                        <div class="estado-vazio">
+                            Nenhuma empresa cadastrada.
+                        </div>
+                    </div>
+
+                </aside>
+
+
+                <!-- VAGAS -->
+
+                <section class="area-vagas">
+
+                    <section class="painel-listagem">
+
+                        <div class="cabecalho-listagem">
+
+                            <div>
+                                <span class="subtitulo-bloco">
+                                    Oportunidades
+                                </span>
+
+                                <h2>Vagas cadastradas</h2>
+                            </div>
+
+                            <button
+                                id="botao-nova-vaga"
+                                class="botao botao-principal"
+                                type="button"
+                            >
+                                Nova vaga
+                            </button>
+
+                        </div>
+
+
+                        <div class="filtros-vagas">
+
+                            <label class="campo-busca">
+                                <span>Buscar</span>
+
+                                <input
+                                    id="filtro-busca"
+                                    type="search"
+                                    placeholder="Título, empresa ou localização"
+                                >
+                            </label>
+
+
+                            <label class="campo-busca">
+                                <span>Status</span>
+
+                                <select id="filtro-status">
+                                    <option value="">
+                                        Todos
+                                    </option>
+
+                                    <option value="ativa">
+                                        Ativa
+                                    </option>
+
+                                    <option value="pausada">
+                                        Pausada
+                                    </option>
+
+                                    <option value="encerrada">
+                                        Encerrada
+                                    </option>
+                                </select>
+                            </label>
+
+
+                            <label class="campo-busca">
+                                <span>Modalidade</span>
+
+                                <select id="filtro-modalidade">
+                                    <option value="">
+                                        Todas
+                                    </option>
+
+                                    <option value="presencial">
+                                        Presencial
+                                    </option>
+
+                                    <option value="hibrido">
+                                        Híbrido
+                                    </option>
+
+                                    <option value="remoto">
+                                        Remoto
+                                    </option>
+                                </select>
+                            </label>
+
+                        </div>
+
+
+                        <div
+                            id="lista-vagas"
+                            class="lista-vagas"
+                        >
+                            <div class="estado-vazio">
+                                Nenhuma vaga cadastrada.
+                            </div>
+                        </div>
+
+                    </section>
+
+
+                    <!-- DETALHES -->
+
+                    <section
+                        id="detalhe-vaga"
+                        class="detalhe-vaga"
+                    >
+                        <div class="estado-detalhe-vazio">
+
+                            <div class="icone-detalhe-vazio">
+                                &lt;/&gt;
+                            </div>
+
+                            <h2>
+                                Selecione uma vaga
+                            </h2>
+
+                            <p>
+                                Os detalhes e requisitos da oportunidade
+                                aparecerão aqui.
+                            </p>
+
+                        </div>
+                    </section>
+
+                </section>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- MODAL EMPRESA -->
+
+    <dialog
+        id="modal-empresa"
+        class="modal"
+    >
+
+        <form
+            id="formulario-empresa"
+            class="conteudo-modal"
+        >
+
+            <div class="cabecalho-modal">
+
+                <div>
+                    <span class="subtitulo-bloco">
+                        Organização
+                    </span>
+
+                    <h2 id="titulo-modal-empresa">
+                        Nova empresa
+                    </h2>
+                </div>
+
+                <button
+                    type="button"
+                    class="fechar-modal"
+                    data-fechar="modal-empresa"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <label class="campo-formulario">
+                <span>Nome</span>
+
+                <input
+                    id="empresa-nome"
+                    type="text"
+                    minlength="2"
+                    maxlength="150"
+                    required
+                >
+            </label>
+
+
+            <label class="campo-formulario">
+                <span>Setor</span>
+
+                <input
+                    id="empresa-setor"
+                    type="text"
+                    maxlength="120"
+                    placeholder="Ex.: Tecnologia"
+                >
+            </label>
+
+
+            <label class="campo-formulario">
+                <span>Site</span>
+
+                <input
+                    id="empresa-site"
+                    type="text"
+                    maxlength="255"
+                    placeholder="https://..."
+                >
+            </label>
+
+
+            <label class="campo-formulario">
+                <span>Descrição</span>
+
+                <textarea
+                    id="empresa-descricao"
+                    maxlength="500"
+                    rows="4"
+                ></textarea>
+            </label>
+
+
+            <div class="acoes-modal">
+
+                <button
+                    type="button"
+                    class="botao botao-escuro"
+                    data-fechar="modal-empresa"
+                >
+                    Cancelar
+                </button>
+
+                <button
+                    type="submit"
+                    class="botao botao-principal"
+                >
+                    Salvar empresa
+                </button>
+
+            </div>
+
+        </form>
+
+    </dialog>
+
+
+    <!-- MODAL VAGA -->
+
+    <dialog
+        id="modal-vaga"
+        class="modal modal-grande"
+    >
+
+        <form
+            id="formulario-vaga"
+            class="conteudo-modal"
+        >
+
+            <div class="cabecalho-modal">
+
+                <div>
+                    <span class="subtitulo-bloco">
+                        Oportunidade
+                    </span>
+
+                    <h2 id="titulo-modal-vaga">
+                        Nova vaga
+                    </h2>
+                </div>
+
+                <button
+                    type="button"
+                    class="fechar-modal"
+                    data-fechar="modal-vaga"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <div class="grade-formulario">
+
+                <label class="campo-formulario">
+                    <span>Empresa</span>
+
+                    <select
+                        id="vaga-empresa"
+                        required
+                    >
+                    </select>
+                </label>
+
+
+                <label class="campo-formulario">
+                    <span>Título</span>
+
+                    <input
+                        id="vaga-titulo"
+                        type="text"
+                        maxlength="180"
+                        required
+                    >
+                </label>
+
+
+                <label class="campo-formulario">
+                    <span>Nível de experiência</span>
+
+                    <select
+                        id="vaga-nivel"
+                        required
+                    >
+                        <option value="iniciante">
+                            Iniciante
+                        </option>
+
+                        <option value="junior">
+                            Júnior
+                        </option>
+
+                        <option value="pleno">
+                            Pleno
+                        </option>
+
+                        <option value="senior">
+                            Sênior
+                        </option>
+                    </select>
+                </label>
+
+
+                <label class="campo-formulario">
+                    <span>Modalidade</span>
+
+                    <select
+                        id="vaga-modalidade"
+                        required
+                    >
+                        <option value="presencial">
+                            Presencial
+                        </option>
+
+                        <option value="hibrido">
+                            Híbrido
+                        </option>
+
+                        <option value="remoto">
+                            Remoto
+                        </option>
+                    </select>
+                </label>
+
+
+                <label class="campo-formulario">
+                    <span>Localização</span>
+
+                    <input
+                        id="vaga-localizacao"
+                        type="text"
+                        maxlength="150"
+                        placeholder="Ex.: Belo Horizonte"
+                    >
+                </label>
+
+
+                <label class="campo-formulario">
+                    <span>Status</span>
+
+                    <select id="vaga-status">
+                        <option value="ativa">
+                            Ativa
+                        </option>
+
+                        <option value="pausada">
+                            Pausada
+                        </option>
+
+                        <option value="encerrada">
+                            Encerrada
+                        </option>
+                    </select>
+                </label>
+
+
+                <label class="campo-formulario">
+                    <span>Salário mínimo</span>
+
+                    <input
+                        id="vaga-salario-minimo"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                    >
+                </label>
+
+
+                <label class="campo-formulario">
+                    <span>Salário máximo</span>
+
+                    <input
+                        id="vaga-salario-maximo"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                    >
+                </label>
+
+
+                <label class="campo-formulario">
+                    <span>Data de publicação</span>
+
+                    <input
+                        id="vaga-data-publicacao"
+                        type="date"
+                        required
+                    >
+                </label>
+
+
+                <label class="campo-formulario campo-largo">
+                    <span>Descrição</span>
+
+                    <textarea
+                        id="vaga-descricao"
+                        rows="5"
+                    ></textarea>
+                </label>
+
+            </div>
+
+
+            <div class="acoes-modal">
+
+                <button
+                    type="button"
+                    class="botao botao-escuro"
+                    data-fechar="modal-vaga"
+                >
+                    Cancelar
+                </button>
+
+                <button
+                    type="submit"
+                    class="botao botao-principal"
+                >
+                    Salvar vaga
+                </button>
+
+            </div>
+
+        </form>
+
+    </dialog>
+
+
+    <!-- MODAL REQUISITO -->
+
+    <dialog
+        id="modal-requisito"
+        class="modal"
+    >
+
+        <form
+            id="formulario-requisito"
+            class="conteudo-modal"
+        >
+
+            <div class="cabecalho-modal">
+
+                <div>
+                    <span class="subtitulo-bloco">
+                        Requisito técnico
+                    </span>
+
+                    <h2 id="titulo-modal-requisito">
+                        Novo requisito
+                    </h2>
+                </div>
+
+                <button
+                    type="button"
+                    class="fechar-modal"
+                    data-fechar="modal-requisito"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <label class="campo-formulario">
+                <span>Habilidade</span>
+
+                <select
+                    id="requisito-habilidade"
+                    required
+                >
+                </select>
+            </label>
+
+
+            <label class="campo-formulario">
+                <span>Nível exigido</span>
+
+                <select
+                    id="requisito-nivel"
+                    required
+                >
+                    <option value="basico">
+                        Básico
+                    </option>
+
+                    <option value="intermediario">
+                        Intermediário
+                    </option>
+
+                    <option value="avancado">
+                        Avançado
+                    </option>
+                </select>
+            </label>
+
+
+            <label class="campo-formulario">
+                <span>Peso</span>
+
+                <input
+                    id="requisito-peso"
+                    type="number"
+                    min="0"
+                    max="999.99"
+                    step="0.01"
+                    placeholder="Ex.: 10"
+                >
+            </label>
+
+
+            <label class="campo-checkbox">
+
+                <input
+                    id="requisito-obrigatorio"
+                    type="checkbox"
+                    checked
+                >
+
+                <span>
+                    Requisito obrigatório
+                </span>
+
+            </label>
+
+
+            <label class="campo-formulario">
+                <span>Descrição</span>
+
+                <textarea
+                    id="requisito-descricao"
+                    maxlength="500"
+                    rows="4"
+                ></textarea>
+            </label>
+
+
+            <div class="acoes-modal">
+
+                <button
+                    type="button"
+                    class="botao botao-escuro"
+                    data-fechar="modal-requisito"
+                >
+                    Cancelar
+                </button>
+
+                <button
+                    type="submit"
+                    class="botao botao-principal"
+                >
+                    Salvar requisito
+                </button>
+
+            </div>
+
+        </form>
+
+    </dialog>
+
+
+    <div
+        id="mensagem-sistema"
+        class="mensagem-sistema"
+    >
+    </div>
+
+
+    <script src="../assets/js/api.js"></script>
+    <script src="../assets/js/vagas.js"></script>
+
+</body>
+</html>
