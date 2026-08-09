@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Market Skills - transforme dados do mercado em decisões para sua carreira em tecnologia."
+    >
+
+    <title>Market Skills</title>
+
+    <link
+        rel="stylesheet"
+        href="./assets/css/styles.css"
+    >
+</head>
+
+<body>
+
+    <header class="cabecalho-site">
+        <div class="conteudo-centralizado conteudo-navegacao">
+
+            <a
+                href="./index.html"
+                class="marca"
+                aria-label="Market Skills"
+            >
+                <span class="icone-marca">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+
+                <span class="texto-marca">
+                    Market<span>Skills</span>
+                </span>
+            </a>
+
+            <nav class="navegacao-principal">
+                <a
+                    href="./index.html"
+                    class="ativo"
+                >
+                    Home
+                </a>
+
+                <a href="#mercado">
+                    Mercado
+                </a>
+
+                <a href="./pages/vagas.html">
+                    Vagas
+                </a>
+
+                <a href="./pages/perfil.html">
+                    Perfil
+                </a>
+            </nav>
+
+            <div class="acoes-navegacao">
+                <a
+                    href="./pages/perfil.html"
+                    class="botao botao-contorno"
+                >
+                    Meu perfil
+                </a>
+
+                <a
+                    href="./pages/vagas.html"
+                    class="botao botao-principal"
+                >
+                    Explorar vagas
+                </a>
+            </div>
+
+        </div>
+    </header>
+
+
+    <main>
+
+        <section class="destaque-principal">
+            <div class="conteudo-centralizado grade-destaque">
+
+                <div class="conteudo-destaque">
+
+                    <span class="rotulo-destaque">
+                        Carreira orientada por dados
+                    </span>
+
+                    <h1>
+                        Descubra quais habilidades
+                        podem aproximar você das
+                        <span>oportunidades certas.</span>
+                    </h1>
+
+                    <p class="descricao-destaque">
+                        O Market Skills reúne vagas,
+                        habilidades e tendências para
+                        ajudar você a entender o que o
+                        mercado procura e organizar sua
+                        evolução profissional.
+                    </p>
+
+                    <div class="acoes-destaque">
+                        <a
+                            href="./pages/vagas.html"
+                            class="botao botao-principal botao-grande"
+                        >
+                            Explorar vagas
+                        </a>
+
+                        <a
+                            href="./pages/perfil.html"
+                            class="botao botao-escuro botao-grande"
+                        >
+                            Criar meu perfil
+                        </a>
+                    </div>
+
+                    <div class="status-dados">
+                        <span class="indicador-status"></span>
+
+                        <span id="status-api">
+                            Conectando aos dados do Market Skills...
+                        </span>
+                    </div>
+
+                </div>
+
+
+                <div class="previa-painel">
+
+                    <div class="brilho-painel"></div>
+
+                    <div class="janela-painel">
+
+                        <div class="topo-painel">
+
+                            <div class="marca-reduzida">
+                                <span class="icone-marca pequeno">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                </span>
+
+                                <strong>
+                                    Market<span>Skills</span>
+                                </strong>
+                            </div>
+
+                            <span class="rotulo-painel">
+                                Visão do mercado
+                            </span>
+
+                        </div>
+
+
+                        <div class="grade-metricas">
+
+                            <article class="cartao-metrica">
+                                <span class="rotulo-metrica">
+                                    Vagas ativas
+                                </span>
+
+                                <strong
+                                    id="metrica-vagas"
+                                    class="valor-metrica"
+                                >
+                                    —
+                                </strong>
+
+                                <small>
+                                    disponíveis na plataforma
+                                </small>
+                            </article>
+
+
+                            <article class="cartao-metrica">
+                                <span class="rotulo-metrica">
+                                    Habilidades
+                                </span>
+
+                                <strong
+                                    id="metrica-habilidades"
+                                    class="valor-metrica"
+                                >
+                                    —
+                                </strong>
+
+                                <small>
+                                    mapeadas no sistema
+                                </small>
+                            </article>
+
+
+                            <article class="cartao-metrica">
+                                <span class="rotulo-metrica">
+                                    Tecnologias
+                                </span>
+
+                                <strong
+                                    id="metrica-tecnologias"
+                                    class="valor-metrica"
+                                >
+                                    —
+                                </strong>
+
+                                <small>
+                                    acompanhadas nas tendências
+                                </small>
+                            </article>
+
+                        </div>
+
+
+                        <div class="colunas-painel">
+
+                            <article class="painel-dados">
+
+                                <div class="cabecalho-painel">
+                                    <div>
+                                        <span class="subtitulo-painel">
+                                            Demanda
+                                        </span>
+
+                                        <h2>
+                                            Tecnologias em destaque
+                                        </h2>
+                                    </div>
+                                </div>
+
+                                <div
+                                    id="lista-tecnologias"
+                                    class="lista-tecnologias"
+                                >
+                                    <div class="estado-carregando">
+                                        Carregando dados...
+                                    </div>
+                                </div>
+
+                            </article>
+
+
+                            <article class="painel-dados">
+
+                                <div class="cabecalho-painel">
+                                    <div>
+                                        <span class="subtitulo-painel">
+                                            Oportunidades
+                                        </span>
+
+                                        <h2>
+                                            Vagas recentes
+                                        </h2>
+                                    </div>
+
+                                    <a href="./pages/vagas.html">
+                                        Ver todas
+                                    </a>
+                                </div>
+
+                                <div
+                                    id="vagas-recentes"
+                                    class="vagas-recentes"
+                                >
+                                    <div class="estado-carregando">
+                                        Carregando vagas...
+                                    </div>
+                                </div>
+
+                            </article>
+
+                        </div>
+
+
+                        <div class="rodape-painel">
+
+                            <div>
+                                <span>
+                                    Média salarial das tendências
+                                </span>
+
+                                <strong id="media-salarial">
+                                    —
+                                </strong>
+                            </div>
+
+                            <span class="dados-ao-vivo">
+                                <span></span>
+                                Dados da API
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+
+        <section
+            id="mercado"
+            class="secao-recursos"
+        >
+            <div class="conteudo-centralizado">
+
+                <div class="cabecalho-secao">
+                    <span class="rotulo-destaque">
+                        Market Skills
+                    </span>
+
+                    <h2>
+                        Informação do mercado transformada
+                        em próximos passos.
+                    </h2>
+
+                    <p>
+                        A plataforma conecta dados de vagas,
+                        competências profissionais e planejamento
+                        de estudos em uma única experiência.
+                    </p>
+                </div>
+
+
+                <div class="grade-recursos">
+
+                    <article class="cartao-recurso">
+                        <div class="numero-recurso">
+                            01
+                        </div>
+
+                        <h3>
+                            Entenda as vagas
+                        </h3>
+
+                        <p>
+                            Consulte oportunidades e identifique
+                            requisitos, tecnologias, níveis de
+                            experiência e modalidades de trabalho.
+                        </p>
+
+                        <a href="./pages/vagas.html">
+                            Explorar oportunidades →
+                        </a>
+                    </article>
+
+
+                    <article class="cartao-recurso">
+                        <div class="numero-recurso">
+                            02
+                        </div>
+
+                        <h3>
+                            Conheça suas habilidades
+                        </h3>
+
+                        <p>
+                            Registre competências e níveis de
+                            domínio para construir um perfil
+                            profissional organizado.
+                        </p>
+
+                        <a href="./pages/perfil.html">
+                            Acessar perfil →
+                        </a>
+                    </article>
+
+
+                    <article class="cartao-recurso">
+                        <div class="numero-recurso">
+                            03
+                        </div>
+
+                        <h3>
+                            Planeje sua evolução
+                        </h3>
+
+                        <p>
+                            Transforme objetivos profissionais
+                            em planos e etapas de estudo que
+                            possam ser acompanhados.
+                        </p>
+
+                        <a href="./pages/estudos.html">
+                            Ver planos de estudo →
+                        </a>
+                    </article>
+
+
+                    <article class="cartao-recurso">
+                        <div class="numero-recurso">
+                            04
+                        </div>
+
+                        <h3>
+                            Acompanhe o mercado
+                        </h3>
+
+                        <p>
+                            Observe tendências, demanda por
+                            tecnologias e dados salariais
+                            cadastrados na plataforma.
+                        </p>
+
+                        <a href="./pages/tendencias.html">
+                            Ver tendências →
+                        </a>
+                    </article>
+
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+
+    <footer class="rodape-site">
+        <div class="conteudo-centralizado conteudo-rodape">
+
+            <div class="marca">
+                <span class="icone-marca">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+
+                <span class="texto-marca">
+                    Market<span>Skills</span>
+                </span>
+            </div>
+
+            <p>
+                Dados de mercado para decisões de carreira
+                mais bem informadas.
+            </p>
+
+        </div>
+    </footer>
+
+
+    <script src="./assets/js/api.js"></script>
+    <script src="./assets/js/app.js"></script>
+
+</body>
+</html>
