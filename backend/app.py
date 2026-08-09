@@ -27,6 +27,9 @@ from routes.etapa_estudo_routes import (
 )
 from routes.alerta_vaga_routes import alerta_vaga_bp
 from routes.notificacao_routes import notificacao_bp
+from routes.tendencia_mercado_routes import (
+    tendencia_mercado_bp,
+)
 
 
 def create_app() -> Flask:
@@ -74,6 +77,7 @@ def create_app() -> Flask:
     app.register_blueprint(etapa_estudo_bp)
     app.register_blueprint(alerta_vaga_bp)
     app.register_blueprint(notificacao_bp)
+    app.register_blueprint(tendencia_mercado_bp)
     return app
 
 
