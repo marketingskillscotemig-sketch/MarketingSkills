@@ -13,6 +13,12 @@ autenticacao_bp = Blueprint(
 
 
 autenticacao_bp.post(
+    "/cadastro"
+)(
+    AutenticacaoController.cadastrar
+)
+
+autenticacao_bp.post(
     "/login"
 )(
     AutenticacaoController.login

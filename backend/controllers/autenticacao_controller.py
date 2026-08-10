@@ -4,9 +4,42 @@ from models.usuario import Usuario
 from services.autenticacao.autenticar_usuario_service import (
     AutenticarUsuarioService,
 )
+from services.usuario.criar_usuario_service import (
+    CriarUsuarioService,
+)
 
 
 class AutenticacaoController:
+    @staticmethod
+    def cadastrar():
+        try:
+            dados = request.get_json(
+                silent=True
+            )
+
+            usuario = CriarUsuarioService.executar(
+                dados
+            )
+
+            session.clear()
+            session["usuario_id"] = usuario.id
+
+            return jsonify(
+                {
+                    "mensagem": (
+                        "Conta criada com sucesso."
+                    ),
+                    "usuario": usuario.to_dict(),
+                }
+            ), 201
+
+        except ValueError as erro:
+            return jsonify(
+                {
+                    "erro": str(erro),
+                }
+            ), 400
+
     @staticmethod
     def login():
         try:
@@ -21,10 +54,7 @@ class AutenticacaoController:
             )
 
             session.clear()
-
-            session["usuario_id"] = (
-                usuario.id
-            )
+            session["usuario_id"] = usuario.id
 
             return jsonify(
                 {
