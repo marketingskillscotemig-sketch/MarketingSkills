@@ -1,7 +1,7 @@
 from datetime import date
 
 from extensions import db
-from models.enums import StatusUsuario, enum_values
+from models.enums import StatusUsuario, TipoConta, enum_values
 
 
 class Usuario(db.Model):
@@ -42,6 +42,17 @@ class Usuario(db.Model):
         default=StatusUsuario.ATIVO,
     )
 
+    tipo_conta = db.Column(
+        db.Enum(
+            TipoConta,
+            values_callable=enum_values,
+            name="tipo_conta",
+        ),
+        nullable=False,
+        default=TipoConta.ESTUDANTE,
+        server_default=TipoConta.ESTUDANTE.value,
+    )
+
     perfil_profissional = db.relationship(
         "PerfilProfissional",
         back_populates="usuario",
@@ -72,7 +83,9 @@ class Usuario(db.Model):
         email=None,
         senha_hash=None,
         status=None,
+        tipo_conta=None,
     ):
+    
         if nome is not None:
             self.nome = nome
 
@@ -84,6 +97,9 @@ class Usuario(db.Model):
 
         if status is not None:
             self.status = status
+
+        if tipo_conta is not None:
+            self.tipo_conta = tipo_conta
 
         db.session.commit()
         return self
@@ -123,6 +139,11 @@ class Usuario(db.Model):
             "status": (
                 self.status.value
                 if self.status
+                else None
+            ),
+            "tipoConta": (
+                self.tipo_conta.value
+                if self.tipo_conta
                 else None
             ),
         }

@@ -5,6 +5,10 @@ class StatusUsuario(str, Enum):
     ATIVO = "ativo"
     INATIVO = "inativo"
 
+class TipoConta(str, Enum):
+    ESTUDANTE = "estudante"
+    EMPRESA = "empresa"
+
 
 class NivelExperiencia(str, Enum):
     INICIANTE = "iniciante"
