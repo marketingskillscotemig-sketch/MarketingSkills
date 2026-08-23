@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Criar conta | Market Skills</title>
+
+    <link
+        rel="stylesheet"
+        href="../assets/css/styles.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../assets/css/autenticacao.css"
+    >
+</head>
+
+<body>
+
+    <main class="pagina-autenticacao">
+
+        <section class="lado-apresentacao">
+
+            <a
+                href="../index.html"
+                class="marca marca-autenticacao"
+            >
+                <span class="icone-marca">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+
+                <span class="texto-marca">
+                    Market<span>Skills</span>
+                </span>
+            </a>
+
+
+            <div class="conteudo-apresentacao">
+
+                <span class="rotulo-destaque">
+                    Faça parte do ecossistema
+                </span>
+
+                <h1>
+                    Mercado, talentos e evolução
+                    profissional no mesmo lugar.
+                </h1>
+
+                <p>
+                    O Market Skills conecta pessoas
+                    que querem evoluir com empresas
+                    que procuram as competências certas.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <section class="lado-formulario">
+
+            <div class="cartao-autenticacao cartao-cadastro">
+
+                <div class="cabecalho-autenticacao">
+
+                    <span class="subtitulo-autenticacao">
+                        Criar conta
+                    </span>
+
+                    <h2>
+                        Como você usará o Market Skills?
+                    </h2>
+
+                    <p>
+                        Escolha o tipo de conta.
+                        Essa escolha define sua experiência
+                        dentro da plataforma.
+                    </p>
+
+                </div>
+
+
+                <form id="formulario-cadastro">
+
+                    <div class="selecao-tipo-conta">
+
+                        <label class="opcao-tipo-conta">
+
+                            <input
+                                type="radio"
+                                name="tipoConta"
+                                value="estudante"
+                                checked
+                            >
+
+                            <span class="conteudo-tipo-conta">
+
+                                <strong>
+                                    Estudante / Profissional
+                                </strong>
+
+                                <small>
+                                    Quero desenvolver meu perfil,
+                                    encontrar vagas e evoluir
+                                    minhas habilidades.
+                                </small>
+
+                            </span>
+
+                        </label>
+
+
+                        <label class="opcao-tipo-conta">
+
+                            <input
+                                type="radio"
+                                name="tipoConta"
+                                value="empresa"
+                            >
+
+                            <span class="conteudo-tipo-conta">
+
+                                <strong>
+                                    Empresa
+                                </strong>
+
+                                <small>
+                                    Quero criar o perfil da empresa,
+                                    publicar vagas e encontrar talentos.
+                                </small>
+
+                            </span>
+
+                        </label>
+
+                    </div>
+
+
+                    <label class="campo-autenticacao">
+                        <span id="rotulo-nome">
+                            Nome completo
+                        </span>
+
+                        <input
+                            id="cadastro-nome"
+                            type="text"
+                            minlength="2"
+                            maxlength="120"
+                            autocomplete="name"
+                            required
+                        >
+                    </label>
+
+
+                    <label class="campo-autenticacao">
+                        <span>E-mail</span>
+
+                        <input
+                            id="cadastro-email"
+                            type="email"
+                            autocomplete="email"
+                            placeholder="seu@email.com"
+                            required
+                        >
+                    </label>
+
+
+                    <label class="campo-autenticacao">
+                        <span>Senha</span>
+
+                        <input
+                            id="cadastro-senha"
+                            type="password"
+                            autocomplete="new-password"
+                            minlength="6"
+                            placeholder="Mínimo de 6 caracteres"
+                            required
+                        >
+                    </label>
+
+
+                    <label class="campo-autenticacao">
+                        <span>Confirmar senha</span>
+
+                        <input
+                            id="cadastro-confirmar-senha"
+                            type="password"
+                            autocomplete="new-password"
+                            minlength="6"
+                            required
+                        >
+                    </label>
+
+
+                    <div
+                        id="mensagem-cadastro"
+                        class="mensagem-formulario"
+                    ></div>
+
+
+                    <button
+                        id="botao-cadastro"
+                        class="botao botao-principal botao-largo"
+                        type="submit"
+                    >
+                        Criar minha conta
+                    </button>
+
+                </form>
+
+
+                <div class="rodape-autenticacao">
+
+                    <span>
+                        Já possui uma conta?
+                    </span>
+
+                    <a href="./login.html">
+                        Entrar
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script src="../assets/js/api.js"></script>
+    <script src="../assets/js/autenticacao.js"></script>
+
+</body>
+
+</html>

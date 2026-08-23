@@ -12,11 +12,19 @@ autenticacao_bp = Blueprint(
 )
 
 
+autenticacao_bp.get(
+    "/csrf"
+)(
+    AutenticacaoController.token_csrf
+)
+
+
 autenticacao_bp.post(
     "/cadastro"
 )(
     AutenticacaoController.cadastrar
 )
+
 
 autenticacao_bp.post(
     "/login"
@@ -24,11 +32,13 @@ autenticacao_bp.post(
     AutenticacaoController.login
 )
 
+
 autenticacao_bp.get(
     "/sessao"
 )(
     AutenticacaoController.sessao
 )
+
 
 autenticacao_bp.post(
     "/logout"

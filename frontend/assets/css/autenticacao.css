@@ -1,0 +1,439 @@
+.pagina-autenticacao {
+    min-height: 100vh;
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(420px, 1.05fr)
+        minmax(440px, 0.95fr);
+
+    background: var(--fundo);
+}
+
+
+/* APRESENTAÇÃO */
+
+.lado-apresentacao {
+    position: relative;
+
+    min-height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 54px 70px;
+
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 25% 35%,
+            rgba(33, 118, 255, 0.2),
+            transparent 32%
+        ),
+        radial-gradient(
+            circle at 70% 75%,
+            rgba(155, 53, 255, 0.17),
+            transparent 35%
+        ),
+        #050a19;
+}
+
+.lado-apresentacao::after {
+    content: "";
+
+    position: absolute;
+
+    width: 380px;
+    height: 380px;
+
+    right: -180px;
+    bottom: -160px;
+
+    border: 1px solid
+        rgba(95, 129, 255, 0.15);
+
+    border-radius: 50%;
+}
+
+.marca-autenticacao {
+    position: relative;
+
+    z-index: 2;
+
+    width: fit-content;
+}
+
+.conteudo-apresentacao {
+    position: relative;
+
+    z-index: 2;
+
+    max-width: 620px;
+
+    margin: auto 0;
+}
+
+.conteudo-apresentacao h1 {
+    margin-top: 16px;
+
+    font-size:
+        clamp(
+            42px,
+            5vw,
+            66px
+        );
+
+    line-height: 1.03;
+    letter-spacing: -2.6px;
+}
+
+.conteudo-apresentacao > p {
+    max-width: 550px;
+
+    margin-top: 22px;
+
+    color: var(--texto-secundario);
+
+    font-size: 16px;
+    line-height: 1.75;
+}
+
+.lista-beneficios {
+    display: flex;
+    flex-direction: column;
+
+    gap: 12px;
+
+    margin-top: 42px;
+}
+
+.beneficio {
+    display: flex;
+    align-items: center;
+
+    gap: 14px;
+
+    max-width: 470px;
+
+    padding: 13px 15px;
+
+    border: 1px solid
+        rgba(70, 100, 170, 0.22);
+
+    border-radius: 11px;
+
+    background:
+        rgba(9, 17, 38, 0.62);
+}
+
+.beneficio > span {
+    flex-shrink: 0;
+
+    color: #6e9fff;
+
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.beneficio p {
+    color: #a6b0c8;
+
+    font-size: 12px;
+}
+
+
+/* FORMULÁRIO */
+
+.lado-formulario {
+    min-height: 100vh;
+
+    display: grid;
+    place-items: center;
+
+    padding: 50px 40px;
+
+    background:
+        radial-gradient(
+            circle at 60% 20%,
+            rgba(100, 54, 220, 0.08),
+            transparent 30%
+        ),
+        var(--fundo);
+}
+
+.cartao-autenticacao {
+    width: min(
+        430px,
+        100%
+    );
+}
+
+.cartao-cadastro {
+    width: min(
+        510px,
+        100%
+    );
+}
+
+.cabecalho-autenticacao {
+    margin-bottom: 30px;
+}
+
+.subtitulo-autenticacao {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: var(--azul-claro);
+
+    font-size: 11px;
+    font-weight: 750;
+
+    letter-spacing: 0.09em;
+
+    text-transform: uppercase;
+}
+
+.cabecalho-autenticacao h2 {
+    font-size: 30px;
+
+    line-height: 1.2;
+
+    letter-spacing: -1px;
+}
+
+.cabecalho-autenticacao p {
+    margin-top: 10px;
+
+    color: var(--texto-secundario);
+
+    font-size: 13px;
+    line-height: 1.65;
+}
+
+#formulario-login,
+#formulario-cadastro {
+    display: flex;
+    flex-direction: column;
+
+    gap: 17px;
+}
+
+.campo-autenticacao {
+    display: flex;
+    flex-direction: column;
+
+    gap: 7px;
+}
+
+.campo-autenticacao > span {
+    color: #aab4cb;
+
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.campo-autenticacao input {
+    min-height: 47px;
+
+    width: 100%;
+
+    padding: 0 14px;
+
+    border: 1px solid #263858;
+    border-radius: 9px;
+
+    outline: none;
+
+    background: #080f21;
+
+    color: var(--texto);
+
+    font: inherit;
+    font-size: 13px;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.campo-autenticacao input:focus {
+    border-color: #477fea;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(33, 118, 255, 0.08);
+}
+
+.botao-largo {
+    width: 100%;
+
+    margin-top: 3px;
+
+    cursor: pointer;
+}
+
+.botao-largo:disabled {
+    opacity: 0.6;
+
+    cursor: not-allowed;
+
+    transform: none;
+}
+
+
+/* TIPO DE CONTA */
+
+.selecao-tipo-conta {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 10px;
+
+    margin-bottom: 5px;
+}
+
+.opcao-tipo-conta {
+    cursor: pointer;
+}
+
+.opcao-tipo-conta input {
+    position: absolute;
+
+    opacity: 0;
+    pointer-events: none;
+}
+
+.conteudo-tipo-conta {
+    min-height: 120px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    padding: 16px;
+
+    border: 1px solid #263858;
+    border-radius: 11px;
+
+    background: #080f21;
+
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease;
+}
+
+.conteudo-tipo-conta strong {
+    font-size: 12px;
+}
+
+.conteudo-tipo-conta small {
+    margin-top: 7px;
+
+    color: #75839f;
+
+    font-size: 9px;
+    line-height: 1.55;
+}
+
+.opcao-tipo-conta input:checked
++ .conteudo-tipo-conta {
+    border-color: #4e7ce0;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(33, 118, 255, 0.14),
+            rgba(155, 53, 255, 0.08)
+        );
+
+    box-shadow:
+        0 0 0 2px
+        rgba(33, 118, 255, 0.06);
+}
+
+
+/* MENSAGENS */
+
+.mensagem-formulario {
+    min-height: 18px;
+
+    color: var(--erro);
+
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+.mensagem-formulario.sucesso {
+    color: var(--sucesso);
+}
+
+
+/* RODAPÉ */
+
+.rodape-autenticacao {
+    display: flex;
+    justify-content: center;
+
+    gap: 6px;
+
+    margin-top: 27px;
+
+    color: var(--texto-secundario);
+
+    font-size: 12px;
+}
+
+.rodape-autenticacao a {
+    color: #75a3ff;
+
+    font-weight: 700;
+
+    text-decoration: none;
+}
+
+.rodape-autenticacao a:hover {
+    text-decoration: underline;
+}
+
+
+/* RESPONSIVIDADE */
+
+@media (max-width: 900px) {
+    .pagina-autenticacao {
+        grid-template-columns: 1fr;
+    }
+
+    .lado-apresentacao {
+        min-height: auto;
+
+        padding: 35px 30px 55px;
+    }
+
+    .conteudo-apresentacao {
+        margin-top: 70px;
+    }
+
+    .lado-formulario {
+        min-height: auto;
+
+        padding: 65px 25px;
+    }
+}
+
+@media (max-width: 550px) {
+    .selecao-tipo-conta {
+        grid-template-columns: 1fr;
+    }
+
+    .conteudo-tipo-conta {
+        min-height: auto;
+    }
+
+    .conteudo-apresentacao h1 {
+        font-size: 39px;
+    }
+}

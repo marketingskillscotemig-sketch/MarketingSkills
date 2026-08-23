@@ -1,6 +1,9 @@
 from flask import jsonify, request, session
+from flask_wtf.csrf import generate_csrf
 
-from models.usuario import Usuario
+from seguranca.autorizacao import (
+    obter_usuario_autenticado,
+)
 from services.autenticacao.autenticar_usuario_service import (
     AutenticarUsuarioService,
 )
@@ -11,18 +14,42 @@ from services.usuario.criar_usuario_service import (
 
 class AutenticacaoController:
     @staticmethod
+    def token_csrf():
+        """
+        Gera um token CSRF associado
+        à sessão atual.
+        """
+
+        return jsonify(
+            {
+                "csrfToken": generate_csrf(),
+            }
+        ), 200
+
+    @staticmethod
     def cadastrar():
         try:
             dados = request.get_json(
                 silent=True
             )
 
-            usuario = CriarUsuarioService.executar(
-                dados
+            usuario = (
+                CriarUsuarioService.executar(
+                    dados
+                )
             )
 
             session.clear()
-            session["usuario_id"] = usuario.id
+
+            session["usuario_id"] = (
+                usuario.id
+            )
+
+            session.permanent = True
+
+            novo_token_csrf = (
+                generate_csrf()
+            )
 
             return jsonify(
                 {
@@ -30,6 +57,9 @@ class AutenticacaoController:
                         "Conta criada com sucesso."
                     ),
                     "usuario": usuario.to_dict(),
+                    "csrfToken": (
+                        novo_token_csrf
+                    ),
                 }
             ), 201
 
@@ -54,7 +84,16 @@ class AutenticacaoController:
             )
 
             session.clear()
-            session["usuario_id"] = usuario.id
+
+            session["usuario_id"] = (
+                usuario.id
+            )
+
+            session.permanent = True
+
+            novo_token_csrf = (
+                generate_csrf()
+            )
 
             return jsonify(
                 {
@@ -62,6 +101,9 @@ class AutenticacaoController:
                         "Login realizado com sucesso."
                     ),
                     "usuario": usuario.to_dict(),
+                    "csrfToken": (
+                        novo_token_csrf
+                    ),
                 }
             ), 200
 
@@ -81,25 +123,11 @@ class AutenticacaoController:
 
     @staticmethod
     def sessao():
-        usuario_id = session.get(
-            "usuario_id"
-        )
-
-        if usuario_id is None:
-            return jsonify(
-                {
-                    "autenticado": False,
-                    "usuario": None,
-                }
-            ), 200
-
-        usuario = Usuario.buscar_por_id(
-            usuario_id
+        usuario = (
+            obter_usuario_autenticado()
         )
 
         if usuario is None:
-            session.clear()
-
             return jsonify(
                 {
                     "autenticado": False,

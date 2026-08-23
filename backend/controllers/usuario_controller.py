@@ -1,4 +1,4 @@
-from flask import jsonify, request
+from flask import g, jsonify, request
 
 from services.usuario.atualizar_usuario_service import (
     AtualizarUsuarioService,
@@ -12,20 +12,25 @@ from services.usuario.criar_usuario_service import (
 from services.usuario.deletar_usuario_service import (
     DeletarUsuarioService,
 )
-from services.usuario.listar_usuarios_service import (
-    ListarUsuariosService,
-)
 
 
 class UsuarioController:
     @staticmethod
     def criar():
         try:
-            dados = request.get_json(silent=True)
+            dados = request.get_json(
+                silent=True
+            )
 
-            usuario = CriarUsuarioService.executar(dados)
+            usuario = (
+                CriarUsuarioService.executar(
+                    dados
+                )
+            )
 
-            return jsonify(usuario.to_dict()), 201
+            return jsonify(
+                usuario.to_dict()
+            ), 201
 
         except ValueError as erro:
             return jsonify(
@@ -36,23 +41,38 @@ class UsuarioController:
 
     @staticmethod
     def listar():
-        usuarios = ListarUsuariosService.executar()
+        """
+        Retorna somente o usuário autenticado.
+
+        Mantemos uma lista como resposta para
+        preservar compatibilidade temporária
+        com o frontend antigo de Perfil.
+        """
+
+        usuario = (
+            g.usuario_autenticado
+        )
 
         return jsonify(
             [
                 usuario.to_dict()
-                for usuario in usuarios
             ]
         ), 200
 
     @staticmethod
-    def buscar_por_id(usuario_id):
+    def buscar_por_id(
+        usuario_id
+    ):
         try:
-            usuario = BuscarUsuarioService.executar(
-                usuario_id
+            usuario = (
+                BuscarUsuarioService.executar(
+                    usuario_id
+                )
             )
 
-            return jsonify(usuario.to_dict()), 200
+            return jsonify(
+                usuario.to_dict()
+            ), 200
 
         except LookupError as erro:
             return jsonify(
@@ -62,16 +82,55 @@ class UsuarioController:
             ), 404
 
     @staticmethod
-    def atualizar(usuario_id):
+    def atualizar(
+        usuario_id
+    ):
         try:
-            dados = request.get_json(silent=True)
-
-            usuario = AtualizarUsuarioService.executar(
-                usuario_id,
-                dados,
+            dados = request.get_json(
+                silent=True
             )
 
-            return jsonify(usuario.to_dict()), 200
+            if not dados:
+                raise ValueError(
+                    "Informe ao menos um campo "
+                    "para atualização."
+                )
+
+            campos_protegidos = {
+                "status",
+                "tipoConta",
+            }
+
+            campos_recebidos = set(
+                dados.keys()
+            )
+
+            campos_bloqueados = (
+                campos_recebidos
+                & campos_protegidos
+            )
+
+            if campos_bloqueados:
+                return jsonify(
+                    {
+                        "erro": (
+                            "Você não possui permissão "
+                            "para alterar o status ou "
+                            "o tipo da própria conta."
+                        ),
+                    }
+                ), 403
+
+            usuario = (
+                AtualizarUsuarioService.executar(
+                    usuario_id,
+                    dados,
+                )
+            )
+
+            return jsonify(
+                usuario.to_dict()
+            ), 200
 
         except LookupError as erro:
             return jsonify(
@@ -88,9 +147,13 @@ class UsuarioController:
             ), 400
 
     @staticmethod
-    def deletar(usuario_id):
+    def deletar(
+        usuario_id
+    ):
         try:
-            DeletarUsuarioService.executar(usuario_id)
+            DeletarUsuarioService.executar(
+                usuario_id
+            )
 
             return "", 204
 

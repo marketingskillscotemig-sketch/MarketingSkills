@@ -1,10 +1,11 @@
 import os
 
-from flask import Flask
+from flask import Flask, jsonify
 from flask_cors import CORS
+from flask_wtf.csrf import CSRFError
 
 from config.settings import Config
-from extensions import db, migrate
+from extensions import csrf, db, migrate
 from routes.alerta_vaga_routes import alerta_vaga_bp
 from routes.autenticacao_routes import autenticacao_bp
 from routes.empresa_routes import empresa_bp
@@ -33,8 +34,8 @@ from routes.vaga_routes import vaga_bp
 
 def create_app() -> Flask:
     """
-    Cria, configura e retorna uma instância
-    da aplicação Flask.
+    Cria, configura e retorna uma
+    instância da aplicação Flask.
     """
 
     app = Flask(__name__)
@@ -50,6 +51,8 @@ def create_app() -> Flask:
         db,
     )
 
+    csrf.init_app(app)
+
     CORS(
         app,
         resources={
@@ -62,7 +65,25 @@ def create_app() -> Flask:
             }
         },
         supports_credentials=True,
+        allow_headers=[
+            "Content-Type",
+            "X-CSRFToken",
+        ],
     )
+
+    @app.errorhandler(CSRFError)
+    def tratar_erro_csrf(
+        erro
+    ):
+        return jsonify(
+            {
+                "erro": (
+                    "Requisição bloqueada "
+                    "pela proteção de segurança."
+                ),
+                "codigo": "csrf_invalido",
+            }
+        ), 400
 
     app.register_blueprint(
         health_bp
