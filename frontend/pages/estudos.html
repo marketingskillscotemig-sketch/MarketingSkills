@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Estudos | Market Skills</title>
+
+    <link
+        rel="stylesheet"
+        href="../assets/css/styles.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../assets/css/sessao.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../assets/css/estudos.css"
+    >
+</head>
+
+<body data-pagina-protegida="true">
+
+    <header class="cabecalho-site">
+        <div class="conteudo-navegacao">
+
+            <a
+                href="../index.html"
+                class="marca"
+            >
+                <span class="icone-marca">
+                    ▮▮▮
+                </span>
+
+                <span class="texto-marca">
+                    Market<span>Skills</span>
+                </span>
+            </a>
+
+
+            <nav class="navegacao-principal">
+
+                <a href="../index.html">
+                    Home
+                </a>
+
+                <a href="./mercado.html">
+                    Mercado
+                </a>
+
+                <a href="./vagas.html">
+                    Vagas
+                </a>
+
+                <a
+                    href="./estudos.html"
+                    class="ativo"
+                >
+                    Estudos
+                </a>
+
+                <a href="./perfil.html">
+                    Perfil
+                </a>
+
+            </nav>
+
+
+            <div class="acoes-navegacao">
+            </div>
+
+        </div>
+    </header>
+
+
+    <main class="pagina-estudos">
+
+        <section class="cabecalho-pagina">
+
+            <div>
+
+                <span class="rotulo-secao">
+                    PLANO DE DESENVOLVIMENTO
+                </span>
+
+                <h1>
+                    Organize sua evolução profissional.
+                </h1>
+
+                <p>
+                    Crie planos de estudo e acompanhe
+                    cada etapa do seu aprendizado.
+                </p>
+
+            </div>
+
+
+            <button
+                id="botao-novo-plano"
+                class="botao botao-principal"
+                type="button"
+            >
+                + Novo plano
+            </button>
+
+        </section>
+
+
+        <section class="grade-estudos">
+
+            <aside class="painel-planos">
+
+                <div class="cabecalho-painel">
+
+                    <div>
+
+                        <span class="rotulo-secao">
+                            SEUS PLANOS
+                        </span>
+
+                        <h2>
+                            Planos de estudo
+                        </h2>
+
+                    </div>
+
+
+                    <span
+                        id="quantidade-planos"
+                        class="contador"
+                    >
+                        0
+                    </span>
+
+                </div>
+
+
+                <div
+                    id="lista-planos"
+                    class="lista-planos"
+                >
+                </div>
+
+            </aside>
+
+
+            <section class="painel-detalhes">
+
+                <div
+                    id="estado-sem-plano"
+                    class="estado-vazio-principal"
+                >
+
+                    <div class="icone-vazio">
+                        &lt;/&gt;
+                    </div>
+
+                    <h2>
+                        Nenhum plano selecionado
+                    </h2>
+
+                    <p>
+                        Crie um plano de estudos para
+                        começar a organizar seu aprendizado.
+                    </p>
+
+                    <button
+                        id="botao-primeiro-plano"
+                        class="botao botao-principal"
+                        type="button"
+                    >
+                        Criar primeiro plano
+                    </button>
+
+                </div>
+
+
+                <div
+                    id="conteudo-plano"
+                    class="oculto"
+                >
+
+                    <div class="topo-detalhe">
+
+                        <div>
+
+                            <span class="rotulo-secao">
+                                PLANO SELECIONADO
+                            </span>
+
+                            <h2 id="titulo-plano">
+                            </h2>
+
+                            <p id="objetivo-plano">
+                            </p>
+
+                        </div>
+
+
+                        <div class="acoes-plano">
+
+                            <button
+                                id="botao-editar-plano"
+                                class="botao botao-contorno"
+                                type="button"
+                            >
+                                Editar
+                            </button>
+
+                            <button
+                                id="botao-excluir-plano"
+                                class="botao botao-perigo"
+                                type="button"
+                            >
+                                Excluir
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="metricas-plano">
+
+                        <article class="metrica">
+
+                            <span>
+                                Status
+                            </span>
+
+                            <strong id="status-plano">
+                            </strong>
+
+                        </article>
+
+
+                        <article class="metrica">
+
+                            <span>
+                                Conclusão
+                            </span>
+
+                            <strong id="percentual-plano">
+                            </strong>
+
+                        </article>
+
+
+                        <article class="metrica">
+
+                            <span>
+                                Início
+                            </span>
+
+                            <strong id="inicio-plano">
+                            </strong>
+
+                        </article>
+
+
+                        <article class="metrica">
+
+                            <span>
+                                Previsão
+                            </span>
+
+                            <strong id="fim-plano">
+                            </strong>
+
+                        </article>
+
+                    </div>
+
+
+                    <div class="barra-progresso">
+
+                        <div
+                            id="preenchimento-progresso"
+                            class="preenchimento-progresso"
+                        >
+                        </div>
+
+                    </div>
+
+
+                    <section class="secao-etapas">
+
+                        <div class="cabecalho-etapas">
+
+                            <div>
+
+                                <span class="rotulo-secao">
+                                    ROADMAP
+                                </span>
+
+                                <h2>
+                                    Etapas do plano
+                                </h2>
+
+                            </div>
+
+
+                            <button
+                                id="botao-nova-etapa"
+                                class="botao botao-principal"
+                                type="button"
+                            >
+                                + Nova etapa
+                            </button>
+
+                        </div>
+
+
+                        <div
+                            id="lista-etapas"
+                            class="lista-etapas"
+                        >
+                        </div>
+
+                    </section>
+
+                </div>
+
+            </section>
+
+        </section>
+
+    </main>
+
+
+    <div
+        id="mensagem"
+        class="mensagem oculto"
+    >
+    </div>
+
+
+    <!-- MODAL PLANO -->
+
+    <dialog
+        id="modal-plano"
+        class="modal"
+    >
+
+        <form
+            id="formulario-plano"
+            class="formulario-modal"
+        >
+
+            <div class="cabecalho-modal">
+
+                <div>
+
+                    <span class="rotulo-secao">
+                        PLANO DE ESTUDO
+                    </span>
+
+                    <h2 id="titulo-modal-plano">
+                        Novo plano
+                    </h2>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="botao-fechar"
+                    data-fechar="modal-plano"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <label>
+                Título
+
+                <input
+                    id="plano-titulo"
+                    type="text"
+                    maxlength="180"
+                    required
+                >
+            </label>
+
+
+            <label>
+                Objetivo
+
+                <textarea
+                    id="plano-objetivo"
+                    maxlength="500"
+                    rows="3"
+                ></textarea>
+            </label>
+
+
+            <div class="duas-colunas">
+
+                <label>
+                    Data de início
+
+                    <input
+                        id="plano-data-inicio"
+                        type="date"
+                    >
+                </label>
+
+
+                <label>
+                    Data prevista de conclusão
+
+                    <input
+                        id="plano-data-fim"
+                        type="date"
+                    >
+                </label>
+
+            </div>
+
+
+            <div class="duas-colunas">
+
+                <label>
+                    Percentual de conclusão
+
+                    <input
+                        id="plano-percentual"
+                        type="number"
+                        min="0"
+                        max="100"
+                        step="1"
+                        value="0"
+                    >
+                </label>
+
+
+                <label>
+                    Status
+
+                    <select id="plano-status">
+
+                        <option value="nao_iniciado">
+                            Não iniciado
+                        </option>
+
+                        <option value="em_andamento">
+                            Em andamento
+                        </option>
+
+                        <option value="pausado">
+                            Pausado
+                        </option>
+
+                        <option value="concluido">
+                            Concluído
+                        </option>
+
+                    </select>
+
+                </label>
+
+            </div>
+
+
+            <div class="acoes-modal">
+
+                <button
+                    type="button"
+                    class="botao botao-contorno"
+                    data-fechar="modal-plano"
+                >
+                    Cancelar
+                </button>
+
+                <button
+                    type="submit"
+                    class="botao botao-principal"
+                >
+                    Salvar plano
+                </button>
+
+            </div>
+
+        </form>
+
+    </dialog>
+
+
+    <!-- MODAL ETAPA -->
+
+    <dialog
+        id="modal-etapa"
+        class="modal"
+    >
+
+        <form
+            id="formulario-etapa"
+            class="formulario-modal"
+        >
+
+            <div class="cabecalho-modal">
+
+                <div>
+
+                    <span class="rotulo-secao">
+                        ETAPA
+                    </span>
+
+                    <h2 id="titulo-modal-etapa">
+                        Nova etapa
+                    </h2>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="botao-fechar"
+                    data-fechar="modal-etapa"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <label>
+                Título
+
+                <input
+                    id="etapa-titulo"
+                    type="text"
+                    maxlength="180"
+                    required
+                >
+            </label>
+
+
+            <label>
+                Descrição
+
+                <textarea
+                    id="etapa-descricao"
+                    maxlength="500"
+                    rows="3"
+                ></textarea>
+            </label>
+
+
+            <div class="duas-colunas">
+
+                <label>
+                    Ordem
+
+                    <input
+                        id="etapa-ordem"
+                        type="number"
+                        min="1"
+                        step="1"
+                        required
+                    >
+                </label>
+
+
+                <label>
+                    Carga horária estimada
+
+                    <input
+                        id="etapa-carga-horaria"
+                        type="number"
+                        min="1"
+                        step="1"
+                    >
+                </label>
+
+            </div>
+
+
+            <div class="duas-colunas">
+
+                <label>
+                    Início previsto
+
+                    <input
+                        id="etapa-data-inicio"
+                        type="date"
+                    >
+                </label>
+
+
+                <label>
+                    Data de conclusão
+
+                    <input
+                        id="etapa-data-conclusao"
+                        type="date"
+                    >
+                </label>
+
+            </div>
+
+
+            <label>
+                Status
+
+                <select id="etapa-status">
+
+                    <option value="pendente">
+                        Pendente
+                    </option>
+
+                    <option value="em_andamento">
+                        Em andamento
+                    </option>
+
+                    <option value="concluida">
+                        Concluída
+                    </option>
+
+                </select>
+
+            </label>
+
+
+            <div class="acoes-modal">
+
+                <button
+                    type="button"
+                    class="botao botao-contorno"
+                    data-fechar="modal-etapa"
+                >
+                    Cancelar
+                </button>
+
+                <button
+                    type="submit"
+                    class="botao botao-principal"
+                >
+                    Salvar etapa
+                </button>
+
+            </div>
+
+        </form>
+
+    </dialog>
+
+
+    <script src="../assets/js/api.js"></script>
+    <script src="../assets/js/sessao.js"></script>
+    <script src="../assets/js/estudos.js"></script>
+
+</body>
+
+</html>

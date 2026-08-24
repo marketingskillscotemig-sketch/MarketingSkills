@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
 
@@ -21,9 +22,11 @@
     >
 </head>
 
+
 <body>
 
     <header class="cabecalho-site">
+
         <div class="conteudo-centralizado conteudo-navegacao">
 
             <a
@@ -48,7 +51,7 @@
                     Home
                 </a>
 
-                <a href="../index.html#mercado">
+                <a href="./mercado.html">
                     Mercado
                 </a>
 
@@ -57,6 +60,10 @@
                     class="ativo"
                 >
                     Vagas
+                </a>
+
+                <a href="./estudos.html">
+                    Estudos
                 </a>
 
                 <a href="./perfil.html">
@@ -86,6 +93,7 @@
             </div>
 
         </div>
+
     </header>
 
 
@@ -98,6 +106,7 @@
             <section class="cabecalho-pagina">
 
                 <div>
+
                     <span class="rotulo-destaque">
                         Mercado e oportunidades
                     </span>
@@ -111,11 +120,16 @@
                         Empresas, oportunidades e requisitos técnicos
                         conectados em uma única visão do mercado.
                     </p>
+
                 </div>
 
+
                 <div class="status-pagina">
+
                     <span class="indicador-status"></span>
+
                     Dados conectados à API
+
                 </div>
 
             </section>
@@ -126,7 +140,10 @@
             <section class="grade-metricas-mercado">
 
                 <article class="cartao-metrica-mercado">
-                    <span>Empresas cadastradas</span>
+
+                    <span>
+                        Empresas cadastradas
+                    </span>
 
                     <strong id="metrica-empresas">
                         0
@@ -135,11 +152,15 @@
                     <small>
                         organizações disponíveis
                     </small>
+
                 </article>
 
 
                 <article class="cartao-metrica-mercado">
-                    <span>Vagas ativas</span>
+
+                    <span>
+                        Vagas ativas
+                    </span>
 
                     <strong id="metrica-vagas-ativas">
                         0
@@ -148,11 +169,15 @@
                     <small>
                         oportunidades em aberto
                     </small>
+
                 </article>
 
 
                 <article class="cartao-metrica-mercado">
-                    <span>Requisitos cadastrados</span>
+
+                    <span>
+                        Requisitos cadastrados
+                    </span>
 
                     <strong id="metrica-requisitos">
                         0
@@ -161,6 +186,7 @@
                     <small>
                         competências exigidas
                     </small>
+
                 </article>
 
             </section>
@@ -177,12 +203,17 @@
                     <div class="cabecalho-bloco">
 
                         <div>
+
                             <span class="subtitulo-bloco">
                                 Organizações
                             </span>
 
-                            <h2>Empresas</h2>
+                            <h2>
+                                Empresas
+                            </h2>
+
                         </div>
+
 
                         <button
                             id="botao-nova-empresa"
@@ -209,9 +240,11 @@
                         id="lista-empresas"
                         class="lista-empresas"
                     >
+
                         <div class="estado-vazio">
                             Nenhuma empresa cadastrada.
                         </div>
+
                     </div>
 
                 </aside>
@@ -226,12 +259,17 @@
                         <div class="cabecalho-listagem">
 
                             <div>
+
                                 <span class="subtitulo-bloco">
                                     Oportunidades
                                 </span>
 
-                                <h2>Vagas cadastradas</h2>
+                                <h2>
+                                    Vagas cadastradas
+                                </h2>
+
                             </div>
+
 
                             <button
                                 id="botao-nova-vaga"
@@ -247,20 +285,28 @@
                         <div class="filtros-vagas">
 
                             <label class="campo-busca">
-                                <span>Buscar</span>
+
+                                <span>
+                                    Buscar
+                                </span>
 
                                 <input
                                     id="filtro-busca"
                                     type="search"
                                     placeholder="Título, empresa ou localização"
                                 >
+
                             </label>
 
 
                             <label class="campo-busca">
-                                <span>Status</span>
+
+                                <span>
+                                    Status
+                                </span>
 
                                 <select id="filtro-status">
+
                                     <option value="">
                                         Todos
                                     </option>
@@ -276,14 +322,20 @@
                                     <option value="encerrada">
                                         Encerrada
                                     </option>
+
                                 </select>
+
                             </label>
 
 
                             <label class="campo-busca">
-                                <span>Modalidade</span>
+
+                                <span>
+                                    Modalidade
+                                </span>
 
                                 <select id="filtro-modalidade">
+
                                     <option value="">
                                         Todas
                                     </option>
@@ -299,7 +351,9 @@
                                     <option value="remoto">
                                         Remoto
                                     </option>
+
                                 </select>
+
                             </label>
 
                         </div>
@@ -309,9 +363,11 @@
                             id="lista-vagas"
                             class="lista-vagas"
                         >
+
                             <div class="estado-vazio">
                                 Nenhuma vaga cadastrada.
                             </div>
+
                         </div>
 
                     </section>
@@ -323,6 +379,7 @@
                         id="detalhe-vaga"
                         class="detalhe-vaga"
                     >
+
                         <div class="estado-detalhe-vazio">
 
                             <div class="icone-detalhe-vazio">
@@ -339,6 +396,7 @@
                             </p>
 
                         </div>
+
                     </section>
 
                 </section>
@@ -365,6 +423,7 @@
             <div class="cabecalho-modal">
 
                 <div>
+
                     <span class="subtitulo-bloco">
                         Organização
                     </span>
@@ -372,7 +431,9 @@
                     <h2 id="titulo-modal-empresa">
                         Nova empresa
                     </h2>
+
                 </div>
+
 
                 <button
                     type="button"
@@ -386,7 +447,10 @@
 
 
             <label class="campo-formulario">
-                <span>Nome</span>
+
+                <span>
+                    Nome
+                </span>
 
                 <input
                     id="empresa-nome"
@@ -395,11 +459,15 @@
                     maxlength="150"
                     required
                 >
+
             </label>
 
 
             <label class="campo-formulario">
-                <span>Setor</span>
+
+                <span>
+                    Setor
+                </span>
 
                 <input
                     id="empresa-setor"
@@ -407,11 +475,15 @@
                     maxlength="120"
                     placeholder="Ex.: Tecnologia"
                 >
+
             </label>
 
 
             <label class="campo-formulario">
-                <span>Site</span>
+
+                <span>
+                    Site
+                </span>
 
                 <input
                     id="empresa-site"
@@ -419,17 +491,22 @@
                     maxlength="255"
                     placeholder="https://..."
                 >
+
             </label>
 
 
             <label class="campo-formulario">
-                <span>Descrição</span>
+
+                <span>
+                    Descrição
+                </span>
 
                 <textarea
                     id="empresa-descricao"
                     maxlength="500"
                     rows="4"
                 ></textarea>
+
             </label>
 
 
@@ -472,6 +549,7 @@
             <div class="cabecalho-modal">
 
                 <div>
+
                     <span class="subtitulo-bloco">
                         Oportunidade
                     </span>
@@ -479,7 +557,9 @@
                     <h2 id="titulo-modal-vaga">
                         Nova vaga
                     </h2>
+
                 </div>
+
 
                 <button
                     type="button"
@@ -495,18 +575,25 @@
             <div class="grade-formulario">
 
                 <label class="campo-formulario">
-                    <span>Empresa</span>
+
+                    <span>
+                        Empresa
+                    </span>
 
                     <select
                         id="vaga-empresa"
                         required
                     >
                     </select>
+
                 </label>
 
 
                 <label class="campo-formulario">
-                    <span>Título</span>
+
+                    <span>
+                        Título
+                    </span>
 
                     <input
                         id="vaga-titulo"
@@ -514,16 +601,21 @@
                         maxlength="180"
                         required
                     >
+
                 </label>
 
 
                 <label class="campo-formulario">
-                    <span>Nível de experiência</span>
+
+                    <span>
+                        Nível de experiência
+                    </span>
 
                     <select
                         id="vaga-nivel"
                         required
                     >
+
                         <option value="iniciante">
                             Iniciante
                         </option>
@@ -539,17 +631,23 @@
                         <option value="senior">
                             Sênior
                         </option>
+
                     </select>
+
                 </label>
 
 
                 <label class="campo-formulario">
-                    <span>Modalidade</span>
+
+                    <span>
+                        Modalidade
+                    </span>
 
                     <select
                         id="vaga-modalidade"
                         required
                     >
+
                         <option value="presencial">
                             Presencial
                         </option>
@@ -561,12 +659,17 @@
                         <option value="remoto">
                             Remoto
                         </option>
+
                     </select>
+
                 </label>
 
 
                 <label class="campo-formulario">
-                    <span>Localização</span>
+
+                    <span>
+                        Localização
+                    </span>
 
                     <input
                         id="vaga-localizacao"
@@ -574,13 +677,18 @@
                         maxlength="150"
                         placeholder="Ex.: Belo Horizonte"
                     >
+
                 </label>
 
 
                 <label class="campo-formulario">
-                    <span>Status</span>
+
+                    <span>
+                        Status
+                    </span>
 
                     <select id="vaga-status">
+
                         <option value="ativa">
                             Ativa
                         </option>
@@ -592,12 +700,17 @@
                         <option value="encerrada">
                             Encerrada
                         </option>
+
                     </select>
+
                 </label>
 
 
                 <label class="campo-formulario">
-                    <span>Salário mínimo</span>
+
+                    <span>
+                        Salário mínimo
+                    </span>
 
                     <input
                         id="vaga-salario-minimo"
@@ -605,11 +718,15 @@
                         min="0"
                         step="0.01"
                     >
+
                 </label>
 
 
                 <label class="campo-formulario">
-                    <span>Salário máximo</span>
+
+                    <span>
+                        Salário máximo
+                    </span>
 
                     <input
                         id="vaga-salario-maximo"
@@ -617,27 +734,36 @@
                         min="0"
                         step="0.01"
                     >
+
                 </label>
 
 
                 <label class="campo-formulario">
-                    <span>Data de publicação</span>
+
+                    <span>
+                        Data de publicação
+                    </span>
 
                     <input
                         id="vaga-data-publicacao"
                         type="date"
                         required
                     >
+
                 </label>
 
 
                 <label class="campo-formulario campo-largo">
-                    <span>Descrição</span>
+
+                    <span>
+                        Descrição
+                    </span>
 
                     <textarea
                         id="vaga-descricao"
                         rows="5"
                     ></textarea>
+
                 </label>
 
             </div>
@@ -682,6 +808,7 @@
             <div class="cabecalho-modal">
 
                 <div>
+
                     <span class="subtitulo-bloco">
                         Requisito técnico
                     </span>
@@ -689,7 +816,9 @@
                     <h2 id="titulo-modal-requisito">
                         Novo requisito
                     </h2>
+
                 </div>
+
 
                 <button
                     type="button"
@@ -703,23 +832,31 @@
 
 
             <label class="campo-formulario">
-                <span>Habilidade</span>
+
+                <span>
+                    Habilidade
+                </span>
 
                 <select
                     id="requisito-habilidade"
                     required
                 >
                 </select>
+
             </label>
 
 
             <label class="campo-formulario">
-                <span>Nível exigido</span>
+
+                <span>
+                    Nível exigido
+                </span>
 
                 <select
                     id="requisito-nivel"
                     required
                 >
+
                     <option value="basico">
                         Básico
                     </option>
@@ -731,12 +868,17 @@
                     <option value="avancado">
                         Avançado
                     </option>
+
                 </select>
+
             </label>
 
 
             <label class="campo-formulario">
-                <span>Peso</span>
+
+                <span>
+                    Peso
+                </span>
 
                 <input
                     id="requisito-peso"
@@ -746,6 +888,7 @@
                     step="0.01"
                     placeholder="Ex.: 10"
                 >
+
             </label>
 
 
@@ -765,13 +908,17 @@
 
 
             <label class="campo-formulario">
-                <span>Descrição</span>
+
+                <span>
+                    Descrição
+                </span>
 
                 <textarea
                     id="requisito-descricao"
                     maxlength="500"
                     rows="4"
                 ></textarea>
+
             </label>
 
 
@@ -810,4 +957,5 @@
     <script src="../assets/js/vagas.js"></script>
 
 </body>
+
 </html>

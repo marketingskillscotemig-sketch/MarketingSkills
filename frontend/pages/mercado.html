@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Mercado | Market Skills</title>
+
+    <link
+        rel="stylesheet"
+        href="../assets/css/styles.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../assets/css/sessao.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../assets/css/mercado.css"
+    >
+</head>
+
+<body data-pagina-protegida="true">
+
+<header class="cabecalho-site">
+    <div class="conteudo-navegacao">
+
+        <a href="../index.html" class="marca">
+            <span class="icone-marca">▮▮▮</span>
+
+            <span class="texto-marca">
+                Market<span>Skills</span>
+            </span>
+        </a>
+
+        <nav class="navegacao-principal">
+            <a href="../index.html">
+                Home
+            </a>
+
+            <a
+                href="./mercado.html"
+                class="ativo"
+            >
+                Mercado
+            </a>
+
+            <a href="./vagas.html">
+                Vagas
+            </a>
+
+            <a href="./estudos.html">
+                Estudos
+            </a>
+
+            <a href="./perfil.html">
+                Perfil
+            </a>
+        </nav>
+
+        <div class="acoes-navegacao"></div>
+    </div>
+</header>
+
+
+<main class="pagina-mercado">
+
+    <section class="cabecalho-pagina">
+        <div>
+            <span class="rotulo-secao">
+                MERCADO E OPORTUNIDADES
+            </span>
+
+            <h1>
+                Acompanhe alertas, notificações
+                e tendências.
+            </h1>
+
+            <p>
+                Gerencie alertas de vagas,
+                notificações e informações
+                do mercado profissional.
+            </p>
+        </div>
+    </section>
+
+
+    <section class="grade-modulos">
+
+        <article class="painel">
+
+            <div class="cabecalho-painel">
+                <div>
+                    <span class="rotulo-secao">
+                        ALERTAS DE VAGA
+                    </span>
+
+                    <h2>Meus alertas</h2>
+                </div>
+
+                <button
+                    id="botao-novo-alerta"
+                    class="botao botao-principal"
+                    type="button"
+                >
+                    + Novo alerta
+                </button>
+            </div>
+
+            <div
+                id="lista-alertas"
+                class="lista-itens"
+            ></div>
+
+        </article>
+
+
+        <article class="painel">
+
+            <div class="cabecalho-painel">
+                <div>
+                    <span class="rotulo-secao">
+                        NOTIFICAÇÕES
+                    </span>
+
+                    <h2>Notificações</h2>
+                </div>
+
+                <button
+                    id="botao-nova-notificacao"
+                    class="botao botao-principal"
+                    type="button"
+                >
+                    + Nova notificação
+                </button>
+            </div>
+
+            <div
+                id="lista-notificacoes"
+                class="lista-itens"
+            ></div>
+
+        </article>
+
+
+        <article class="painel painel-largo">
+
+            <div class="cabecalho-painel">
+                <div>
+                    <span class="rotulo-secao">
+                        TENDÊNCIAS
+                    </span>
+
+                    <h2>Tendências de mercado</h2>
+                </div>
+
+                <button
+                    id="botao-nova-tendencia"
+                    class="botao botao-principal"
+                    type="button"
+                >
+                    + Nova tendência
+                </button>
+            </div>
+
+            <div
+                id="lista-tendencias"
+                class="lista-tendencias"
+            ></div>
+
+        </article>
+
+    </section>
+
+</main>
+
+
+<div
+    id="mensagem"
+    class="mensagem oculto"
+></div>
+
+
+<dialog id="modal-alerta" class="modal">
+
+    <form
+        id="formulario-alerta"
+        class="formulario-modal"
+    >
+
+        <div class="cabecalho-modal">
+            <h2 id="titulo-modal-alerta">
+                Novo alerta
+            </h2>
+
+            <button
+                type="button"
+                class="botao-fechar"
+                data-fechar="modal-alerta"
+            >
+                ×
+            </button>
+        </div>
+
+        <label>
+            Palavra-chave
+
+            <input
+                id="alerta-palavra"
+                maxlength="120"
+                type="text"
+            >
+        </label>
+
+        <label>
+            Cidade
+
+            <input
+                id="alerta-cidade"
+                maxlength="120"
+                type="text"
+            >
+        </label>
+
+        <div class="duas-colunas">
+
+            <label>
+                Modalidade
+
+                <select id="alerta-modalidade">
+                    <option value="">
+                        Não informar
+                    </option>
+                    <option value="presencial">
+                        Presencial
+                    </option>
+                    <option value="hibrido">
+                        Híbrido
+                    </option>
+                    <option value="remoto">
+                        Remoto
+                    </option>
+                </select>
+            </label>
+
+            <label>
+                Experiência
+
+                <select id="alerta-nivel">
+                    <option value="">
+                        Não informar
+                    </option>
+                    <option value="iniciante">
+                        Iniciante
+                    </option>
+                    <option value="junior">
+                        Júnior
+                    </option>
+                    <option value="pleno">
+                        Pleno
+                    </option>
+                    <option value="senior">
+                        Sênior
+                    </option>
+                </select>
+            </label>
+
+        </div>
+
+        <label class="campo-checkbox">
+            <input
+                id="alerta-ativo"
+                type="checkbox"
+                checked
+            >
+
+            Alerta ativo
+        </label>
+
+        <div class="acoes-modal">
+            <button
+                type="button"
+                class="botao botao-contorno"
+                data-fechar="modal-alerta"
+            >
+                Cancelar
+            </button>
+
+            <button
+                class="botao botao-principal"
+                type="submit"
+            >
+                Salvar
+            </button>
+        </div>
+
+    </form>
+
+</dialog>
+
+
+<dialog id="modal-notificacao" class="modal">
+
+    <form
+        id="formulario-notificacao"
+        class="formulario-modal"
+    >
+
+        <div class="cabecalho-modal">
+            <h2 id="titulo-modal-notificacao">
+                Nova notificação
+            </h2>
+
+            <button
+                type="button"
+                class="botao-fechar"
+                data-fechar="modal-notificacao"
+            >
+                ×
+            </button>
+        </div>
+
+        <label>
+            Alerta
+
+            <select
+                id="notificacao-alerta"
+                required
+            ></select>
+        </label>
+
+        <label>
+            Título
+
+            <input
+                id="notificacao-titulo"
+                maxlength="180"
+                type="text"
+                required
+            >
+        </label>
+
+        <label>
+            Mensagem
+
+            <textarea
+                id="notificacao-mensagem"
+                maxlength="500"
+                rows="4"
+                required
+            ></textarea>
+        </label>
+
+        <label class="campo-checkbox">
+            <input
+                id="notificacao-lida"
+                type="checkbox"
+            >
+
+            Marcar como lida
+        </label>
+
+        <div class="acoes-modal">
+            <button
+                type="button"
+                class="botao botao-contorno"
+                data-fechar="modal-notificacao"
+            >
+                Cancelar
+            </button>
+
+            <button
+                class="botao botao-principal"
+                type="submit"
+            >
+                Salvar
+            </button>
+        </div>
+
+    </form>
+
+</dialog>
+
+
+<dialog id="modal-tendencia" class="modal">
+
+    <form
+        id="formulario-tendencia"
+        class="formulario-modal"
+    >
+
+        <div class="cabecalho-modal">
+            <h2 id="titulo-modal-tendencia">
+                Nova tendência
+            </h2>
+
+            <button
+                type="button"
+                class="botao-fechar"
+                data-fechar="modal-tendencia"
+            >
+                ×
+            </button>
+        </div>
+
+        <label>
+            Cargo
+
+            <input
+                id="tendencia-cargo"
+                maxlength="150"
+                type="text"
+                required
+            >
+        </label>
+
+        <label>
+            Tecnologia
+
+            <input
+                id="tendencia-tecnologia"
+                maxlength="120"
+                type="text"
+                required
+            >
+        </label>
+
+        <div class="duas-colunas">
+
+            <label>
+                Demanda
+
+                <input
+                    id="tendencia-demanda"
+                    min="0"
+                    step="0.01"
+                    type="number"
+                >
+            </label>
+
+            <label>
+                Média salarial
+
+                <input
+                    id="tendencia-salario"
+                    min="0"
+                    step="0.01"
+                    type="number"
+                >
+            </label>
+
+        </div>
+
+        <div class="acoes-modal">
+            <button
+                type="button"
+                class="botao botao-contorno"
+                data-fechar="modal-tendencia"
+            >
+                Cancelar
+            </button>
+
+            <button
+                class="botao botao-principal"
+                type="submit"
+            >
+                Salvar
+            </button>
+        </div>
+
+    </form>
+
+</dialog>
+
+
+<script src="../assets/js/api.js"></script>
+<script src="../assets/js/sessao.js"></script>
+<script src="../assets/js/mercado.js"></script>
+
+</body>
+</html>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
 
@@ -19,15 +20,18 @@
         rel="stylesheet"
         href="../assets/css/perfil.css"
     >
+
     <link
-    rel="stylesheet"
-    href="../assets/css/sessao.css"
->
+        rel="stylesheet"
+        href="../assets/css/sessao.css"
+    >
 </head>
+
 
 <body data-pagina-protegida="true">
 
     <header class="cabecalho-site">
+
         <div class="conteudo-centralizado conteudo-navegacao">
 
             <a
@@ -45,17 +49,23 @@
                 </span>
             </a>
 
+
             <nav class="navegacao-principal">
+
                 <a href="../index.html">
                     Home
                 </a>
 
-                <a href="../index.html#mercado">
+                <a href="./mercado.html">
                     Mercado
                 </a>
 
                 <a href="./vagas.html">
                     Vagas
+                </a>
+
+                <a href="./estudos.html">
+                    Estudos
                 </a>
 
                 <a
@@ -64,9 +74,12 @@
                 >
                     Perfil
                 </a>
+
             </nav>
 
+
             <div class="acoes-navegacao">
+
                 <a
                     href="./perfil.html"
                     class="botao botao-contorno"
@@ -80,9 +93,11 @@
                 >
                     Explorar vagas
                 </a>
+
             </div>
 
         </div>
+
     </header>
 
 
@@ -93,6 +108,7 @@
             <section class="cabecalho-pagina">
 
                 <div>
+
                     <span class="rotulo-destaque">
                         Perfil profissional
                     </span>
@@ -107,11 +123,16 @@
                         registre habilidades e mantenha seus
                         conhecimentos atualizados.
                     </p>
+
                 </div>
 
+
                 <div class="status-pagina">
+
                     <span class="indicador-status"></span>
+
                     Dados conectados à API
+
                 </div>
 
             </section>
@@ -124,13 +145,19 @@
                 <aside class="painel-usuarios">
 
                     <div class="cabecalho-bloco">
+
                         <div>
+
                             <span class="subtitulo-bloco">
                                 Conta
                             </span>
 
-                            <h2>Usuários</h2>
+                            <h2>
+                                Usuários
+                            </h2>
+
                         </div>
+
 
                         <button
                             id="botao-novo-usuario"
@@ -140,7 +167,9 @@
                         >
                             +
                         </button>
+
                     </div>
+
 
                     <p class="aviso-autenticacao">
                         A autenticação ainda não faz parte desta
@@ -148,13 +177,16 @@
                         para administrar o perfil.
                     </p>
 
+
                     <div
                         id="lista-usuarios"
                         class="lista-usuarios"
                     >
+
                         <div class="estado-carregando">
                             Carregando usuários...
                         </div>
+
                     </div>
 
                 </aside>
@@ -168,11 +200,14 @@
                         id="perfil-sem-usuario"
                         class="estado-principal-vazio"
                     >
+
                         <div class="icone-estado-vazio">
                             +
                         </div>
 
-                        <h2>Nenhum usuário cadastrado</h2>
+                        <h2>
+                            Nenhum usuário cadastrado
+                        </h2>
 
                         <p>
                             Cadastre um usuário para começar
@@ -186,6 +221,7 @@
                         >
                             Cadastrar usuário
                         </button>
+
                     </div>
 
 
@@ -207,7 +243,9 @@
                                     U
                                 </div>
 
+
                                 <div>
+
                                     <span class="subtitulo-bloco">
                                         Perfil selecionado
                                     </span>
@@ -219,9 +257,11 @@
                                     <p id="email-usuario">
                                         email@exemplo.com
                                     </p>
+
                                 </div>
 
                             </div>
+
 
                             <div class="acoes-usuario">
 
@@ -260,6 +300,7 @@
                             <div class="cabecalho-cartao">
 
                                 <div>
+
                                     <span class="subtitulo-bloco">
                                         Informações profissionais
                                     </span>
@@ -267,7 +308,9 @@
                                     <h2>
                                         Perfil profissional
                                     </h2>
+
                                 </div>
+
 
                                 <span
                                     id="situacao-perfil-profissional"
@@ -284,11 +327,13 @@
                                 <div class="grade-formulario">
 
                                     <label class="campo-formulario">
+
                                         <span>
                                             Nível de experiência
                                         </span>
 
                                         <select id="nivel-experiencia">
+
                                             <option value="">
                                                 Não informado
                                             </option>
@@ -308,16 +353,20 @@
                                             <option value="senior">
                                                 Sênior
                                             </option>
+
                                         </select>
+
                                     </label>
 
 
                                     <label class="campo-formulario">
+
                                         <span>
                                             Modalidade preferida
                                         </span>
 
                                         <select id="modalidade-preferida">
+
                                             <option value="">
                                                 Não informada
                                             </option>
@@ -333,11 +382,14 @@
                                             <option value="remoto">
                                                 Remoto
                                             </option>
+
                                         </select>
+
                                     </label>
 
 
                                     <label class="campo-formulario">
+
                                         <span>
                                             Localização preferida
                                         </span>
@@ -348,10 +400,12 @@
                                             maxlength="150"
                                             placeholder="Ex.: Belo Horizonte"
                                         >
+
                                     </label>
 
 
                                     <label class="campo-formulario">
+
                                         <span>
                                             Horas de estudo por semana
                                         </span>
@@ -363,10 +417,12 @@
                                             step="1"
                                             placeholder="Ex.: 10"
                                         >
+
                                     </label>
 
 
                                     <label class="campo-formulario">
+
                                         <span>
                                             Pretensão salarial
                                         </span>
@@ -378,10 +434,12 @@
                                             step="0.01"
                                             placeholder="Ex.: 5000"
                                         >
+
                                     </label>
 
 
                                     <label class="campo-formulario campo-largo">
+
                                         <span>
                                             Objetivo profissional
                                         </span>
@@ -392,6 +450,7 @@
                                             rows="3"
                                             placeholder="Ex.: Trabalhar como desenvolvedor backend Python"
                                         ></textarea>
+
                                     </label>
 
                                 </div>
@@ -427,7 +486,9 @@
                         <section class="cartao-perfil">
 
                             <div class="cabecalho-cartao">
+
                                 <div>
+
                                     <span class="subtitulo-bloco">
                                         Competências
                                     </span>
@@ -435,7 +496,9 @@
                                     <h2>
                                         Minhas habilidades
                                     </h2>
+
                                 </div>
+
 
                                 <span
                                     id="quantidade-habilidades-perfil"
@@ -443,6 +506,7 @@
                                 >
                                     0 habilidades
                                 </span>
+
                             </div>
 
 
@@ -452,6 +516,7 @@
                             >
 
                                 <label class="campo-formulario">
+
                                     <span>
                                         Habilidade
                                     </span>
@@ -460,14 +525,18 @@
                                         id="habilidade-perfil"
                                         required
                                     >
+
                                         <option value="">
                                             Selecione uma habilidade
                                         </option>
+
                                     </select>
+
                                 </label>
 
 
                                 <label class="campo-formulario">
+
                                     <span>
                                         Nível de domínio
                                     </span>
@@ -476,6 +545,7 @@
                                         id="nivel-dominio"
                                         required
                                     >
+
                                         <option value="basico">
                                             Básico
                                         </option>
@@ -487,7 +557,9 @@
                                         <option value="avancado">
                                             Avançado
                                         </option>
+
                                     </select>
+
                                 </label>
 
 
@@ -517,6 +589,7 @@
                             <div class="cabecalho-cartao">
 
                                 <div>
+
                                     <span class="subtitulo-bloco">
                                         Base de competências
                                     </span>
@@ -524,7 +597,9 @@
                                     <h2>
                                         Catálogo de habilidades
                                     </h2>
+
                                 </div>
+
 
                                 <button
                                     id="botao-nova-habilidade"
@@ -536,12 +611,14 @@
 
                             </div>
 
+
                             <p class="descricao-cartao">
                                 Este catálogo representa as habilidades
                                 disponíveis no sistema. Uma habilidade
                                 pode posteriormente ser associada a
                                 perfis, vagas e planos de estudo.
                             </p>
+
 
                             <div
                                 id="catalogo-habilidades"
@@ -568,13 +645,16 @@
         id="modal-usuario"
         class="modal"
     >
+
         <form
             id="formulario-usuario"
             class="conteudo-modal"
         >
 
             <div class="cabecalho-modal">
+
                 <div>
+
                     <span class="subtitulo-bloco">
                         Conta
                     </span>
@@ -582,7 +662,9 @@
                     <h2 id="titulo-modal-usuario">
                         Novo usuário
                     </h2>
+
                 </div>
+
 
                 <button
                     class="fechar-modal"
@@ -591,11 +673,15 @@
                 >
                     ×
                 </button>
+
             </div>
 
 
             <label class="campo-formulario">
-                <span>Nome</span>
+
+                <span>
+                    Nome
+                </span>
 
                 <input
                     id="usuario-nome"
@@ -603,21 +689,27 @@
                     minlength="2"
                     required
                 >
+
             </label>
 
 
             <label class="campo-formulario">
-                <span>E-mail</span>
+
+                <span>
+                    E-mail
+                </span>
 
                 <input
                     id="usuario-email"
                     type="email"
                     required
                 >
+
             </label>
 
 
             <label class="campo-formulario">
+
                 <span id="rotulo-senha">
                     Senha
                 </span>
@@ -627,6 +719,7 @@
                     type="password"
                     minlength="6"
                 >
+
             </label>
 
 
@@ -634,9 +727,13 @@
                 id="campo-status-usuario"
                 class="campo-formulario oculto"
             >
-                <span>Status</span>
+
+                <span>
+                    Status
+                </span>
 
                 <select id="usuario-status">
+
                     <option value="ativo">
                         Ativo
                     </option>
@@ -644,7 +741,9 @@
                     <option value="inativo">
                         Inativo
                     </option>
+
                 </select>
+
             </label>
 
 
@@ -668,6 +767,7 @@
             </div>
 
         </form>
+
     </dialog>
 
 
@@ -677,13 +777,16 @@
         id="modal-habilidade"
         class="modal"
     >
+
         <form
             id="formulario-habilidade"
             class="conteudo-modal"
         >
 
             <div class="cabecalho-modal">
+
                 <div>
+
                     <span class="subtitulo-bloco">
                         Catálogo
                     </span>
@@ -691,7 +794,9 @@
                     <h2 id="titulo-modal-habilidade">
                         Nova habilidade
                     </h2>
+
                 </div>
+
 
                 <button
                     class="fechar-modal"
@@ -700,27 +805,36 @@
                 >
                     ×
                 </button>
+
             </div>
 
 
             <label class="campo-formulario">
-                <span>Nome</span>
+
+                <span>
+                    Nome
+                </span>
 
                 <input
                     id="habilidade-nome"
                     type="text"
                     required
                 >
+
             </label>
 
 
             <label class="campo-formulario">
-                <span>Categoria</span>
+
+                <span>
+                    Categoria
+                </span>
 
                 <select
                     id="habilidade-categoria"
                     required
                 >
+
                     <option value="linguagem">
                         Linguagem
                     </option>
@@ -744,18 +858,24 @@
                     <option value="outra">
                         Outra
                     </option>
+
                 </select>
+
             </label>
 
 
             <label class="campo-formulario">
-                <span>Descrição</span>
+
+                <span>
+                    Descrição
+                </span>
 
                 <textarea
                     id="habilidade-descricao"
                     maxlength="500"
                     rows="4"
                 ></textarea>
+
             </label>
 
 
@@ -779,6 +899,7 @@
             </div>
 
         </form>
+
     </dialog>
 
 
@@ -793,4 +914,5 @@
     <script src="../assets/js/perfil.js"></script>
 
 </body>
+
 </html>

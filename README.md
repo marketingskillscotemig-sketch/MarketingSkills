@@ -1,69 +1,96 @@
 # Market Skills
 
-O Market Skills é uma plataforma web voltada para estudantes e desenvolvedores que desejam compreender melhor as exigências do mercado de tecnologia e planejar sua evolução profissional.
+O **Market Skills** é uma plataforma web voltada para estudantes e profissionais que desejam compreender melhor as exigências do mercado de tecnologia, organizar suas habilidades, acompanhar oportunidades e planejar sua evolução profissional.
+
+O projeto está sendo desenvolvido na disciplina de **Projeto de Software**.
+
+---
 
 ## Problema
 
-Profissionais e estudantes de desenvolvimento encontram informações dispersas sobre vagas, tecnologias exigidas, competências valorizadas e tendências do mercado.
+Estudantes e profissionais de desenvolvimento encontram informações dispersas sobre:
 
-Essa falta de organização dificulta:
+- vagas disponíveis;
+- tecnologias exigidas;
+- competências valorizadas;
+- requisitos profissionais;
+- tendências do mercado;
+- planejamento de estudos.
 
-- a identificação das habilidades mais cobradas;
-- a comparação entre o perfil profissional e os requisitos das vagas;
-- a escolha dos próximos conteúdos a estudar;
-- a criação de um plano de desenvolvimento profissional;
-- o acompanhamento da própria evolução.
+Essa falta de organização dificulta a identificação das habilidades mais cobradas e a definição dos próximos passos profissionais.
+
+---
 
 ## Proposta
 
-O Market Skills pretende centralizar e organizar informações sobre o mercado de desenvolvimento de software, permitindo que o usuário:
+O Market Skills centraliza informações relacionadas ao mercado de trabalho e ao desenvolvimento profissional.
 
-- cadastre suas competências e interesses;
-- visualize requisitos recorrentes em vagas;
-- compare suas habilidades com as exigências do mercado;
-- encontre oportunidades compatíveis com seu perfil;
-- receba sugestões de estudo;
-- acompanhe seu progresso;
-- consulte tendências de tecnologias e áreas de atuação.
+A plataforma permite trabalhar com:
 
-## Tecnologias
+- usuários;
+- perfis profissionais;
+- habilidades;
+- habilidades vinculadas aos perfis;
+- empresas;
+- vagas;
+- requisitos das vagas;
+- planos de estudo;
+- etapas de estudo;
+- alertas de vagas;
+- notificações;
+- tendências de mercado.
 
-### Frontend
+---
 
-- HTML
-- CSS
+# Tecnologias
+
+## Frontend
+
+- HTML5
+- CSS3
 - JavaScript
 
-### Backend
+## Backend
 
 - Python
 - Flask
 - Flask-SQLAlchemy
 - Flask-Migrate
 - Flask-Cors
+- Flask-WTF
 - PyMySQL
 - python-dotenv
 
-### Banco de dados
+## Banco de dados
 
 - MySQL
 
-### Ferramentas
+## Ferramentas
 
 - Git
 - GitHub
-- Figma
 - Visual Studio Code
+- WAMP
+- MySQL Workbench
+- Figma
 
-## Arquitetura do backend
+---
 
-O backend utiliza separação por responsabilidades:
+# Arquitetura
+
+O backend foi organizado separando as responsabilidades da aplicação.
 
 ```text
-Controller
-    ↓
-Service
-    ↓
-Model ou Repository
-    ↓
-MySQL
+Cliente / Frontend
+        |
+        v
+   Controller
+        |
+        v
+     Service
+        |
+        v
+      Model
+        |
+        v
+      MySQLgit status --short
