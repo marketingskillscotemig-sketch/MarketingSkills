@@ -10,6 +10,12 @@ from routes.alerta_vaga_routes import alerta_vaga_bp
 from routes.autenticacao_routes import autenticacao_bp
 from routes.empresa_routes import empresa_bp
 from routes.etapa_estudo_routes import etapa_estudo_bp
+from routes.experiencia_profissional_routes import (
+    experiencia_profissional_bp,
+)
+from routes.formacao_academica_routes import (
+    formacao_academica_bp,
+)
 from routes.habilidade_routes import habilidade_bp
 from routes.health_routes import health_bp
 from routes.notificacao_routes import notificacao_bp
@@ -22,6 +28,7 @@ from routes.perfil_profissional_routes import (
 from routes.plano_estudo_routes import (
     plano_estudo_bp,
 )
+from routes.projeto_routes import projeto_bp
 from routes.requisito_vaga_routes import (
     requisito_vaga_bp,
 )
@@ -107,6 +114,18 @@ def create_app() -> Flask:
 
     app.register_blueprint(
         perfil_habilidade_bp
+    )
+
+    app.register_blueprint(
+        formacao_academica_bp
+    )
+
+    app.register_blueprint(
+        experiencia_profissional_bp
+    )
+
+    app.register_blueprint(
+        projeto_bp
     )
 
     app.register_blueprint(

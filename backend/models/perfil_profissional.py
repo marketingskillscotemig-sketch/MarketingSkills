@@ -9,7 +9,10 @@ from models.enums import (
 class PerfilProfissional(db.Model):
     __tablename__ = "perfis_profissionais"
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(
+        db.Integer,
+        primary_key=True,
+    )
 
     usuario_id = db.Column(
         db.Integer,
@@ -59,6 +62,21 @@ class PerfilProfissional(db.Model):
         nullable=True,
     )
 
+    foto_url = db.Column(
+        db.String(500),
+        nullable=True,
+    )
+
+    sobre_mim = db.Column(
+        db.Text,
+        nullable=True,
+    )
+
+    curriculo_url = db.Column(
+        db.String(500),
+        nullable=True,
+    )
+
     usuario = db.relationship(
         "Usuario",
         back_populates="perfil_profissional",
@@ -66,6 +84,24 @@ class PerfilProfissional(db.Model):
 
     habilidades = db.relationship(
         "PerfilHabilidade",
+        back_populates="perfil_profissional",
+        cascade="all, delete-orphan",
+    )
+
+    formacoes_academicas = db.relationship(
+        "FormacaoAcademica",
+        back_populates="perfil_profissional",
+        cascade="all, delete-orphan",
+    )
+
+    experiencias_profissionais = db.relationship(
+        "ExperienciaProfissional",
+        back_populates="perfil_profissional",
+        cascade="all, delete-orphan",
+    )
+
+    projetos = db.relationship(
+        "Projeto",
         back_populates="perfil_profissional",
         cascade="all, delete-orphan",
     )
@@ -83,6 +119,9 @@ class PerfilProfissional(db.Model):
         localizacao_preferida=None,
         horas_semanais_estudo=None,
         pretensao_salarial=None,
+        foto_url=None,
+        sobre_mim=None,
+        curriculo_url=None,
     ):
         if nivel_experiencia is not None:
             self.nivel_experiencia = nivel_experiencia
@@ -102,6 +141,15 @@ class PerfilProfissional(db.Model):
         if pretensao_salarial is not None:
             self.pretensao_salarial = pretensao_salarial
 
+        if foto_url is not None:
+            self.foto_url = foto_url
+
+        if sobre_mim is not None:
+            self.sobre_mim = sobre_mim
+
+        if curriculo_url is not None:
+            self.curriculo_url = curriculo_url
+
         db.session.commit()
         return self
 
@@ -117,13 +165,19 @@ class PerfilProfissional(db.Model):
 
     @staticmethod
     def buscar_por_id(id):
-        return db.session.get(PerfilProfissional, id)
+        return db.session.get(
+            PerfilProfissional,
+            id,
+        )
 
     @staticmethod
     def buscar_por_usuario_id(usuario_id):
         return db.session.execute(
-            db.select(PerfilProfissional).where(
-                PerfilProfissional.usuario_id == usuario_id
+            db.select(
+                PerfilProfissional
+            ).where(
+                PerfilProfissional.usuario_id
+                == usuario_id
             )
         ).scalar_one_or_none()
 
@@ -136,17 +190,29 @@ class PerfilProfissional(db.Model):
                 if self.nivel_experiencia
                 else None
             ),
-            "objetivoProfissional": self.objetivo_profissional,
+            "objetivoProfissional": (
+                self.objetivo_profissional
+            ),
             "modalidadePreferida": (
                 self.modalidade_preferida.value
                 if self.modalidade_preferida
                 else None
             ),
-            "localizacaoPreferida": self.localizacao_preferida,
-            "horasSemanaisEstudo": self.horas_semanais_estudo,
+            "localizacaoPreferida": (
+                self.localizacao_preferida
+            ),
+            "horasSemanaisEstudo": (
+                self.horas_semanais_estudo
+            ),
             "pretensaoSalarial": (
-                float(self.pretensao_salarial)
-                if self.pretensao_salarial is not None
+                float(
+                    self.pretensao_salarial
+                )
+                if self.pretensao_salarial
+                is not None
                 else None
             ),
+            "fotoUrl": self.foto_url,
+            "sobreMim": self.sobre_mim,
+            "curriculoUrl": self.curriculo_url,
         }

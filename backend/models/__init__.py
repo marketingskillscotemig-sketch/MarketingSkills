@@ -1,13 +1,24 @@
 from models.alerta_vaga import AlertaVaga
 from models.empresa import Empresa
 from models.etapa_estudo import EtapaEstudo
+from models.experiencia_profissional import (
+    ExperienciaProfissional,
+)
+from models.formacao_academica import (
+    FormacaoAcademica,
+)
 from models.habilidade import Habilidade
 from models.notificacao import Notificacao
 from models.perfil_habilidade import PerfilHabilidade
-from models.perfil_profissional import PerfilProfissional
+from models.perfil_profissional import (
+    PerfilProfissional,
+)
 from models.plano_estudo import PlanoEstudo
+from models.projeto import Projeto
 from models.requisito_vaga import RequisitoVaga
-from models.tendencia_mercado import TendenciaMercado
+from models.tendencia_mercado import (
+    TendenciaMercado,
+)
 from models.usuario import Usuario
 from models.vaga import Vaga
 
@@ -25,4 +36,7 @@ __all__ = [
     "AlertaVaga",
     "Notificacao",
     "TendenciaMercado",
+    "FormacaoAcademica",
+    "ExperienciaProfissional",
+    "Projeto",
 ]

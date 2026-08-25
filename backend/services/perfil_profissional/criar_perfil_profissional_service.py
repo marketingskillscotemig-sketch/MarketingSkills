@@ -21,7 +21,9 @@ class CriarPerfilProfissionalService:
                 "O usuário é obrigatório."
             )
 
-        usuario = Usuario.buscar_por_id(usuario_id)
+        usuario = Usuario.buscar_por_id(
+            usuario_id
+        )
 
         if usuario is None:
             raise LookupError(
@@ -63,6 +65,18 @@ class CriarPerfilProfissionalService:
             "pretensaoSalarial"
         )
 
+        foto_url = dados.get(
+            "fotoUrl"
+        )
+
+        sobre_mim = dados.get(
+            "sobreMim"
+        )
+
+        curriculo_url = dados.get(
+            "curriculoUrl"
+        )
+
         nivel_enum = None
 
         if nivel_experiencia is not None:
@@ -70,6 +84,7 @@ class CriarPerfilProfissionalService:
                 nivel_enum = NivelExperiencia(
                     nivel_experiencia
                 )
+
             except ValueError as erro:
                 raise ValueError(
                     "Nível de experiência inválido."
@@ -82,6 +97,7 @@ class CriarPerfilProfissionalService:
                 modalidade_enum = ModalidadeTrabalho(
                     modalidade_preferida
                 )
+
             except ValueError as erro:
                 raise ValueError(
                     "Modalidade de trabalho inválida."
@@ -90,7 +106,14 @@ class CriarPerfilProfissionalService:
         if (
             horas_semanais_estudo is not None
             and (
-                not isinstance(horas_semanais_estudo, int)
+                not isinstance(
+                    horas_semanais_estudo,
+                    int,
+                )
+                or isinstance(
+                    horas_semanais_estudo,
+                    bool,
+                )
                 or horas_semanais_estudo < 0
             )
         ):
@@ -101,11 +124,48 @@ class CriarPerfilProfissionalService:
 
         if (
             pretensao_salarial is not None
-            and pretensao_salarial < 0
+            and (
+                not isinstance(
+                    pretensao_salarial,
+                    (int, float),
+                )
+                or isinstance(
+                    pretensao_salarial,
+                    bool,
+                )
+                or pretensao_salarial < 0
+            )
         ):
             raise ValueError(
                 "A pretensão salarial não pode ser negativa."
             )
+
+        foto_url = (
+            CriarPerfilProfissionalService
+            .validar_texto_opcional(
+                foto_url,
+                "A URL da foto",
+                500,
+            )
+        )
+
+        sobre_mim = (
+            CriarPerfilProfissionalService
+            .validar_texto_opcional(
+                sobre_mim,
+                "O campo sobre mim",
+                None,
+            )
+        )
+
+        curriculo_url = (
+            CriarPerfilProfissionalService
+            .validar_texto_opcional(
+                curriculo_url,
+                "A URL do currículo",
+                500,
+            )
+        )
 
         perfil = PerfilProfissional(
             usuario_id=usuario_id,
@@ -115,6 +175,36 @@ class CriarPerfilProfissionalService:
             localizacao_preferida=localizacao_preferida,
             horas_semanais_estudo=horas_semanais_estudo,
             pretensao_salarial=pretensao_salarial,
+            foto_url=foto_url,
+            sobre_mim=sobre_mim,
+            curriculo_url=curriculo_url,
         )
 
         return perfil.salvar()
+
+    @staticmethod
+    def validar_texto_opcional(
+        valor,
+        nome_campo,
+        limite,
+    ):
+        if valor is None:
+            return None
+
+        if not isinstance(valor, str):
+            raise ValueError(
+                f"{nome_campo} deve ser um texto."
+            )
+
+        valor = valor.strip()
+
+        if (
+            limite is not None
+            and len(valor) > limite
+        ):
+            raise ValueError(
+                f"{nome_campo} não pode possuir "
+                f"mais de {limite} caracteres."
+            )
+
+        return valor
