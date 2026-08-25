@@ -1,123 +1,43 @@
-let alertasMercado = [];
-let notificacoesMercado = [];
+let usuarioMercado = null;
+
+let vagasMercado = [];
+let empresasMercado = [];
+let requisitosMercado = [];
+let habilidadesMercado = [];
 let tendenciasMercado = [];
 
-let usuarioAtualMercado = null;
-
-let alertaEmEdicaoId = null;
-let notificacaoEmEdicaoId = null;
-let tendenciaEmEdicaoId = null;
-
-let temporizadorMensagemMercado = null;
+let perfilMercado = null;
+let habilidadesPerfilMercado = [];
 
 
 document.addEventListener(
     "DOMContentLoaded",
-    iniciarPaginaMercado
+    iniciarMercado
 );
 
 
-async function iniciarPaginaMercado() {
-    registrarEventosMercado();
-
-    await carregarDadosMercado();
-}
-
-
-function registrarEventosMercado() {
-    document
-        .getElementById("botao-novo-alerta")
-        .addEventListener(
-            "click",
-            abrirNovoAlerta
-        );
-
-    document
-        .getElementById("botao-nova-notificacao")
-        .addEventListener(
-            "click",
-            abrirNovaNotificacao
-        );
-
-    document
-        .getElementById("botao-nova-tendencia")
-        .addEventListener(
-            "click",
-            abrirNovaTendencia
-        );
-
-    document
-        .getElementById("formulario-alerta")
-        .addEventListener(
-            "submit",
-            salvarAlerta
-        );
-
-    document
-        .getElementById("formulario-notificacao")
-        .addEventListener(
-            "submit",
-            salvarNotificacao
-        );
-
-    document
-        .getElementById("formulario-tendencia")
-        .addEventListener(
-            "submit",
-            salvarTendencia
-        );
-
-    document
-        .getElementById("lista-alertas")
-        .addEventListener(
-            "click",
-            tratarAcaoAlerta
-        );
-
-    document
-        .getElementById("lista-notificacoes")
-        .addEventListener(
-            "click",
-            tratarAcaoNotificacao
-        );
-
-    document
-        .getElementById("lista-tendencias")
-        .addEventListener(
-            "click",
-            tratarAcaoTendencia
-        );
-
-    document
-        .querySelectorAll("[data-fechar]")
-        .forEach(botao => {
-            botao.addEventListener(
-                "click",
-                () => {
-                    document
-                        .getElementById(
-                            botao.dataset.fechar
-                        )
-                        .close();
-                }
-            );
-        });
-}
-
-
-async function carregarDadosMercado() {
+async function iniciarMercado() {
     try {
         const [
             sessao,
-            alertas,
-            notificacoes,
+            vagas,
+            empresas,
+            requisitos,
+            habilidades,
             tendencias,
+            perfis,
+            perfisHabilidades,
         ] = await Promise.all([
             apiRequest("/autenticacao/sessao"),
-            apiRequest("/alertas-vaga"),
-            apiRequest("/notificacoes"),
+            apiRequest("/vagas"),
+            apiRequest("/empresas"),
+            apiRequest("/requisitos-vaga"),
+            apiRequest("/habilidades"),
             apiRequest("/tendencias-mercado"),
+            apiRequest("/perfis-profissionais"),
+            apiRequest("/perfil-habilidades"),
         ]);
+
 
         if (
             !sessao.autenticado ||
@@ -129,654 +49,466 @@ async function carregarDadosMercado() {
             return;
         }
 
-        usuarioAtualMercado =
+
+        usuarioMercado =
             sessao.usuario;
 
-        alertasMercado =
-            alertas.filter(
-                alerta =>
-                    alerta.usuarioId ===
-                    usuarioAtualMercado.id
-            );
+        vagasMercado =
+            vagas;
 
-        const idsAlertas =
-            new Set(
-                alertasMercado.map(
-                    alerta => alerta.id
-                )
-            );
+        empresasMercado =
+            empresas;
 
-        notificacoesMercado =
-            notificacoes.filter(
-                notificacao =>
-                    idsAlertas.has(
-                        notificacao.alertaVagaId
-                    )
-            );
+        requisitosMercado =
+            requisitos;
+
+        habilidadesMercado =
+            habilidades;
 
         tendenciasMercado =
             tendencias;
 
+
+        perfilMercado =
+            perfis.find(
+                perfil =>
+                    perfil.usuarioId ===
+                    usuarioMercado.id
+            ) || null;
+
+
+        if (perfilMercado) {
+            habilidadesPerfilMercado =
+                perfisHabilidades.filter(
+                    item =>
+                        item.perfilProfissionalId ===
+                        perfilMercado.id
+                );
+        }
+
+
         renderizarMercado();
 
     } catch (erro) {
-        console.error(erro);
-
-        mostrarMensagemMercado(
-            erro.message ||
-            "Não foi possível carregar os dados.",
-            "erro"
+        console.error(
+            "Erro ao carregar Mercado:",
+            erro
         );
+
+        mostrarErroMercado();
     }
 }
 
 
 function renderizarMercado() {
-    renderizarAlertas();
-    renderizarNotificacoes();
+    atualizarMetricas();
+    renderizarDemanda();
+    renderizarInsights();
     renderizarTendencias();
+    renderizarVagasRecentes();
 }
 
 
-function renderizarAlertas() {
-    const conteiner =
-        document.getElementById(
-            "lista-alertas"
+function obterVagasAtivas() {
+    return vagasMercado.filter(
+        vaga =>
+            vaga.status === "ativa"
+    );
+}
+
+
+function atualizarMetricas() {
+    const vagasAtivas =
+        obterVagasAtivas();
+
+
+    const idsVagasAtivas =
+        new Set(
+            vagasAtivas.map(
+                vaga => vaga.id
+            )
         );
 
-    if (!alertasMercado.length) {
+
+    const habilidadesDemandadas =
+        new Set(
+            requisitosMercado
+                .filter(
+                    requisito =>
+                        idsVagasAtivas.has(
+                            requisito.vagaId
+                        )
+                )
+                .map(
+                    requisito =>
+                        requisito.habilidadeId
+                )
+        );
+
+
+    const tecnologias =
+        new Set(
+            tendenciasMercado
+                .map(
+                    item =>
+                        item.tecnologia
+                            ?.trim()
+                            .toLowerCase()
+                )
+                .filter(Boolean)
+        );
+
+
+    document.getElementById(
+        "total-vagas"
+    ).textContent =
+        vagasAtivas.length;
+
+
+    document.getElementById(
+        "total-habilidades"
+    ).textContent =
+        habilidadesDemandadas.size;
+
+
+    document.getElementById(
+        "total-empresas"
+    ).textContent =
+        empresasMercado.length;
+
+
+    document.getElementById(
+        "total-tecnologias"
+    ).textContent =
+        tecnologias.size;
+}
+
+
+function renderizarDemanda() {
+    const conteiner =
+        document.getElementById(
+            "lista-habilidades-demanda"
+        );
+
+
+    const vagasAtivas =
+        obterVagasAtivas();
+
+
+    const idsVagasAtivas =
+        new Set(
+            vagasAtivas.map(
+                vaga => vaga.id
+            )
+        );
+
+
+    const contagem =
+        new Map();
+
+
+    requisitosMercado
+        .filter(
+            requisito =>
+                idsVagasAtivas.has(
+                    requisito.vagaId
+                )
+        )
+        .forEach(requisito => {
+
+            const atual =
+                contagem.get(
+                    requisito.habilidadeId
+                ) || 0;
+
+            contagem.set(
+                requisito.habilidadeId,
+                atual + 1
+            );
+        });
+
+
+    const ranking =
+        [...contagem.entries()]
+            .map(
+                ([habilidadeId, quantidade]) => {
+
+                    const habilidade =
+                        habilidadesMercado.find(
+                            item =>
+                                item.id ===
+                                habilidadeId
+                        );
+
+                    return {
+                        nome:
+                            habilidade?.nome ||
+                            "Habilidade",
+                        quantidade,
+                    };
+                }
+            )
+            .sort(
+                (a, b) =>
+                    b.quantidade -
+                    a.quantidade
+            )
+            .slice(0, 5);
+
+
+    if (!ranking.length) {
         conteiner.innerHTML = `
             <div class="estado-vazio">
-                Nenhum alerta cadastrado.
+                Ainda não existem requisitos suficientes
+                para calcular a demanda.
             </div>
         `;
 
         return;
     }
 
+
+    const maiorValor =
+        ranking[0].quantidade;
+
+
     conteiner.innerHTML =
-        alertasMercado
-            .map(alerta => `
-                <article class="item-gerenciamento">
+        ranking
+            .map(item => {
 
-                    <div class="topo-item">
-                        <div>
-                            <strong>
-                                ${escaparHtmlMercado(
-                                    alerta.palavraChave ||
-                                    "Alerta sem palavra-chave"
-                                )}
-                            </strong>
+                const largura =
+                    (
+                        item.quantidade /
+                        maiorValor
+                    ) * 100;
 
-                            <span>
-                                ${
-                                    alerta.ativo
-                                        ? "Ativo"
-                                        : "Inativo"
-                                }
-                            </span>
-                        </div>
-                    </div>
+                return `
+                    <div class="item-demanda">
 
-                    <div class="detalhes-item">
-                        <span>
+                        <span class="nome-demanda">
                             ${escaparHtmlMercado(
-                                alerta.cidade ||
-                                "Cidade não informada"
+                                item.nome
                             )}
                         </span>
 
-                        <span>
-                            ${formatarModalidadeMercado(
-                                alerta.modalidade
-                            )}
+                        <div class="barra-demanda">
+                            <span
+                                style="width: ${largura}%"
+                            ></span>
+                        </div>
+
+                        <span class="valor-demanda">
+                            ${item.quantidade}
                         </span>
 
-                        <span>
-                            ${formatarNivelMercado(
-                                alerta.nivelExperiencia
-                            )}
-                        </span>
                     </div>
-
-                    <div class="acoes-item">
-                        <button
-                            class="botao-pequeno"
-                            data-editar-alerta="${alerta.id}"
-                            type="button"
-                        >
-                            Editar
-                        </button>
-
-                        <button
-                            class="botao-pequeno perigo"
-                            data-excluir-alerta="${alerta.id}"
-                            type="button"
-                        >
-                            Excluir
-                        </button>
-                    </div>
-
-                </article>
-            `)
+                `;
+            })
             .join("");
 }
 
 
-function abrirNovoAlerta() {
-    alertaEmEdicaoId = null;
-
-    document.getElementById(
-        "formulario-alerta"
-    ).reset();
-
-    document.getElementById(
-        "alerta-ativo"
-    ).checked = true;
-
-    document.getElementById(
-        "titulo-modal-alerta"
-    ).textContent =
-        "Novo alerta";
-
-    document.getElementById(
-        "modal-alerta"
-    ).showModal();
-}
-
-
-function tratarAcaoAlerta(evento) {
-    const editar =
-        evento.target.closest(
-            "[data-editar-alerta]"
-        );
-
-    if (editar) {
-        editarAlerta(
-            Number(
-                editar.dataset.editarAlerta
-            )
-        );
-
-        return;
-    }
-
-    const excluir =
-        evento.target.closest(
-            "[data-excluir-alerta]"
-        );
-
-    if (excluir) {
-        excluirAlerta(
-            Number(
-                excluir.dataset.excluirAlerta
-            )
-        );
-    }
-}
-
-
-function editarAlerta(id) {
-    const alerta =
-        alertasMercado.find(
-            item => item.id === id
-        );
-
-    if (!alerta) {
-        return;
-    }
-
-    alertaEmEdicaoId = id;
-
-    document.getElementById(
-        "titulo-modal-alerta"
-    ).textContent =
-        "Editar alerta";
-
-    document.getElementById(
-        "alerta-palavra"
-    ).value =
-        alerta.palavraChave || "";
-
-    document.getElementById(
-        "alerta-cidade"
-    ).value =
-        alerta.cidade || "";
-
-    document.getElementById(
-        "alerta-modalidade"
-    ).value =
-        alerta.modalidade || "";
-
-    document.getElementById(
-        "alerta-nivel"
-    ).value =
-        alerta.nivelExperiencia || "";
-
-    document.getElementById(
-        "alerta-ativo"
-    ).checked =
-        alerta.ativo;
-
-    document.getElementById(
-        "modal-alerta"
-    ).showModal();
-}
-
-
-async function salvarAlerta(evento) {
-    evento.preventDefault();
-
-    const dados = {
-        palavraChave:
-            document.getElementById(
-                "alerta-palavra"
-            ).value.trim(),
-
-        cidade:
-            document.getElementById(
-                "alerta-cidade"
-            ).value.trim(),
-
-        ativo:
-            document.getElementById(
-                "alerta-ativo"
-            ).checked,
-    };
-
-    const modalidade =
-        document.getElementById(
-            "alerta-modalidade"
-        ).value;
-
-    const nivel =
-        document.getElementById(
-            "alerta-nivel"
-        ).value;
-
-    if (modalidade) {
-        dados.modalidade = modalidade;
-    }
-
-    if (nivel) {
-        dados.nivelExperiencia = nivel;
-    }
-
-    try {
-        if (alertaEmEdicaoId) {
-            await apiRequest(
-                `/alertas-vaga/${alertaEmEdicaoId}`,
-                {
-                    method: "PUT",
-                    body: JSON.stringify(dados),
-                }
-            );
-        } else {
-            dados.usuarioId =
-                usuarioAtualMercado.id;
-
-            await apiRequest(
-                "/alertas-vaga",
-                {
-                    method: "POST",
-                    body: JSON.stringify(dados),
-                }
-            );
-        }
-
-        document.getElementById(
-            "modal-alerta"
-        ).close();
-
-        mostrarMensagemMercado(
-            "Alerta salvo com sucesso.",
-            "sucesso"
-        );
-
-        await carregarDadosMercado();
-
-    } catch (erro) {
-        mostrarMensagemMercado(
-            erro.message,
-            "erro"
-        );
-    }
-}
-
-
-async function excluirAlerta(id) {
-    if (!confirm("Excluir este alerta?")) {
-        return;
-    }
-
-    try {
-        await apiRequest(
-            `/alertas-vaga/${id}`,
-            {
-                method: "DELETE",
-            }
-        );
-
-        mostrarMensagemMercado(
-            "Alerta excluído.",
-            "sucesso"
-        );
-
-        await carregarDadosMercado();
-
-    } catch (erro) {
-        mostrarMensagemMercado(
-            erro.message,
-            "erro"
-        );
-    }
-}
-
-
-function renderizarNotificacoes() {
+function renderizarInsights() {
     const conteiner =
         document.getElementById(
-            "lista-notificacoes"
+            "insights-perfil"
         );
 
-    if (!notificacoesMercado.length) {
+
+    const vagasAtivas =
+        obterVagasAtivas();
+
+
+    if (!perfilMercado) {
         conteiner.innerHTML = `
-            <div class="estado-vazio">
-                Nenhuma notificação cadastrada.
+            <div class="insight">
+
+                <span class="icone-insight">
+                    !
+                </span>
+
+                <div>
+                    <strong>
+                        Complete seu perfil profissional
+                    </strong>
+
+                    <p>
+                        Um perfil completo permitirá que o
+                        Market Skills ofereça análises mais
+                        personalizadas.
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="insight">
+
+                <span class="icone-insight">
+                    ↗
+                </span>
+
+                <div>
+                    <strong>
+                        ${vagasAtivas.length} vagas ativas
+                    </strong>
+
+                    <p>
+                        Explore as oportunidades disponíveis
+                        atualmente na plataforma.
+                    </p>
+                </div>
+
             </div>
         `;
 
         return;
     }
 
+
+    const habilidadesUsuario =
+        new Set(
+            habilidadesPerfilMercado.map(
+                item =>
+                    item.habilidadeId
+            )
+        );
+
+
+    const contagemDemanda =
+        new Map();
+
+
+    const idsVagasAtivas =
+        new Set(
+            vagasAtivas.map(
+                vaga => vaga.id
+            )
+        );
+
+
+    requisitosMercado
+        .filter(
+            requisito =>
+                idsVagasAtivas.has(
+                    requisito.vagaId
+                )
+        )
+        .forEach(requisito => {
+
+            const atual =
+                contagemDemanda.get(
+                    requisito.habilidadeId
+                ) || 0;
+
+            contagemDemanda.set(
+                requisito.habilidadeId,
+                atual + 1
+            );
+        });
+
+
+    const recomendacao =
+        [...contagemDemanda.entries()]
+            .filter(
+                ([habilidadeId]) =>
+                    !habilidadesUsuario.has(
+                        habilidadeId
+                    )
+            )
+            .sort(
+                (a, b) =>
+                    b[1] - a[1]
+            )[0];
+
+
+    let habilidadeRecomendada =
+        null;
+
+
+    if (recomendacao) {
+        habilidadeRecomendada =
+            habilidadesMercado.find(
+                habilidade =>
+                    habilidade.id ===
+                    recomendacao[0]
+            );
+    }
+
+
+    let html = `
+        <div class="insight">
+
+            <span class="icone-insight">
+                ✓
+            </span>
+
+            <div>
+                <strong>
+                    Perfil conectado ao mercado
+                </strong>
+
+                <p>
+                    Você possui
+                    ${habilidadesPerfilMercado.length}
+                    habilidade(s) registrada(s) no seu perfil.
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="insight">
+
+            <span class="icone-insight">
+                ↗
+            </span>
+
+            <div>
+                <strong>
+                    ${vagasAtivas.length}
+                    oportunidade(s) ativa(s)
+                </strong>
+
+                <p>
+                    Novas vagas podem ser comparadas com
+                    suas competências profissionais.
+                </p>
+            </div>
+
+        </div>
+    `;
+
+
+    if (habilidadeRecomendada) {
+        html += `
+            <div class="insight">
+
+                <span class="icone-insight">
+                    +
+                </span>
+
+                <div>
+                    <strong>
+                        Acompanhe:
+                        ${escaparHtmlMercado(
+                            habilidadeRecomendada.nome
+                        )}
+                    </strong>
+
+                    <p>
+                        Essa habilidade aparece entre as
+                        demandas atuais e ainda não está
+                        registrada no seu perfil.
+                    </p>
+                </div>
+
+            </div>
+        `;
+    }
+
+
     conteiner.innerHTML =
-        notificacoesMercado
-            .map(notificacao => `
-                <article class="item-gerenciamento">
-
-                    <div class="topo-item">
-                        <div>
-                            <strong>
-                                ${escaparHtmlMercado(
-                                    notificacao.titulo
-                                )}
-                            </strong>
-
-                            <span>
-                                ${
-                                    notificacao.lida
-                                        ? "Lida"
-                                        : "Não lida"
-                                }
-                            </span>
-                        </div>
-                    </div>
-
-                    <div class="detalhes-item">
-                        <span>
-                            ${escaparHtmlMercado(
-                                notificacao.mensagem
-                            )}
-                        </span>
-
-                        <span>
-                            ${formatarDataMercado(
-                                notificacao.dataEnvio
-                            )}
-                        </span>
-                    </div>
-
-                    <div class="acoes-item">
-                        <button
-                            class="botao-pequeno"
-                            data-editar-notificacao="${notificacao.id}"
-                            type="button"
-                        >
-                            Editar
-                        </button>
-
-                        <button
-                            class="botao-pequeno perigo"
-                            data-excluir-notificacao="${notificacao.id}"
-                            type="button"
-                        >
-                            Excluir
-                        </button>
-                    </div>
-
-                </article>
-            `)
-            .join("");
-}
-
-
-function preencherAlertasNotificacao() {
-    const seletor =
-        document.getElementById(
-            "notificacao-alerta"
-        );
-
-    seletor.innerHTML =
-        alertasMercado
-            .map(alerta => `
-                <option value="${alerta.id}">
-                    ${escaparHtmlMercado(
-                        alerta.palavraChave ||
-                        `Alerta ${alerta.id}`
-                    )}
-                </option>
-            `)
-            .join("");
-}
-
-
-function abrirNovaNotificacao() {
-    if (!alertasMercado.length) {
-        mostrarMensagemMercado(
-            "Crie primeiro um alerta de vaga.",
-            "erro"
-        );
-
-        return;
-    }
-
-    notificacaoEmEdicaoId = null;
-
-    document.getElementById(
-        "formulario-notificacao"
-    ).reset();
-
-    preencherAlertasNotificacao();
-
-    document.getElementById(
-        "notificacao-alerta"
-    ).disabled = false;
-
-    document.getElementById(
-        "titulo-modal-notificacao"
-    ).textContent =
-        "Nova notificação";
-
-    document.getElementById(
-        "modal-notificacao"
-    ).showModal();
-}
-
-
-function tratarAcaoNotificacao(evento) {
-    const editar =
-        evento.target.closest(
-            "[data-editar-notificacao]"
-        );
-
-    if (editar) {
-        editarNotificacao(
-            Number(
-                editar.dataset
-                    .editarNotificacao
-            )
-        );
-
-        return;
-    }
-
-    const excluir =
-        evento.target.closest(
-            "[data-excluir-notificacao]"
-        );
-
-    if (excluir) {
-        excluirNotificacao(
-            Number(
-                excluir.dataset
-                    .excluirNotificacao
-            )
-        );
-    }
-}
-
-
-function editarNotificacao(id) {
-    const notificacao =
-        notificacoesMercado.find(
-            item => item.id === id
-        );
-
-    if (!notificacao) {
-        return;
-    }
-
-    notificacaoEmEdicaoId = id;
-
-    preencherAlertasNotificacao();
-
-    document.getElementById(
-        "titulo-modal-notificacao"
-    ).textContent =
-        "Editar notificação";
-
-    document.getElementById(
-        "notificacao-alerta"
-    ).value =
-        notificacao.alertaVagaId;
-
-    document.getElementById(
-        "notificacao-alerta"
-    ).disabled = true;
-
-    document.getElementById(
-        "notificacao-titulo"
-    ).value =
-        notificacao.titulo;
-
-    document.getElementById(
-        "notificacao-mensagem"
-    ).value =
-        notificacao.mensagem;
-
-    document.getElementById(
-        "notificacao-lida"
-    ).checked =
-        notificacao.lida;
-
-    document.getElementById(
-        "modal-notificacao"
-    ).showModal();
-}
-
-
-async function salvarNotificacao(evento) {
-    evento.preventDefault();
-
-    const dados = {
-        titulo:
-            document.getElementById(
-                "notificacao-titulo"
-            ).value.trim(),
-
-        mensagem:
-            document.getElementById(
-                "notificacao-mensagem"
-            ).value.trim(),
-
-        lida:
-            document.getElementById(
-                "notificacao-lida"
-            ).checked,
-    };
-
-    try {
-        if (notificacaoEmEdicaoId) {
-            await apiRequest(
-                `/notificacoes/${notificacaoEmEdicaoId}`,
-                {
-                    method: "PUT",
-                    body: JSON.stringify(dados),
-                }
-            );
-        } else {
-            dados.alertaVagaId =
-                Number(
-                    document.getElementById(
-                        "notificacao-alerta"
-                    ).value
-                );
-
-            await apiRequest(
-                "/notificacoes",
-                {
-                    method: "POST",
-                    body: JSON.stringify(dados),
-                }
-            );
-        }
-
-        document.getElementById(
-            "modal-notificacao"
-        ).close();
-
-        mostrarMensagemMercado(
-            "Notificação salva com sucesso.",
-            "sucesso"
-        );
-
-        await carregarDadosMercado();
-
-    } catch (erro) {
-        mostrarMensagemMercado(
-            erro.message,
-            "erro"
-        );
-    }
-}
-
-
-async function excluirNotificacao(id) {
-    if (!confirm("Excluir esta notificação?")) {
-        return;
-    }
-
-    try {
-        await apiRequest(
-            `/notificacoes/${id}`,
-            {
-                method: "DELETE",
-            }
-        );
-
-        mostrarMensagemMercado(
-            "Notificação excluída.",
-            "sucesso"
-        );
-
-        await carregarDadosMercado();
-
-    } catch (erro) {
-        mostrarMensagemMercado(
-            erro.message,
-            "erro"
-        );
-    }
+        html;
 }
 
 
@@ -786,374 +518,219 @@ function renderizarTendencias() {
             "lista-tendencias"
         );
 
-    if (!tendenciasMercado.length) {
+
+    const tendencias =
+        [...tendenciasMercado]
+            .sort(
+                (a, b) =>
+                    Number(b.demanda || 0) -
+                    Number(a.demanda || 0)
+            )
+            .slice(0, 5);
+
+
+    if (!tendencias.length) {
         conteiner.innerHTML = `
             <div class="estado-vazio">
-                Nenhuma tendência cadastrada.
+                Nenhuma tendência de mercado
+                disponível no momento.
             </div>
         `;
 
         return;
     }
 
+
     conteiner.innerHTML =
-        tendenciasMercado
+        tendencias
             .map(tendencia => `
-                <article class="item-gerenciamento">
 
-                    <div class="topo-item">
-                        <div>
-                            <strong>
-                                ${escaparHtmlMercado(
-                                    tendencia.cargo
-                                )}
-                            </strong>
+                <div class="item-tendencia-mercado">
 
-                            <span>
-                                ${escaparHtmlMercado(
-                                    tendencia.tecnologia
-                                )}
-                            </span>
-                        </div>
-                    </div>
+                    <div>
 
-                    <div class="detalhes-item">
-                        <span>
-                            Demanda:
-                            ${
-                                tendencia.demanda ??
-                                "Não informada"
-                            }
-                        </span>
-
-                        <span>
-                            Salário médio:
-                            ${formatarMoedaMercado(
-                                tendencia.mediaSalarial
+                        <strong>
+                            ${escaparHtmlMercado(
+                                tendencia.tecnologia ||
+                                tendencia.cargo ||
+                                "Tendência"
                             )}
-                        </span>
+                        </strong>
 
-                        <span>
-                            Atualização:
-                            ${formatarDataMercado(
-                                tendencia.dataAtualizacao
+                        <small>
+                            ${escaparHtmlMercado(
+                                tendencia.cargo ||
+                                "Mercado de tecnologia"
                             )}
-                        </span>
+                        </small>
+
                     </div>
 
-                    <div class="acoes-item">
-                        <button
-                            class="botao-pequeno"
-                            data-editar-tendencia="${tendencia.id}"
-                            type="button"
-                        >
-                            Editar
-                        </button>
+                    <span class="demanda-tendencia">
+                        Demanda:
+                        ${formatarDemanda(
+                            tendencia.demanda
+                        )}
+                    </span>
 
-                        <button
-                            class="botao-pequeno perigo"
-                            data-excluir-tendencia="${tendencia.id}"
-                            type="button"
-                        >
-                            Excluir
-                        </button>
-                    </div>
+                </div>
 
-                </article>
             `)
             .join("");
 }
 
 
-function abrirNovaTendencia() {
-    tendenciaEmEdicaoId = null;
-
-    document.getElementById(
-        "formulario-tendencia"
-    ).reset();
-
-    document.getElementById(
-        "titulo-modal-tendencia"
-    ).textContent =
-        "Nova tendência";
-
-    document.getElementById(
-        "modal-tendencia"
-    ).showModal();
-}
-
-
-function tratarAcaoTendencia(evento) {
-    const editar =
-        evento.target.closest(
-            "[data-editar-tendencia]"
+function renderizarVagasRecentes() {
+    const conteiner =
+        document.getElementById(
+            "lista-vagas-recentes"
         );
 
-    if (editar) {
-        editarTendencia(
-            Number(
-                editar.dataset
-                    .editarTendencia
+
+    const vagas =
+        obterVagasAtivas()
+            .sort(
+                (a, b) =>
+                    new Date(
+                        b.dataPublicacao || 0
+                    ) -
+                    new Date(
+                        a.dataPublicacao || 0
+                    )
             )
-        );
+            .slice(0, 4);
+
+
+    if (!vagas.length) {
+        conteiner.innerHTML = `
+            <div class="estado-vazio">
+                Nenhuma vaga ativa disponível agora.
+            </div>
+        `;
 
         return;
     }
 
-    const excluir =
-        evento.target.closest(
-            "[data-excluir-tendencia]"
-        );
 
-    if (excluir) {
-        excluirTendencia(
-            Number(
-                excluir.dataset
-                    .excluirTendencia
-            )
-        );
-    }
+    conteiner.innerHTML =
+        vagas
+            .map(vaga => {
+
+                const empresa =
+                    empresasMercado.find(
+                        item =>
+                            item.id ===
+                            vaga.empresaId
+                    );
+
+
+                return `
+                    <div class="vaga-mercado">
+
+                        <div>
+
+                            <strong>
+                                ${escaparHtmlMercado(
+                                    vaga.titulo
+                                )}
+                            </strong>
+
+                            <small>
+                                ${escaparHtmlMercado(
+                                    empresa?.nome ||
+                                    "Empresa"
+                                )}
+                            </small>
+
+                        </div>
+
+                        <span class="tag-modalidade">
+                            ${formatarModalidade(
+                                vaga.modalidade
+                            )}
+                        </span>
+
+                    </div>
+                `;
+            })
+            .join("");
 }
 
 
-function editarTendencia(id) {
-    const tendencia =
-        tendenciasMercado.find(
-            item => item.id === id
-        );
-
-    if (!tendencia) {
-        return;
-    }
-
-    tendenciaEmEdicaoId = id;
-
-    document.getElementById(
-        "titulo-modal-tendencia"
-    ).textContent =
-        "Editar tendência";
-
-    document.getElementById(
-        "tendencia-cargo"
-    ).value =
-        tendencia.cargo;
-
-    document.getElementById(
-        "tendencia-tecnologia"
-    ).value =
-        tendencia.tecnologia;
-
-    document.getElementById(
-        "tendencia-demanda"
-    ).value =
-        tendencia.demanda ?? "";
-
-    document.getElementById(
-        "tendencia-salario"
-    ).value =
-        tendencia.mediaSalarial ?? "";
-
-    document.getElementById(
-        "modal-tendencia"
-    ).showModal();
-}
-
-
-async function salvarTendencia(evento) {
-    evento.preventDefault();
-
-    const dados = {
-        cargo:
-            document.getElementById(
-                "tendencia-cargo"
-            ).value.trim(),
-
-        tecnologia:
-            document.getElementById(
-                "tendencia-tecnologia"
-            ).value.trim(),
-    };
-
-    const demanda =
-        document.getElementById(
-            "tendencia-demanda"
-        ).value;
-
-    const salario =
-        document.getElementById(
-            "tendencia-salario"
-        ).value;
-
-    if (demanda !== "") {
-        dados.demanda =
-            Number(demanda);
-    }
-
-    if (salario !== "") {
-        dados.mediaSalarial =
-            Number(salario);
-    }
-
-    try {
-        if (tendenciaEmEdicaoId) {
-            await apiRequest(
-                `/tendencias-mercado/${tendenciaEmEdicaoId}`,
-                {
-                    method: "PUT",
-                    body: JSON.stringify(dados),
-                }
-            );
-        } else {
-            await apiRequest(
-                "/tendencias-mercado",
-                {
-                    method: "POST",
-                    body: JSON.stringify(dados),
-                }
-            );
-        }
-
-        document.getElementById(
-            "modal-tendencia"
-        ).close();
-
-        mostrarMensagemMercado(
-            "Tendência salva com sucesso.",
-            "sucesso"
-        );
-
-        await carregarDadosMercado();
-
-    } catch (erro) {
-        mostrarMensagemMercado(
-            erro.message,
-            "erro"
-        );
-    }
-}
-
-
-async function excluirTendencia(id) {
-    if (!confirm("Excluir esta tendência?")) {
-        return;
-    }
-
-    try {
-        await apiRequest(
-            `/tendencias-mercado/${id}`,
-            {
-                method: "DELETE",
-            }
-        );
-
-        mostrarMensagemMercado(
-            "Tendência excluída.",
-            "sucesso"
-        );
-
-        await carregarDadosMercado();
-
-    } catch (erro) {
-        mostrarMensagemMercado(
-            erro.message,
-            "erro"
-        );
-    }
-}
-
-
-function formatarModalidadeMercado(valor) {
-    const valores = {
+function formatarModalidade(valor) {
+    const modalidades = {
+        remoto: "Remoto",
         presencial: "Presencial",
         hibrido: "Híbrido",
-        remoto: "Remoto",
     };
 
-    return valores[valor] ||
-        "Modalidade não informada";
+    return modalidades[valor] ||
+        "Não informada";
 }
 
 
-function formatarNivelMercado(valor) {
-    const valores = {
-        iniciante: "Iniciante",
-        junior: "Júnior",
-        pleno: "Pleno",
-        senior: "Sênior",
-    };
+function formatarDemanda(valor) {
+    const numero =
+        Number(valor);
 
-    return valores[valor] ||
-        "Experiência não informada";
-}
-
-
-function formatarDataMercado(data) {
-    if (!data) {
-        return "Não informada";
+    if (!Number.isFinite(numero)) {
+        return "—";
     }
 
-    const partes = data.split("-");
-
-    return partes.length === 3
-        ? `${partes[2]}/${partes[1]}/${partes[0]}`
-        : data;
-}
-
-
-function formatarMoedaMercado(valor) {
-    if (
-        valor === null ||
-        valor === undefined
-    ) {
-        return "Não informado";
-    }
-
-    return Number(valor)
-        .toLocaleString(
-            "pt-BR",
-            {
-                style: "currency",
-                currency: "BRL",
-            }
-        );
+    return new Intl.NumberFormat(
+        "pt-BR",
+        {
+            maximumFractionDigits: 0,
+        }
+    ).format(numero);
 }
 
 
 function escaparHtmlMercado(valor) {
-    return String(valor ?? "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
+    return String(
+        valor ?? ""
+    )
+        .replaceAll(
+            "&",
+            "&amp;"
+        )
+        .replaceAll(
+            "<",
+            "&lt;"
+        )
+        .replaceAll(
+            ">",
+            "&gt;"
+        )
+        .replaceAll(
+            "\"",
+            "&quot;"
+        )
+        .replaceAll(
+            "'",
+            "&#039;"
+        );
 }
 
 
-function mostrarMensagemMercado(
-    texto,
-    tipo = ""
-) {
-    const elemento =
-        document.getElementById(
-            "mensagem"
-        );
+function mostrarErroMercado() {
+    [
+        "lista-habilidades-demanda",
+        "insights-perfil",
+        "lista-tendencias",
+        "lista-vagas-recentes",
+    ].forEach(id => {
 
-    clearTimeout(
-        temporizadorMensagemMercado
-    );
+        const elemento =
+            document.getElementById(id);
 
-    elemento.textContent = texto;
-
-    elemento.className =
-        `mensagem ${tipo}`;
-
-    temporizadorMensagemMercado =
-        setTimeout(
-            () => {
-                elemento.classList.add(
-                    "oculto"
-                );
-            },
-            3500
-        );
+        if (elemento) {
+            elemento.innerHTML = `
+                <div class="estado-vazio">
+                    Não foi possível carregar
+                    os dados agora.
+                </div>
+            `;
+        }
+    });
 }

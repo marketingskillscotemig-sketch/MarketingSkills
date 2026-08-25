@@ -29,636 +29,385 @@
 
 <body data-pagina-protegida="true">
 
-    <header class="cabecalho-site">
-        <div class="conteudo-navegacao">
+<header class="cabecalho-site">
 
-            <a
-                href="../index.html"
-                class="marca"
-            >
-                <span class="icone-marca">
-                    ▮▮▮
-                </span>
+    <div class="conteudo-centralizado conteudo-navegacao">
 
-                <span class="texto-marca">
-                    Market<span>Skills</span>
-                </span>
+        <a
+            href="../index.html"
+            class="marca"
+            aria-label="Market Skills"
+        >
+            <span class="icone-marca">
+                <span></span>
+                <span></span>
+                <span></span>
+            </span>
+
+            <span class="texto-marca">
+                Market<span>Skills</span>
+            </span>
+        </a>
+
+
+        <nav class="navegacao-principal">
+
+            <a href="../index.html">
+                Home
             </a>
 
+            <a href="./mercado.html">
+                Mercado
+            </a>
 
-            <nav class="navegacao-principal">
+            <a href="./vagas.html">
+                Vagas
+            </a>
 
-                <a href="../index.html">
-                    Home
-                </a>
+            <a
+                href="./estudos.html"
+                class="ativo"
+            >
+                Estudos
+            </a>
 
-                <a href="./mercado.html">
-                    Mercado
-                </a>
+            <a href="./perfil.html">
+                Perfil
+            </a>
 
-                <a href="./vagas.html">
-                    Vagas
-                </a>
-
-                <a
-                    href="./estudos.html"
-                    class="ativo"
-                >
-                    Estudos
-                </a>
-
-                <a href="./perfil.html">
-                    Perfil
-                </a>
-
-            </nav>
+        </nav>
 
 
-            <div class="acoes-navegacao">
-            </div>
+        <div class="acoes-navegacao"></div>
+
+    </div>
+
+</header>
+
+
+<main class="pagina-estudos">
+
+    <section class="hero-estudos">
+
+        <div class="conteudo-centralizado">
+
+            <span class="rotulo-estudos">
+                Desenvolvimento profissional
+            </span>
+
+            <h1>
+                Estude o que pode aproximar
+                você das oportunidades.
+            </h1>
+
+            <p>
+                O Market Skills compara as competências
+                do seu perfil com as exigências das vagas
+                e sugere conhecimentos para você desenvolver.
+            </p>
 
         </div>
-    </header>
+
+    </section>
 
 
-    <main class="pagina-estudos">
+    <section class="conteudo-centralizado">
 
-        <section class="cabecalho-pagina">
+        <div class="metricas-estudos">
 
-            <div>
-
-                <span class="rotulo-secao">
-                    PLANO DE DESENVOLVIMENTO
+            <article>
+                <span>
+                    Habilidades no seu perfil
                 </span>
 
-                <h1>
-                    Organize sua evolução profissional.
-                </h1>
-
-                <p>
-                    Crie planos de estudo e acompanhe
-                    cada etapa do seu aprendizado.
-                </p>
-
-            </div>
+                <strong id="total-habilidades-perfil">
+                    —
+                </strong>
+            </article>
 
 
-            <button
-                id="botao-novo-plano"
-                class="botao botao-principal"
-                type="button"
-            >
-                + Novo plano
-            </button>
+            <article>
+                <span>
+                    Recomendações para você
+                </span>
 
-        </section>
-
-
-        <section class="grade-estudos">
-
-            <aside class="painel-planos">
-
-                <div class="cabecalho-painel">
-
-                    <div>
-
-                        <span class="rotulo-secao">
-                            SEUS PLANOS
-                        </span>
-
-                        <h2>
-                            Planos de estudo
-                        </h2>
-
-                    </div>
+                <strong id="total-recomendacoes">
+                    —
+                </strong>
+            </article>
 
 
-                    <span
-                        id="quantidade-planos"
-                        class="contador"
-                    >
-                        0
+            <article>
+                <span>
+                    Planos em andamento
+                </span>
+
+                <strong id="total-planos-ativos">
+                    —
+                </strong>
+            </article>
+
+        </div>
+
+
+        <section class="secao-recomendacoes">
+
+            <div class="cabecalho-secao-estudos">
+
+                <div>
+
+                    <span class="rotulo-estudos">
+                        Recomendado para você
                     </span>
 
-                </div>
-
-
-                <div
-                    id="lista-planos"
-                    class="lista-planos"
-                >
-                </div>
-
-            </aside>
-
-
-            <section class="painel-detalhes">
-
-                <div
-                    id="estado-sem-plano"
-                    class="estado-vazio-principal"
-                >
-
-                    <div class="icone-vazio">
-                        &lt;/&gt;
-                    </div>
-
                     <h2>
-                        Nenhum plano selecionado
+                        O que vale a pena estudar agora
                     </h2>
 
                     <p>
-                        Crie um plano de estudos para
-                        começar a organizar seu aprendizado.
+                        As recomendações levam em conta as
+                        habilidades exigidas pelas vagas ativas
+                        que ainda não aparecem no seu perfil.
                     </p>
 
-                    <button
-                        id="botao-primeiro-plano"
-                        class="botao botao-principal"
-                        type="button"
-                    >
-                        Criar primeiro plano
-                    </button>
-
                 </div>
 
-
-                <div
-                    id="conteudo-plano"
-                    class="oculto"
-                >
-
-                    <div class="topo-detalhe">
-
-                        <div>
-
-                            <span class="rotulo-secao">
-                                PLANO SELECIONADO
-                            </span>
-
-                            <h2 id="titulo-plano">
-                            </h2>
-
-                            <p id="objetivo-plano">
-                            </p>
-
-                        </div>
+            </div>
 
 
-                        <div class="acoes-plano">
-
-                            <button
-                                id="botao-editar-plano"
-                                class="botao botao-contorno"
-                                type="button"
-                            >
-                                Editar
-                            </button>
-
-                            <button
-                                id="botao-excluir-plano"
-                                class="botao botao-perigo"
-                                type="button"
-                            >
-                                Excluir
-                            </button>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="metricas-plano">
-
-                        <article class="metrica">
-
-                            <span>
-                                Status
-                            </span>
-
-                            <strong id="status-plano">
-                            </strong>
-
-                        </article>
-
-
-                        <article class="metrica">
-
-                            <span>
-                                Conclusão
-                            </span>
-
-                            <strong id="percentual-plano">
-                            </strong>
-
-                        </article>
-
-
-                        <article class="metrica">
-
-                            <span>
-                                Início
-                            </span>
-
-                            <strong id="inicio-plano">
-                            </strong>
-
-                        </article>
-
-
-                        <article class="metrica">
-
-                            <span>
-                                Previsão
-                            </span>
-
-                            <strong id="fim-plano">
-                            </strong>
-
-                        </article>
-
-                    </div>
-
-
-                    <div class="barra-progresso">
-
-                        <div
-                            id="preenchimento-progresso"
-                            class="preenchimento-progresso"
-                        >
-                        </div>
-
-                    </div>
-
-
-                    <section class="secao-etapas">
-
-                        <div class="cabecalho-etapas">
-
-                            <div>
-
-                                <span class="rotulo-secao">
-                                    ROADMAP
-                                </span>
-
-                                <h2>
-                                    Etapas do plano
-                                </h2>
-
-                            </div>
-
-
-                            <button
-                                id="botao-nova-etapa"
-                                class="botao botao-principal"
-                                type="button"
-                            >
-                                + Nova etapa
-                            </button>
-
-                        </div>
-
-
-                        <div
-                            id="lista-etapas"
-                            class="lista-etapas"
-                        >
-                        </div>
-
-                    </section>
-
+            <div
+                id="lista-recomendacoes"
+                class="grade-recomendacoes"
+            >
+                <div class="estado-vazio">
+                    Analisando seu perfil e o mercado...
                 </div>
-
-            </section>
+            </div>
 
         </section>
 
-    </main>
 
+        <section class="secao-recursos-estudo">
 
-    <div
-        id="mensagem"
-        class="mensagem oculto"
-    >
-    </div>
-
-
-    <!-- MODAL PLANO -->
-
-    <dialog
-        id="modal-plano"
-        class="modal"
-    >
-
-        <form
-            id="formulario-plano"
-            class="formulario-modal"
-        >
-
-            <div class="cabecalho-modal">
+            <div class="cabecalho-secao-estudos">
 
                 <div>
 
-                    <span class="rotulo-secao">
-                        PLANO DE ESTUDO
+                    <span class="rotulo-estudos">
+                        Onde aprender
                     </span>
 
-                    <h2 id="titulo-modal-plano">
-                        Novo plano
+                    <h2>
+                        Recursos para continuar estudando
                     </h2>
+
+                    <p>
+                        Plataformas que podem ajudar você
+                        a complementar as trilhas sugeridas.
+                    </p>
 
                 </div>
 
-
-                <button
-                    type="button"
-                    class="botao-fechar"
-                    data-fechar="modal-plano"
-                >
-                    ×
-                </button>
-
             </div>
 
 
-            <label>
-                Título
+            <div class="grade-recursos-estudo">
 
-                <input
-                    id="plano-titulo"
-                    type="text"
-                    maxlength="180"
-                    required
+                <a
+                    class="recurso-estudo"
+                    href="https://www.freecodecamp.org/"
+                    target="_blank"
+                    rel="noopener noreferrer"
                 >
-            </label>
+                    <span class="icone-recurso">
+                        &lt;/&gt;
+                    </span>
+
+                    <div>
+                        <strong>
+                            freeCodeCamp
+                        </strong>
+
+                        <p>
+                            Cursos e projetos gratuitos
+                            de desenvolvimento.
+                        </p>
+
+                        <span>
+                            Acessar plataforma →
+                        </span>
+                    </div>
+                </a>
 
 
-            <label>
-                Objetivo
+                <a
+                    class="recurso-estudo"
+                    href="https://www.cursoemvideo.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    <span class="icone-recurso">
+                        ▶
+                    </span>
 
-                <textarea
-                    id="plano-objetivo"
-                    maxlength="500"
-                    rows="3"
-                ></textarea>
-            </label>
+                    <div>
+                        <strong>
+                            Curso em Vídeo
+                        </strong>
+
+                        <p>
+                            Conteúdos gratuitos em português
+                            para diversas tecnologias.
+                        </p>
+
+                        <span>
+                            Acessar plataforma →
+                        </span>
+                    </div>
+                </a>
 
 
-            <div class="duas-colunas">
+                <a
+                    class="recurso-estudo"
+                    href="https://www.w3schools.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    <span class="icone-recurso">
+                        W3
+                    </span>
 
-                <label>
-                    Data de início
+                    <div>
+                        <strong>
+                            W3Schools
+                        </strong>
 
-                    <input
-                        id="plano-data-inicio"
-                        type="date"
-                    >
-                </label>
+                        <p>
+                            Tutoriais, referências e exercícios
+                            práticos de programação.
+                        </p>
+
+                        <span>
+                            Acessar plataforma →
+                        </span>
+                    </div>
+                </a>
 
 
-                <label>
-                    Data prevista de conclusão
+                <a
+                    class="recurso-estudo"
+                    href="https://roadmap.sh/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    <span class="icone-recurso">
+                        ↗
+                    </span>
 
-                    <input
-                        id="plano-data-fim"
-                        type="date"
-                    >
-                </label>
+                    <div>
+                        <strong>
+                            roadmap.sh
+                        </strong>
+
+                        <p>
+                            Roadmaps para diferentes áreas
+                            e carreiras em tecnologia.
+                        </p>
+
+                        <span>
+                            Acessar plataforma →
+                        </span>
+                    </div>
+                </a>
 
             </div>
 
-
-            <div class="duas-colunas">
-
-                <label>
-                    Percentual de conclusão
-
-                    <input
-                        id="plano-percentual"
-                        type="number"
-                        min="0"
-                        max="100"
-                        step="1"
-                        value="0"
-                    >
-                </label>
+        </section>
 
 
-                <label>
-                    Status
+        <section class="secao-meus-planos">
 
-                    <select id="plano-status">
-
-                        <option value="nao_iniciado">
-                            Não iniciado
-                        </option>
-
-                        <option value="em_andamento">
-                            Em andamento
-                        </option>
-
-                        <option value="pausado">
-                            Pausado
-                        </option>
-
-                        <option value="concluido">
-                            Concluído
-                        </option>
-
-                    </select>
-
-                </label>
-
-            </div>
-
-
-            <div class="acoes-modal">
-
-                <button
-                    type="button"
-                    class="botao botao-contorno"
-                    data-fechar="modal-plano"
-                >
-                    Cancelar
-                </button>
-
-                <button
-                    type="submit"
-                    class="botao botao-principal"
-                >
-                    Salvar plano
-                </button>
-
-            </div>
-
-        </form>
-
-    </dialog>
-
-
-    <!-- MODAL ETAPA -->
-
-    <dialog
-        id="modal-etapa"
-        class="modal"
-    >
-
-        <form
-            id="formulario-etapa"
-            class="formulario-modal"
-        >
-
-            <div class="cabecalho-modal">
+            <div class="cabecalho-secao-estudos">
 
                 <div>
 
-                    <span class="rotulo-secao">
-                        ETAPA
+                    <span class="rotulo-estudos">
+                        Sua evolução
                     </span>
 
-                    <h2 id="titulo-modal-etapa">
-                        Nova etapa
+                    <h2>
+                        Meus planos de estudo
                     </h2>
+
+                    <p>
+                        Acompanhe as trilhas que você decidiu
+                        desenvolver e conclua cada etapa.
+                    </p>
 
                 </div>
 
-
-                <button
-                    type="button"
-                    class="botao-fechar"
-                    data-fechar="modal-etapa"
-                >
-                    ×
-                </button>
-
             </div>
 
 
-            <label>
-                Título
+            <div class="estrutura-planos">
 
-                <input
-                    id="etapa-titulo"
-                    type="text"
-                    maxlength="180"
-                    required
+                <aside class="painel-lista-planos">
+
+                    <div
+                        id="lista-planos"
+                        class="lista-planos"
+                    >
+                        <div class="estado-vazio">
+                            Carregando seus planos...
+                        </div>
+                    </div>
+
+                </aside>
+
+
+                <section
+                    id="detalhe-plano"
+                    class="detalhe-plano"
                 >
-            </label>
 
+                    <div class="detalhe-vazio">
 
-            <label>
-                Descrição
+                        <div class="icone-detalhe">
+                            ✓
+                        </div>
 
-                <textarea
-                    id="etapa-descricao"
-                    maxlength="500"
-                    rows="3"
-                ></textarea>
-            </label>
+                        <h2>
+                            Nenhum plano selecionado
+                        </h2>
 
+                        <p>
+                            Escolha uma recomendação acima para
+                            gerar uma trilha ou selecione um
+                            plano existente.
+                        </p>
 
-            <div class="duas-colunas">
+                    </div>
 
-                <label>
-                    Ordem
-
-                    <input
-                        id="etapa-ordem"
-                        type="number"
-                        min="1"
-                        step="1"
-                        required
-                    >
-                </label>
-
-
-                <label>
-                    Carga horária estimada
-
-                    <input
-                        id="etapa-carga-horaria"
-                        type="number"
-                        min="1"
-                        step="1"
-                    >
-                </label>
+                </section>
 
             </div>
 
+        </section>
 
-            <div class="duas-colunas">
+    </section>
 
-                <label>
-                    Início previsto
-
-                    <input
-                        id="etapa-data-inicio"
-                        type="date"
-                    >
-                </label>
+</main>
 
 
-                <label>
-                    Data de conclusão
-
-                    <input
-                        id="etapa-data-conclusao"
-                        type="date"
-                    >
-                </label>
-
-            </div>
+<div
+    id="mensagem"
+    class="mensagem oculto"
+></div>
 
 
-            <label>
-                Status
-
-                <select id="etapa-status">
-
-                    <option value="pendente">
-                        Pendente
-                    </option>
-
-                    <option value="em_andamento">
-                        Em andamento
-                    </option>
-
-                    <option value="concluida">
-                        Concluída
-                    </option>
-
-                </select>
-
-            </label>
-
-
-            <div class="acoes-modal">
-
-                <button
-                    type="button"
-                    class="botao botao-contorno"
-                    data-fechar="modal-etapa"
-                >
-                    Cancelar
-                </button>
-
-                <button
-                    type="submit"
-                    class="botao botao-principal"
-                >
-                    Salvar etapa
-                </button>
-
-            </div>
-
-        </form>
-
-    </dialog>
-
-
-    <script src="../assets/js/api.js"></script>
-    <script src="../assets/js/sessao.js"></script>
-    <script src="../assets/js/estudos.js"></script>
+<script src="../assets/js/api.js"></script>
+<script src="../assets/js/sessao.js"></script>
+<script src="../assets/js/estudos.js"></script>
 
 </body>
 

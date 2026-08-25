@@ -1,238 +1,622 @@
-.pagina-mercado {
-    width: min(1180px, calc(100% - 40px));
-    margin: 0 auto;
-    padding: 65px 0 90px;
+/* =========================================================
+   MERCADO
+   ========================================================= */
+
+body {
+    background:
+        radial-gradient(
+            circle at 70% 5%,
+            rgba(55, 67, 190, 0.1),
+            transparent 30%
+        ),
+        var(--fundo);
 }
 
-.cabecalho-pagina {
-    margin-bottom: 30px;
+
+/* CABEÇALHO */
+
+.cabecalho-site {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+
+    background:
+        rgba(3, 7, 22, 0.78);
+
+    border-bottom:
+        1px solid rgba(255, 255, 255, 0.07);
+
+    backdrop-filter: blur(22px);
 }
 
-.rotulo-secao {
-    color: #6ea8ff;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 1.5px;
-}
+.conteudo-navegacao {
+    min-height: 82px;
 
-.cabecalho-pagina h1 {
-    max-width: 720px;
-    margin: 10px 0;
-    font-size: 42px;
-}
-
-.cabecalho-pagina p {
-    color: #91a0b8;
-}
-
-.grade-modulos {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 18px;
-}
-
-.painel {
-    padding: 22px;
-    border: 1px solid #1f3152;
-    border-radius: 16px;
-    background: #071126;
-}
-
-.painel-largo {
-    grid-column: 1 / -1;
-}
-
-.cabecalho-painel {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 15px;
-    margin-bottom: 20px;
+
+    gap: 28px;
 }
 
-.cabecalho-painel h2 {
-    margin: 5px 0 0;
-}
-
-.lista-itens,
-.lista-tendencias {
-    display: grid;
-    gap: 10px;
-}
-
-.item-gerenciamento {
-    padding: 15px;
-    border: 1px solid #203252;
-    border-radius: 12px;
-    background: #0a162d;
-}
-
-.topo-item {
+.navegacao-principal {
     display: flex;
-    justify-content: space-between;
-    gap: 15px;
-}
-
-.topo-item strong {
-    display: block;
-    margin-bottom: 5px;
-}
-
-.topo-item span,
-.detalhes-item {
-    color: #8997ae;
-    font-size: 12px;
-}
-
-.detalhes-item {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 10px;
-}
-
-.acoes-item {
-    display: flex;
-    gap: 8px;
-    margin-top: 13px;
-}
-
-.botao-pequeno {
-    padding: 8px 11px;
-    border: 1px solid #29426d;
-    border-radius: 8px;
-    background: #0e1b34;
-    color: #dce7fa;
-    cursor: pointer;
-}
-
-.botao-pequeno.perigo {
-    border-color: #633049;
-    color: #ff93b4;
-}
-
-.estado-vazio {
-    padding: 30px 15px;
-    color: #8492a9;
-    text-align: center;
-}
-
-.modal {
-    width: min(600px, calc(100% - 30px));
-    padding: 0;
-    border: 1px solid #294168;
-    border-radius: 16px;
-    background: #09142a;
-    color: white;
-}
-
-.modal::backdrop {
-    background: rgba(0, 0, 0, 0.72);
-}
-
-.formulario-modal {
-    display: grid;
-    gap: 17px;
-    padding: 25px;
-}
-
-.cabecalho-modal {
-    display: flex;
-    justify-content: space-between;
     align-items: center;
+
+    gap: 6px;
+
+    padding: 5px;
+
+    background:
+        rgba(255, 255, 255, 0.035);
+
+    border:
+        1px solid rgba(255, 255, 255, 0.055);
+
+    border-radius: 14px;
 }
 
-.botao-fechar {
-    border: 0;
-    background: transparent;
-    color: #8997ad;
-    font-size: 28px;
-    cursor: pointer;
-}
+.navegacao-principal a {
+    position: relative;
 
-.formulario-modal label {
-    display: grid;
-    gap: 7px;
-    color: #b5c0d1;
+    padding: 9px 15px;
+
+    color: #9da8c5;
+
     font-size: 13px;
+    font-weight: 600;
+
+    border-radius: 10px;
+
+    text-decoration: none;
+
+    transition: 0.2s ease;
 }
 
-.formulario-modal input,
-.formulario-modal select,
-.formulario-modal textarea {
-    width: 100%;
-    padding: 12px 13px;
-    border: 1px solid #243958;
-    border-radius: 9px;
-    background: #071125;
-    color: white;
-    font: inherit;
+.navegacao-principal a:hover {
+    color: #ffffff;
+
+    background:
+        rgba(255, 255, 255, 0.055);
 }
 
-.duas-colunas {
+.navegacao-principal a.ativo {
+    color: #ffffff;
+
+    background:
+        rgba(33, 118, 255, 0.12);
+
+    box-shadow:
+        inset 0 0 0 1px
+        rgba(73, 161, 255, 0.12);
+}
+
+.navegacao-principal
+a.ativo::after {
+    display: none;
+}
+
+
+/* PÁGINA */
+
+.pagina-mercado {
+    padding-bottom: 90px;
+}
+
+
+/* HERO */
+
+.hero-mercado {
+    padding:
+        80px 0 50px;
+}
+
+.hero-conteudo {
+    max-width: 750px;
+}
+
+.rotulo-mercado,
+.rotulo-painel {
+    display: block;
+
+    color: #68adff;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+}
+
+.hero-conteudo h1 {
+    max-width: 700px;
+
+    margin-top: 14px;
+
+    color: #ffffff;
+
+    font-size:
+        clamp(38px, 5vw, 58px);
+
+    line-height: 1.06;
+
+    letter-spacing: -2px;
+}
+
+.hero-conteudo p {
+    max-width: 650px;
+
+    margin-top: 20px;
+
+    color: #939eb8;
+
+    font-size: 15px;
+
+    line-height: 1.75;
+}
+
+.status-mercado {
+    margin-top: 25px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    color: #7d89a6;
+
+    font-size: 10px;
+}
+
+.status-mercado > span {
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: #36d399;
+
+    box-shadow:
+        0 0 14px
+        rgba(54, 211, 153, 0.45);
+}
+
+
+/* MÉTRICAS */
+
+.metricas-mercado {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 12px;
+
+    margin-bottom: 18px;
+}
+
+.metrica-mercado {
+    min-height: 145px;
+
+    padding: 21px;
+
+    display: flex;
+    flex-direction: column;
+
+    border:
+        1px solid rgba(255, 255, 255, 0.065);
+
+    border-radius: 17px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(12, 18, 40, 0.78),
+            rgba(7, 12, 29, 0.78)
+        );
+}
+
+.metrica-mercado > span {
+    color: #7e89a6;
+
+    font-size: 10px;
+}
+
+.metrica-mercado strong {
+    margin:
+        9px 0 4px;
+
+    color: #ffffff;
+
+    font-size: 30px;
+
+    letter-spacing: -1px;
+}
+
+.metrica-mercado small {
+    margin-top: auto;
+
+    color: #606c87;
+
+    font-size: 9px;
+}
+
+
+/* GRADE */
+
+.grade-inteligencia {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
     gap: 14px;
 }
 
-.campo-checkbox {
-    display: flex !important;
-    align-items: center;
-    gap: 10px;
+.painel-mercado {
+    min-height: 330px;
+
+    padding: 24px;
+
+    border:
+        1px solid rgba(255, 255, 255, 0.065);
+
+    border-radius: 18px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(11, 17, 36, 0.86),
+            rgba(6, 11, 27, 0.88)
+        );
 }
 
-.campo-checkbox input {
-    width: auto;
-}
-
-.acoes-modal {
+.cabecalho-painel-mercado {
     display: flex;
-    justify-content: flex-end;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-bottom: 25px;
+}
+
+.cabecalho-painel-mercado h2 {
+    margin-top: 6px;
+
+    color: #ffffff;
+
+    font-size: 19px;
+
+    letter-spacing: -0.4px;
+}
+
+.cabecalho-painel-mercado a {
+    color: #83a6ff;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    text-decoration: none;
+}
+
+.cabecalho-painel-mercado a:hover {
+    color: #ffffff;
+}
+
+
+/* DEMANDA */
+
+.lista-demanda {
+    display: flex;
+    flex-direction: column;
+
+    gap: 16px;
+}
+
+.item-demanda {
+    display: grid;
+
+    grid-template-columns:
+        110px 1fr 35px;
+
+    align-items: center;
+
+    gap: 12px;
+}
+
+.nome-demanda {
+    overflow: hidden;
+
+    color: #dce2f1;
+
+    font-size: 11px;
+    font-weight: 600;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.barra-demanda {
+    height: 6px;
+
+    overflow: hidden;
+
+    border-radius: 999px;
+
+    background:
+        rgba(255, 255, 255, 0.055);
+}
+
+.barra-demanda span {
+    display: block;
+
+    height: 100%;
+
+    border-radius: inherit;
+
+    background:
+        linear-gradient(
+            90deg,
+            #2176ff,
+            #9840ff
+        );
+}
+
+.valor-demanda {
+    color: #65718e;
+
+    font-size: 9px;
+
+    text-align: right;
+}
+
+
+/* INSIGHTS */
+
+.lista-insights {
+    display: flex;
+    flex-direction: column;
+
     gap: 10px;
 }
 
-.mensagem {
-    position: fixed;
-    right: 25px;
-    bottom: 25px;
-    z-index: 100;
-    max-width: 380px;
-    padding: 14px 18px;
-    border: 1px solid #2c4c7d;
-    border-radius: 10px;
-    background: #0a1830;
-    color: white;
+.insight {
+    padding: 14px;
+
+    display: flex;
+    align-items: flex-start;
+
+    gap: 12px;
+
+    border:
+        1px solid rgba(255, 255, 255, 0.055);
+
+    border-radius: 13px;
+
+    background:
+        rgba(255, 255, 255, 0.022);
 }
 
-.mensagem.sucesso {
-    border-color: #167c5c;
+.icone-insight {
+    width: 32px;
+    height: 32px;
+
+    display: grid;
+    place-items: center;
+
+    flex-shrink: 0;
+
+    border-radius: 9px;
+
+    background:
+        rgba(33, 118, 255, 0.08);
+
+    color: #72b2ff;
+
+    font-size: 12px;
 }
 
-.mensagem.erro {
-    border-color: #9a3651;
+.insight strong {
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: #edf1fb;
+
+    font-size: 11px;
 }
 
-.oculto {
-    display: none !important;
+.insight p {
+    color: #737f9b;
+
+    font-size: 9px;
+
+    line-height: 1.55;
 }
+
+
+/* TENDÊNCIAS */
+
+.lista-tendencias-mercado {
+    display: flex;
+    flex-direction: column;
+
+    gap: 10px;
+}
+
+.item-tendencia-mercado {
+    padding: 13px 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    border-bottom:
+        1px solid rgba(255, 255, 255, 0.05);
+}
+
+.item-tendencia-mercado:last-child {
+    border-bottom: 0;
+}
+
+.item-tendencia-mercado strong {
+    display: block;
+
+    color: #eef2fc;
+
+    font-size: 11px;
+}
+
+.item-tendencia-mercado small {
+    display: block;
+
+    margin-top: 3px;
+
+    color: #687490;
+
+    font-size: 8px;
+}
+
+.demanda-tendencia {
+    color: #69adff;
+
+    font-size: 10px;
+
+    white-space: nowrap;
+}
+
+
+/* VAGAS */
+
+.lista-vagas-mercado {
+    display: flex;
+    flex-direction: column;
+}
+
+.vaga-mercado {
+    padding: 13px 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    border-bottom:
+        1px solid rgba(255, 255, 255, 0.05);
+}
+
+.vaga-mercado:last-child {
+    border-bottom: 0;
+}
+
+.vaga-mercado strong {
+    display: block;
+
+    color: #eef2fc;
+
+    font-size: 11px;
+}
+
+.vaga-mercado small {
+    display: block;
+
+    margin-top: 4px;
+
+    color: #6e7994;
+
+    font-size: 8px;
+}
+
+.tag-modalidade {
+    padding: 5px 8px;
+
+    border:
+        1px solid rgba(255, 255, 255, 0.06);
+
+    border-radius: 7px;
+
+    color: #8793af;
+
+    font-size: 8px;
+
+    white-space: nowrap;
+}
+
+
+/* VAZIO */
+
+.estado-vazio {
+    min-height: 170px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #66718c;
+
+    font-size: 10px;
+
+    text-align: center;
+}
+
+
+/* RESPONSIVIDADE */
+
+@media (max-width: 1000px) {
+
+    .metricas-mercado {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+}
+
 
 @media (max-width: 850px) {
-    .grade-modulos {
+
+    .conteudo-navegacao {
+        padding:
+            15px 0;
+
+        flex-wrap: wrap;
+    }
+
+    .navegacao-principal {
+        order: 3;
+
+        width: 100%;
+
+        overflow-x: auto;
+    }
+
+    .grade-inteligencia {
         grid-template-columns: 1fr;
     }
 
-    .painel-largo {
-        grid-column: auto;
-    }
 }
 
+
 @media (max-width: 600px) {
-    .duas-colunas {
+
+    .metricas-mercado {
         grid-template-columns: 1fr;
     }
 
-    .cabecalho-painel {
-        align-items: stretch;
-        flex-direction: column;
+    .hero-mercado {
+        padding-top: 55px;
     }
+
+    .painel-mercado {
+        padding: 18px;
+    }
+
+    .item-demanda {
+        grid-template-columns:
+            85px 1fr 25px;
+    }
+
 }

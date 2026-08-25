@@ -1,118 +1,125 @@
-let planos = [];
-let etapas = [];
+let usuarioEstudos = null;
 
-let usuarioAtualEstudos = null;
+let vagasEstudos = [];
+let requisitosEstudos = [];
+let habilidadesEstudos = [];
+
+let perfilEstudos = null;
+let habilidadesPerfilEstudos = [];
+
+let planosEstudos = [];
+let etapasEstudos = [];
+
+let recomendacoesEstudos = [];
 
 let planoSelecionadoId = null;
-let planoEmEdicaoId = null;
-let etapaEmEdicaoId = null;
 
 let temporizadorMensagem = null;
 
 
 document.addEventListener(
     "DOMContentLoaded",
-    iniciarPaginaEstudos
+    iniciarEstudos
 );
 
 
-async function iniciarPaginaEstudos() {
+async function iniciarEstudos() {
     registrarEventos();
 
-    await carregarDados();
+    await carregarEstudos();
 }
 
 
 function registrarEventos() {
-    document
-        .getElementById("botao-novo-plano")
-        .addEventListener(
-            "click",
-            abrirNovoPlano
-        );
+    document.getElementById(
+        "lista-recomendacoes"
+    ).addEventListener(
+        "click",
+        evento => {
 
-    document
-        .getElementById("botao-primeiro-plano")
-        .addEventListener(
-            "click",
-            abrirNovoPlano
-        );
+            const botao =
+                evento.target.closest(
+                    "[data-criar-trilha]"
+                );
 
-    document
-        .getElementById("botao-editar-plano")
-        .addEventListener(
-            "click",
-            editarPlanoSelecionado
-        );
+            if (!botao) {
+                return;
+            }
 
-    document
-        .getElementById("botao-excluir-plano")
-        .addEventListener(
-            "click",
-            excluirPlanoSelecionado
-        );
-
-    document
-        .getElementById("botao-nova-etapa")
-        .addEventListener(
-            "click",
-            abrirNovaEtapa
-        );
-
-    document
-        .getElementById("formulario-plano")
-        .addEventListener(
-            "submit",
-            salvarPlano
-        );
-
-    document
-        .getElementById("formulario-etapa")
-        .addEventListener(
-            "submit",
-            salvarEtapa
-        );
-
-    document
-        .getElementById("lista-planos")
-        .addEventListener(
-            "click",
-            selecionarPlano
-        );
-
-    document
-        .getElementById("lista-etapas")
-        .addEventListener(
-            "click",
-            tratarAcaoEtapa
-        );
-
-    document
-        .querySelectorAll("[data-fechar]")
-        .forEach(botao => {
-            botao.addEventListener(
-                "click",
-                () => {
-                    document
-                        .getElementById(
-                            botao.dataset.fechar
-                        )
-                        .close();
-                }
+            criarTrilhaRecomendada(
+                Number(
+                    botao.dataset.criarTrilha
+                ),
+                botao
             );
-        });
+        }
+    );
+
+
+    document.getElementById(
+        "lista-planos"
+    ).addEventListener(
+        "click",
+        evento => {
+
+            const botao =
+                evento.target.closest(
+                    "[data-plano-id]"
+                );
+
+            if (!botao) {
+                return;
+            }
+
+            planoSelecionadoId =
+                Number(
+                    botao.dataset.planoId
+                );
+
+            renderizarPlanos();
+            renderizarDetalhePlano();
+        }
+    );
+
+
+    document.getElementById(
+        "detalhe-plano"
+    ).addEventListener(
+        "click",
+        tratarAcaoDetalhe
+    );
 }
 
 
-async function carregarDados() {
+async function carregarEstudos() {
     try {
         const [
-            dadosSessao,
-            dadosPlanos,
-            dadosEtapas,
+            sessao,
+            vagas,
+            requisitos,
+            habilidades,
+            perfis,
+            perfisHabilidades,
+            planos,
+            etapas,
         ] = await Promise.all([
             apiRequest(
                 "/autenticacao/sessao"
+            ),
+            apiRequest(
+                "/vagas"
+            ),
+            apiRequest(
+                "/requisitos-vaga"
+            ),
+            apiRequest(
+                "/habilidades"
+            ),
+            apiRequest(
+                "/perfis-profissionais"
+            ),
+            apiRequest(
+                "/perfil-habilidades"
             ),
             apiRequest(
                 "/planos-estudo"
@@ -122,9 +129,10 @@ async function carregarDados() {
             ),
         ]);
 
+
         if (
-            !dadosSessao.autenticado ||
-            !dadosSessao.usuario
+            !sessao.autenticado ||
+            !sessao.usuario
         ) {
             window.location.href =
                 "./login.html";
@@ -132,40 +140,98 @@ async function carregarDados() {
             return;
         }
 
-        usuarioAtualEstudos =
-            dadosSessao.usuario;
 
-        planos =
-            dadosPlanos.filter(
+        usuarioEstudos =
+            sessao.usuario;
+
+        vagasEstudos =
+            vagas;
+
+        requisitosEstudos =
+            requisitos;
+
+        habilidadesEstudos =
+            habilidades;
+
+
+        perfilEstudos =
+            perfis.find(
+                perfil =>
+                    perfil.usuarioId ===
+                    usuarioEstudos.id
+            ) || null;
+
+
+        habilidadesPerfilEstudos =
+            perfilEstudos
+                ? perfisHabilidades.filter(
+                    item =>
+                        item.perfilProfissionalId ===
+                        perfilEstudos.id
+                )
+                : [];
+
+
+        planosEstudos =
+            planos.filter(
                 plano =>
                     plano.usuarioId ===
-                    usuarioAtualEstudos.id
+                    usuarioEstudos.id
             );
+
 
         const idsPlanos =
             new Set(
-                planos.map(
-                    plano => plano.id
+                planosEstudos.map(
+                    plano =>
+                        plano.id
                 )
             );
 
-        etapas =
-            dadosEtapas.filter(
+
+        etapasEstudos =
+            etapas.filter(
                 etapa =>
                     idsPlanos.has(
                         etapa.planoEstudoId
                     )
             );
 
-        definirPlanoSelecionado();
 
-        renderizarPagina();
+        calcularRecomendacoes();
+
+
+        if (
+            planoSelecionadoId &&
+            !planosEstudos.some(
+                plano =>
+                    plano.id ===
+                    planoSelecionadoId
+            )
+        ) {
+            planoSelecionadoId =
+                null;
+        }
+
+
+        if (
+            !planoSelecionadoId &&
+            planosEstudos.length
+        ) {
+            planoSelecionadoId =
+                planosEstudos[0].id;
+        }
+
+
+        renderizarTudo();
 
     } catch (erro) {
-        console.error(erro);
+        console.error(
+            "Erro ao carregar estudos:",
+            erro
+        );
 
         mostrarMensagem(
-            erro.message ||
             "Não foi possível carregar os estudos.",
             "erro"
         );
@@ -173,809 +239,827 @@ async function carregarDados() {
 }
 
 
-function definirPlanoSelecionado() {
-    if (
-        planoSelecionadoId &&
-        planos.some(
-            plano =>
-                plano.id ===
-                planoSelecionadoId
+function renderizarTudo() {
+    atualizarMetricas();
+    renderizarRecomendacoes();
+    renderizarPlanos();
+    renderizarDetalhePlano();
+}
+
+
+function obterVagasAtivas() {
+    return vagasEstudos.filter(
+        vaga =>
+            vaga.status === "ativa"
+    );
+}
+
+
+function obterHabilidade(id) {
+    return habilidadesEstudos.find(
+        habilidade =>
+            habilidade.id === id
+    ) || null;
+}
+
+
+function calcularRecomendacoes() {
+    const idsHabilidadesUsuario =
+        new Set(
+            habilidadesPerfilEstudos.map(
+                item =>
+                    item.habilidadeId
+            )
+        );
+
+
+    const idsVagasAtivas =
+        new Set(
+            obterVagasAtivas().map(
+                vaga =>
+                    vaga.id
+            )
+        );
+
+
+    const demanda =
+        new Map();
+
+
+    requisitosEstudos
+        .filter(
+            requisito =>
+                idsVagasAtivas.has(
+                    requisito.vagaId
+                )
         )
-    ) {
-        return;
-    }
+        .forEach(requisito => {
 
-    planoSelecionadoId =
-        planos.length
-            ? planos[0].id
-            : null;
-}
-
-
-function renderizarPagina() {
-    renderizarListaPlanos();
-    renderizarPlanoSelecionado();
-}
+            if (
+                idsHabilidadesUsuario.has(
+                    requisito.habilidadeId
+                )
+            ) {
+                return;
+            }
 
 
-function renderizarListaPlanos() {
-    const conteiner =
-        document.getElementById(
-            "lista-planos"
-        );
-
-    document.getElementById(
-        "quantidade-planos"
-    ).textContent =
-        planos.length;
-
-    if (!planos.length) {
-        conteiner.innerHTML = `
-            <div class="estado-vazio">
-                Nenhum plano cadastrado.
-            </div>
-        `;
-
-        return;
-    }
-
-    conteiner.innerHTML =
-        planos
-            .map(plano => `
-                <button
-                    type="button"
-                    class="
-                        item-plano
-                        ${
-                            plano.id ===
-                            planoSelecionadoId
-                                ? "selecionado"
-                                : ""
-                        }
-                    "
-                    data-plano-id="${plano.id}"
-                >
-                    <strong>
-                        ${escaparHtml(
-                            plano.titulo
-                        )}
-                    </strong>
-
-                    <span>
-                        ${formatarStatusPlano(
-                            plano.status
-                        )}
-                        ·
-                        ${
-                            plano.percentualConclusao
-                        }%
-                    </span>
-                </button>
-            `)
-            .join("");
-}
+            const atual =
+                demanda.get(
+                    requisito.habilidadeId
+                ) || 0;
 
 
-function selecionarPlano(evento) {
-    const botao =
-        evento.target.closest(
-            "[data-plano-id]"
-        );
-
-    if (!botao) {
-        return;
-    }
-
-    planoSelecionadoId =
-        Number(
-            botao.dataset.planoId
-        );
-
-    renderizarPagina();
-}
+            demanda.set(
+                requisito.habilidadeId,
+                atual + 1
+            );
+        });
 
 
-function obterPlanoSelecionado() {
-    return planos.find(
-        plano =>
-            plano.id ===
-            planoSelecionadoId
-    );
-}
+    recomendacoesEstudos =
+        [...demanda.entries()]
+            .map(
+                ([habilidadeId, quantidade]) => {
 
+                    const habilidade =
+                        obterHabilidade(
+                            habilidadeId
+                        );
 
-function renderizarPlanoSelecionado() {
-    const estadoVazio =
-        document.getElementById(
-            "estado-sem-plano"
-        );
-
-    const conteudo =
-        document.getElementById(
-            "conteudo-plano"
-        );
-
-    const plano =
-        obterPlanoSelecionado();
-
-    if (!plano) {
-        estadoVazio.classList.remove(
-            "oculto"
-        );
-
-        conteudo.classList.add(
-            "oculto"
-        );
-
-        return;
-    }
-
-    estadoVazio.classList.add(
-        "oculto"
-    );
-
-    conteudo.classList.remove(
-        "oculto"
-    );
-
-    document.getElementById(
-        "titulo-plano"
-    ).textContent =
-        plano.titulo;
-
-    document.getElementById(
-        "objetivo-plano"
-    ).textContent =
-        plano.objetivo ||
-        "Nenhum objetivo informado.";
-
-    document.getElementById(
-        "status-plano"
-    ).textContent =
-        formatarStatusPlano(
-            plano.status
-        );
-
-    document.getElementById(
-        "percentual-plano"
-    ).textContent =
-        `${plano.percentualConclusao}%`;
-
-    document.getElementById(
-        "inicio-plano"
-    ).textContent =
-        formatarData(
-            plano.dataInicio
-        );
-
-    document.getElementById(
-        "fim-plano"
-    ).textContent =
-        formatarData(
-            plano.dataFimPrevista
-        );
-
-    document.getElementById(
-        "preenchimento-progresso"
-    ).style.width =
-        `${
-            plano.percentualConclusao
-        }%`;
-
-    renderizarEtapas();
-}
-
-
-function renderizarEtapas() {
-    const conteiner =
-        document.getElementById(
-            "lista-etapas"
-        );
-
-    const etapasDoPlano =
-        etapas
+                    return {
+                        habilidadeId,
+                        quantidade,
+                        habilidade,
+                    };
+                }
+            )
             .filter(
-                etapa =>
-                    etapa.planoEstudoId ===
-                    planoSelecionadoId
+                item =>
+                    item.habilidade
             )
             .sort(
                 (a, b) =>
-                    a.ordem - b.ordem
-            );
+                    b.quantidade -
+                    a.quantidade
+            )
+            .slice(0, 6);
+}
 
-    if (!etapasDoPlano.length) {
+
+function atualizarMetricas() {
+    document.getElementById(
+        "total-habilidades-perfil"
+    ).textContent =
+        habilidadesPerfilEstudos.length;
+
+
+    document.getElementById(
+        "total-recomendacoes"
+    ).textContent =
+        recomendacoesEstudos.length;
+
+
+    document.getElementById(
+        "total-planos-ativos"
+    ).textContent =
+        planosEstudos.filter(
+            plano =>
+                plano.status ===
+                "em_andamento"
+        ).length;
+}
+
+
+function renderizarRecomendacoes() {
+    const conteiner =
+        document.getElementById(
+            "lista-recomendacoes"
+        );
+
+
+    if (!perfilEstudos) {
         conteiner.innerHTML = `
             <div class="estado-vazio">
-                Nenhuma etapa cadastrada neste plano.
+                Complete seu perfil profissional para
+                receber recomendações personalizadas.
             </div>
         `;
 
         return;
     }
 
+
+    if (!recomendacoesEstudos.length) {
+        conteiner.innerHTML = `
+            <div class="estado-vazio">
+                No momento não encontramos novas habilidades
+                para recomendar com base nas vagas cadastradas.
+            </div>
+        `;
+
+        return;
+    }
+
+
     conteiner.innerHTML =
-        etapasDoPlano
-            .map(etapa => `
-                <article class="item-etapa">
+        recomendacoesEstudos
+            .map(item => {
 
-                    <div class="ordem-etapa">
-                        ${etapa.ordem}
-                    </div>
+                const habilidade =
+                    item.habilidade;
 
-                    <div class="dados-etapa">
-                        <strong>
+
+                return `
+                    <article class="cartao-recomendacao">
+
+                        <div class="topo-recomendacao">
+
+                            <span class="icone-recomendacao">
+                                +
+                            </span>
+
+                            <span class="demanda-recomendacao">
+                                ${item.quantidade}
+                                vaga(s)
+                            </span>
+
+                        </div>
+
+
+                        <h3>
                             ${escaparHtml(
-                                etapa.titulo
+                                habilidade.nome
                             )}
-                        </strong>
+                        </h3>
+
+                        <span class="categoria-recomendacao">
+                            ${formatarCategoria(
+                                habilidade.categoria
+                            )}
+                        </span>
+
 
                         <p>
-                            ${
-                                etapa.descricao
-                                    ? escaparHtml(
-                                        etapa.descricao
-                                    )
-                                    : "Sem descrição."
-                            }
+                            Esta habilidade aparece entre
+                            as exigências atuais do mercado
+                            e ainda não está registrada no
+                            seu perfil.
                         </p>
 
-                        <div class="metadados-etapa">
-                            <span>
-                                ${formatarStatusEtapa(
-                                    etapa.status
-                                )}
-                            </span>
 
-                            <span>
-                                ${
-                                    etapa.cargaHorariaEstimada
-                                        ? `${etapa.cargaHorariaEstimada}h`
-                                        : "Carga não informada"
-                                }
-                            </span>
+                        <div class="acoes-recomendacao">
 
-                            <span>
-                                Início:
-                                ${formatarData(
-                                    etapa.dataInicioPrevista
-                                )}
-                            </span>
+                            <button
+                                class="botao-criar-trilha"
+                                data-criar-trilha="${habilidade.id}"
+                                type="button"
+                            >
+                                Criar trilha de estudo
+                            </button>
+
                         </div>
-                    </div>
 
-                    <div class="acoes-etapa">
-
-                        <button
-                            type="button"
-                            class="botao-pequeno"
-                            data-editar-etapa="${etapa.id}"
-                        >
-                            Editar
-                        </button>
-
-                        <button
-                            type="button"
-                            class="botao-pequeno perigo"
-                            data-excluir-etapa="${etapa.id}"
-                        >
-                            Excluir
-                        </button>
-
-                    </div>
-
-                </article>
-            `)
+                    </article>
+                `;
+            })
             .join("");
 }
 
 
-function abrirNovoPlano() {
-    planoEmEdicaoId = null;
-
-    document.getElementById(
-        "titulo-modal-plano"
-    ).textContent =
-        "Novo plano";
-
-    document.getElementById(
-        "formulario-plano"
-    ).reset();
-
-    document.getElementById(
-        "plano-percentual"
-    ).value = "0";
-
-    document.getElementById(
-        "plano-status"
-    ).value =
-        "nao_iniciado";
-
-    document.getElementById(
-        "modal-plano"
-    ).showModal();
-}
+async function criarTrilhaRecomendada(
+    habilidadeId,
+    botao
+) {
+    const habilidade =
+        obterHabilidade(
+            habilidadeId
+        );
 
 
-function editarPlanoSelecionado() {
-    const plano =
-        obterPlanoSelecionado();
-
-    if (!plano) {
+    if (!habilidade) {
         return;
     }
 
-    planoEmEdicaoId =
-        plano.id;
 
-    document.getElementById(
-        "titulo-modal-plano"
-    ).textContent =
-        "Editar plano";
-
-    document.getElementById(
-        "plano-titulo"
-    ).value =
-        plano.titulo;
-
-    document.getElementById(
-        "plano-objetivo"
-    ).value =
-        plano.objetivo || "";
-
-    document.getElementById(
-        "plano-data-inicio"
-    ).value =
-        plano.dataInicio || "";
-
-    document.getElementById(
-        "plano-data-fim"
-    ).value =
-        plano.dataFimPrevista || "";
-
-    document.getElementById(
-        "plano-percentual"
-    ).value =
-        plano.percentualConclusao;
-
-    document.getElementById(
-        "plano-status"
-    ).value =
-        plano.status;
-
-    document.getElementById(
-        "modal-plano"
-    ).showModal();
-}
-
-
-async function salvarPlano(evento) {
-    evento.preventDefault();
-
-    const dados = {
-        titulo:
-            document.getElementById(
-                "plano-titulo"
-            ).value.trim(),
-
-        objetivo:
-            document.getElementById(
-                "plano-objetivo"
-            ).value.trim(),
-
-        percentualConclusao:
-            Number(
-                document.getElementById(
-                    "plano-percentual"
-                ).value
-            ),
-
-        status:
-            document.getElementById(
-                "plano-status"
-            ).value,
-    };
-
-    const dataInicio =
-        document.getElementById(
-            "plano-data-inicio"
-        ).value;
-
-    const dataFim =
-        document.getElementById(
-            "plano-data-fim"
-        ).value;
-
-    if (dataInicio) {
-        dados.dataInicio =
-            dataInicio;
-    }
-
-    if (dataFim) {
-        dados.dataFimPrevista =
-            dataFim;
-    }
-
-    try {
-        if (planoEmEdicaoId) {
-            await apiRequest(
-                `/planos-estudo/${
-                    planoEmEdicaoId
-                }`,
-                {
-                    method: "PUT",
-                    body: JSON.stringify(
-                        dados
-                    ),
-                }
-            );
-
-            mostrarMensagem(
-                "Plano atualizado com sucesso.",
-                "sucesso"
-            );
-
-        } else {
-            dados.usuarioId =
-                usuarioAtualEstudos.id;
-
-            const planoCriado =
-                await apiRequest(
-                    "/planos-estudo",
-                    {
-                        method: "POST",
-                        body: JSON.stringify(
-                            dados
-                        ),
-                    }
-                );
-
-            planoSelecionadoId =
-                planoCriado.id;
-
-            mostrarMensagem(
-                "Plano criado com sucesso.",
-                "sucesso"
-            );
-        }
-
-        document.getElementById(
-            "modal-plano"
-        ).close();
-
-        await carregarDados();
-
-    } catch (erro) {
-        mostrarMensagem(
-            erro.message,
-            "erro"
-        );
-    }
-}
-
-
-async function excluirPlanoSelecionado() {
-    const plano =
-        obterPlanoSelecionado();
-
-    if (!plano) {
-        return;
-    }
-
-    const confirmou =
-        window.confirm(
-            `Excluir o plano "${plano.titulo}"?`
+    const planoExistente =
+        planosEstudos.find(
+            plano =>
+                normalizarTexto(
+                    plano.titulo
+                ) ===
+                normalizarTexto(
+                    `Trilha: ${habilidade.nome}`
+                )
         );
 
-    if (!confirmou) {
-        return;
-    }
 
-    try {
-        await apiRequest(
-            `/planos-estudo/${plano.id}`,
-            {
-                method: "DELETE",
-            }
-        );
+    if (planoExistente) {
+        planoSelecionadoId =
+            planoExistente.id;
 
-        planoSelecionadoId = null;
+        renderizarPlanos();
+        renderizarDetalhePlano();
 
         mostrarMensagem(
-            "Plano excluído com sucesso.",
+            "Você já possui uma trilha para esta habilidade.",
             "sucesso"
         );
 
-        await carregarDados();
-
-    } catch (erro) {
-        mostrarMensagem(
-            erro.message,
-            "erro"
-        );
-    }
-}
-
-
-function abrirNovaEtapa() {
-    if (!planoSelecionadoId) {
         return;
     }
 
-    etapaEmEdicaoId = null;
 
-    document.getElementById(
-        "titulo-modal-etapa"
-    ).textContent =
-        "Nova etapa";
-
-    document.getElementById(
-        "formulario-etapa"
-    ).reset();
-
-    const etapasDoPlano =
-        etapas.filter(
-            etapa =>
-                etapa.planoEstudoId ===
-                planoSelecionadoId
-        );
-
-    document.getElementById(
-        "etapa-ordem"
-    ).value =
-        etapasDoPlano.length + 1;
-
-    document.getElementById(
-        "etapa-status"
-    ).value =
-        "pendente";
-
-    document.getElementById(
-        "modal-etapa"
-    ).showModal();
-}
+    const textoOriginal =
+        botao.textContent;
 
 
-function tratarAcaoEtapa(evento) {
-    const botaoEditar =
-        evento.target.closest(
-            "[data-editar-etapa]"
-        );
+    botao.disabled = true;
+    botao.textContent =
+        "Criando trilha...";
 
-    if (botaoEditar) {
-        abrirEdicaoEtapa(
-            Number(
-                botaoEditar.dataset
-                    .editarEtapa
-            )
-        );
-
-        return;
-    }
-
-    const botaoExcluir =
-        evento.target.closest(
-            "[data-excluir-etapa]"
-        );
-
-    if (botaoExcluir) {
-        excluirEtapa(
-            Number(
-                botaoExcluir.dataset
-                    .excluirEtapa
-            )
-        );
-    }
-}
-
-
-function abrirEdicaoEtapa(etapaId) {
-    const etapa =
-        etapas.find(
-            item =>
-                item.id === etapaId
-        );
-
-    if (!etapa) {
-        return;
-    }
-
-    etapaEmEdicaoId =
-        etapa.id;
-
-    document.getElementById(
-        "titulo-modal-etapa"
-    ).textContent =
-        "Editar etapa";
-
-    document.getElementById(
-        "etapa-titulo"
-    ).value =
-        etapa.titulo;
-
-    document.getElementById(
-        "etapa-descricao"
-    ).value =
-        etapa.descricao || "";
-
-    document.getElementById(
-        "etapa-ordem"
-    ).value =
-        etapa.ordem;
-
-    document.getElementById(
-        "etapa-carga-horaria"
-    ).value =
-        etapa.cargaHorariaEstimada || "";
-
-    document.getElementById(
-        "etapa-data-inicio"
-    ).value =
-        etapa.dataInicioPrevista || "";
-
-    document.getElementById(
-        "etapa-data-conclusao"
-    ).value =
-        etapa.dataConclusao || "";
-
-    document.getElementById(
-        "etapa-status"
-    ).value =
-        etapa.status;
-
-    document.getElementById(
-        "modal-etapa"
-    ).showModal();
-}
-
-
-async function salvarEtapa(evento) {
-    evento.preventDefault();
-
-    const dados = {
-        titulo:
-            document.getElementById(
-                "etapa-titulo"
-            ).value.trim(),
-
-        descricao:
-            document.getElementById(
-                "etapa-descricao"
-            ).value.trim(),
-
-        ordem:
-            Number(
-                document.getElementById(
-                    "etapa-ordem"
-                ).value
-            ),
-
-        status:
-            document.getElementById(
-                "etapa-status"
-            ).value,
-    };
-
-    const carga =
-        document.getElementById(
-            "etapa-carga-horaria"
-        ).value;
-
-    const dataInicio =
-        document.getElementById(
-            "etapa-data-inicio"
-        ).value;
-
-    const dataConclusao =
-        document.getElementById(
-            "etapa-data-conclusao"
-        ).value;
-
-    if (carga) {
-        dados.cargaHorariaEstimada =
-            Number(carga);
-    }
-
-    if (dataInicio) {
-        dados.dataInicioPrevista =
-            dataInicio;
-    }
-
-    if (dataConclusao) {
-        dados.dataConclusao =
-            dataConclusao;
-    }
 
     try {
-        if (etapaEmEdicaoId) {
+        const hoje =
+            new Date()
+                .toISOString()
+                .slice(0, 10);
+
+
+        const plano =
             await apiRequest(
-                `/etapas-estudo/${
-                    etapaEmEdicaoId
-                }`,
+                "/planos-estudo",
                 {
-                    method: "PUT",
-                    body: JSON.stringify(
-                        dados
-                    ),
+                    method: "POST",
+
+                    body: JSON.stringify({
+                        usuarioId:
+                            usuarioEstudos.id,
+
+                        titulo:
+                            `Trilha: ${habilidade.nome}`,
+
+                        objetivo:
+                            `Desenvolver conhecimentos em ${habilidade.nome} com base nas demandas encontradas nas vagas do Market Skills.`,
+
+                        dataInicio:
+                            hoje,
+
+                        percentualConclusao:
+                            0,
+
+                        status:
+                            "em_andamento",
+                    }),
                 }
             );
 
-            mostrarMensagem(
-                "Etapa atualizada com sucesso.",
-                "sucesso"
+
+        const etapas =
+            criarEtapasPadrao(
+                habilidade.nome,
+                plano.id
             );
 
-        } else {
-            dados.planoEstudoId =
-                planoSelecionadoId;
 
+        for (
+            const etapa of etapas
+        ) {
             await apiRequest(
                 "/etapas-estudo",
                 {
                     method: "POST",
                     body: JSON.stringify(
-                        dados
+                        etapa
                     ),
                 }
             );
-
-            mostrarMensagem(
-                "Etapa criada com sucesso.",
-                "sucesso"
-            );
         }
 
-        document.getElementById(
-            "modal-etapa"
-        ).close();
 
-        await carregarDados();
+        planoSelecionadoId =
+            plano.id;
+
+
+        mostrarMensagem(
+            `Trilha de ${habilidade.nome} criada.`,
+            "sucesso"
+        );
+
+
+        await carregarEstudos();
 
     } catch (erro) {
+        console.error(erro);
+
         mostrarMensagem(
-            erro.message,
+            erro.message ||
+            "Não foi possível criar a trilha.",
             "erro"
+        );
+
+    } finally {
+        botao.disabled = false;
+        botao.textContent =
+            textoOriginal;
+    }
+}
+
+
+function criarEtapasPadrao(
+    habilidadeNome,
+    planoId
+) {
+    return [
+        {
+            planoEstudoId:
+                planoId,
+
+            titulo:
+                `Fundamentos de ${habilidadeNome}`,
+
+            descricao:
+                `Entenda os principais conceitos e fundamentos de ${habilidadeNome}.`,
+
+            ordem:
+                1,
+
+            cargaHorariaEstimada:
+                4,
+
+            status:
+                "pendente",
+        },
+
+        {
+            planoEstudoId:
+                planoId,
+
+            titulo:
+                `Prática com ${habilidadeNome}`,
+
+            descricao:
+                `Pratique ${habilidadeNome} com exercícios e exemplos aplicados.`,
+
+            ordem:
+                2,
+
+            cargaHorariaEstimada:
+                6,
+
+            status:
+                "pendente",
+        },
+
+        {
+            planoEstudoId:
+                planoId,
+
+            titulo:
+                `Projeto com ${habilidadeNome}`,
+
+            descricao:
+                `Desenvolva um pequeno projeto para consolidar seus conhecimentos em ${habilidadeNome}.`,
+
+            ordem:
+                3,
+
+            cargaHorariaEstimada:
+                8,
+
+            status:
+                "pendente",
+        },
+    ];
+}
+
+
+function renderizarPlanos() {
+    const conteiner =
+        document.getElementById(
+            "lista-planos"
+        );
+
+
+    if (!planosEstudos.length) {
+        conteiner.innerHTML = `
+            <div class="estado-vazio">
+                Você ainda não iniciou nenhuma trilha.
+            </div>
+        `;
+
+        return;
+    }
+
+
+    conteiner.innerHTML =
+        [...planosEstudos]
+            .sort(
+                (a, b) =>
+                    b.id - a.id
+            )
+            .map(plano => {
+
+                const selecionado =
+                    plano.id ===
+                    planoSelecionadoId;
+
+
+                const percentual =
+                    Math.round(
+                        Number(
+                            plano.percentualConclusao ||
+                            0
+                        )
+                    );
+
+
+                return `
+                    <button
+                        class="
+                            item-plano
+                            ${
+                                selecionado
+                                    ? "ativo"
+                                    : ""
+                            }
+                        "
+                        data-plano-id="${plano.id}"
+                        type="button"
+                    >
+
+                        <strong>
+                            ${escaparHtml(
+                                plano.titulo
+                            )}
+                        </strong>
+
+                        <span>
+                            ${formatarStatusPlano(
+                                plano.status
+                            )}
+                            ·
+                            ${percentual}%
+                        </span>
+
+                        <div class="progresso-mini">
+                            <span
+                                style="width: ${percentual}%"
+                            ></span>
+                        </div>
+
+                    </button>
+                `;
+            })
+            .join("");
+}
+
+
+function obterPlanoSelecionado() {
+    return planosEstudos.find(
+        plano =>
+            plano.id ===
+            planoSelecionadoId
+    ) || null;
+}
+
+
+function renderizarDetalhePlano() {
+    const conteiner =
+        document.getElementById(
+            "detalhe-plano"
+        );
+
+
+    const plano =
+        obterPlanoSelecionado();
+
+
+    if (!plano) {
+        conteiner.innerHTML = `
+            <div class="detalhe-vazio">
+
+                <div class="icone-detalhe">
+                    ✓
+                </div>
+
+                <h2>
+                    Nenhum plano selecionado
+                </h2>
+
+                <p>
+                    Escolha uma recomendação para gerar
+                    uma trilha de estudos personalizada.
+                </p>
+
+            </div>
+        `;
+
+        return;
+    }
+
+
+    const etapas =
+        etapasEstudos
+            .filter(
+                etapa =>
+                    etapa.planoEstudoId ===
+                    plano.id
+            )
+            .sort(
+                (a, b) =>
+                    a.ordem -
+                    b.ordem
+            );
+
+
+    const percentual =
+        Math.round(
+            Number(
+                plano.percentualConclusao ||
+                0
+            )
+        );
+
+
+    const etapasHtml =
+        etapas.length
+            ? etapas
+                .map(
+                    etapa =>
+                        criarHtmlEtapa(
+                            etapa
+                        )
+                )
+                .join("")
+            : `
+                <div class="estado-vazio">
+                    Nenhuma etapa cadastrada neste plano.
+                </div>
+            `;
+
+
+    conteiner.innerHTML = `
+
+        <div class="topo-plano">
+
+            <div>
+
+                <span class="rotulo-estudos">
+                    Plano selecionado
+                </span>
+
+                <h2>
+                    ${escaparHtml(
+                        plano.titulo
+                    )}
+                </h2>
+
+                <p>
+                    ${escaparHtml(
+                        plano.objetivo ||
+                        "Plano de desenvolvimento profissional."
+                    )}
+                </p>
+
+            </div>
+
+
+            <button
+                class="botao-excluir-plano"
+                data-excluir-plano="${plano.id}"
+                type="button"
+            >
+                Excluir plano
+            </button>
+
+        </div>
+
+
+        <div class="bloco-progresso">
+
+            <div class="topo-progresso">
+
+                <span>
+                    Seu progresso
+                </span>
+
+                <strong>
+                    ${percentual}%
+                </strong>
+
+            </div>
+
+            <div class="barra-progresso">
+                <span
+                    style="width: ${percentual}%"
+                ></span>
+            </div>
+
+        </div>
+
+
+        <h3 class="titulo-etapas">
+            Etapas da trilha
+        </h3>
+
+
+        <div class="lista-etapas">
+            ${etapasHtml}
+        </div>
+    `;
+}
+
+
+function criarHtmlEtapa(etapa) {
+    const concluida =
+        etapa.status ===
+        "concluida";
+
+
+    return `
+        <article class="
+            etapa-estudo
+            ${
+                concluida
+                    ? "concluida"
+                    : ""
+            }
+        ">
+
+            <div class="identidade-etapa">
+
+                <span class="numero-etapa">
+                    ${
+                        concluida
+                            ? "✓"
+                            : etapa.ordem
+                    }
+                </span>
+
+                <div>
+
+                    <strong>
+                        ${escaparHtml(
+                            etapa.titulo
+                        )}
+                    </strong>
+
+                    <small>
+                        ${
+                            etapa.cargaHorariaEstimada
+                                ? `${etapa.cargaHorariaEstimada}h estimadas`
+                                : "Carga horária não informada"
+                        }
+                        ·
+                        ${formatarStatusEtapa(
+                            etapa.status
+                        )}
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <button
+                class="botao-etapa"
+                data-alterar-etapa="${etapa.id}"
+                type="button"
+            >
+                ${
+                    concluida
+                        ? "Reabrir"
+                        : "Concluir"
+                }
+            </button>
+
+        </article>
+    `;
+}
+
+
+async function tratarAcaoDetalhe(evento) {
+    const botaoEtapa =
+        evento.target.closest(
+            "[data-alterar-etapa]"
+        );
+
+
+    if (botaoEtapa) {
+        await alterarStatusEtapa(
+            Number(
+                botaoEtapa.dataset
+                    .alterarEtapa
+            )
+        );
+
+        return;
+    }
+
+
+    const botaoExcluir =
+        evento.target.closest(
+            "[data-excluir-plano]"
+        );
+
+
+    if (botaoExcluir) {
+        await excluirPlano(
+            Number(
+                botaoExcluir.dataset
+                    .excluirPlano
+            )
         );
     }
 }
 
 
-async function excluirEtapa(
+async function alterarStatusEtapa(
     etapaId
 ) {
     const etapa =
-        etapas.find(
+        etapasEstudos.find(
             item =>
-                item.id === etapaId
+                item.id ===
+                etapaId
         );
+
 
     if (!etapa) {
         return;
     }
 
-    const confirmou =
-        window.confirm(
-            `Excluir a etapa "${etapa.titulo}"?`
-        );
 
-    if (!confirmou) {
-        return;
-    }
+    const novoStatus =
+        etapa.status ===
+        "concluida"
+            ? "pendente"
+            : "concluida";
+
 
     try {
         await apiRequest(
             `/etapas-estudo/${etapa.id}`,
             {
-                method: "DELETE",
+                method: "PUT",
+
+                body: JSON.stringify({
+                    status:
+                        novoStatus,
+                }),
             }
         );
 
-        mostrarMensagem(
-            "Etapa excluída com sucesso.",
-            "sucesso"
+
+        await atualizarProgressoPlano(
+            etapa.planoEstudoId,
+            etapa.id,
+            novoStatus
         );
 
-        await carregarDados();
+
+        await carregarEstudos();
 
     } catch (erro) {
         mostrarMensagem(
@@ -986,8 +1070,167 @@ async function excluirEtapa(
 }
 
 
-function formatarStatusPlano(status) {
-    const valores = {
+async function atualizarProgressoPlano(
+    planoId,
+    etapaAlteradaId,
+    novoStatus
+) {
+    const etapasPlano =
+        etapasEstudos.filter(
+            etapa =>
+                etapa.planoEstudoId ===
+                planoId
+        );
+
+
+    if (!etapasPlano.length) {
+        return;
+    }
+
+
+    const quantidadeConcluidas =
+        etapasPlano.filter(
+            etapa => {
+
+                if (
+                    etapa.id ===
+                    etapaAlteradaId
+                ) {
+                    return (
+                        novoStatus ===
+                        "concluida"
+                    );
+                }
+
+                return (
+                    etapa.status ===
+                    "concluida"
+                );
+            }
+        ).length;
+
+
+    const percentual =
+        Math.round(
+            (
+                quantidadeConcluidas /
+                etapasPlano.length
+            ) * 100
+        );
+
+
+    let status =
+        "em_andamento";
+
+
+    if (percentual === 100) {
+        status =
+            "concluido";
+    }
+
+
+    await apiRequest(
+        `/planos-estudo/${planoId}`,
+        {
+            method: "PUT",
+
+            body: JSON.stringify({
+                percentualConclusao:
+                    percentual,
+
+                status,
+            }),
+        }
+    );
+}
+
+
+async function excluirPlano(
+    planoId
+) {
+    const plano =
+        planosEstudos.find(
+            item =>
+                item.id ===
+                planoId
+        );
+
+
+    if (!plano) {
+        return;
+    }
+
+
+    const confirmou =
+        window.confirm(
+            `Excluir "${plano.titulo}"?`
+        );
+
+
+    if (!confirmou) {
+        return;
+    }
+
+
+    try {
+        await apiRequest(
+            `/planos-estudo/${planoId}`,
+            {
+                method: "DELETE",
+            }
+        );
+
+
+        planoSelecionadoId =
+            null;
+
+
+        mostrarMensagem(
+            "Plano excluído.",
+            "sucesso"
+        );
+
+
+        await carregarEstudos();
+
+    } catch (erro) {
+        mostrarMensagem(
+            erro.message,
+            "erro"
+        );
+    }
+}
+
+
+function formatarCategoria(valor) {
+    const categorias = {
+        linguagem:
+            "Linguagem",
+
+        framework:
+            "Framework",
+
+        banco_dados:
+            "Banco de dados",
+
+        ferramenta:
+            "Ferramenta",
+
+        conceito:
+            "Conceito",
+
+        outra:
+            "Outra",
+    };
+
+
+    return categorias[valor] ||
+        "Tecnologia";
+}
+
+
+function formatarStatusPlano(valor) {
+    const status = {
         nao_iniciado:
             "Não iniciado",
 
@@ -1001,12 +1244,14 @@ function formatarStatusPlano(status) {
             "Concluído",
     };
 
-    return valores[status] || status;
+
+    return status[valor] ||
+        "Não informado";
 }
 
 
-function formatarStatusEtapa(status) {
-    const valores = {
+function formatarStatusEtapa(valor) {
+    const status = {
         pendente:
             "Pendente",
 
@@ -1017,32 +1262,30 @@ function formatarStatusEtapa(status) {
             "Concluída",
     };
 
-    return valores[status] || status;
+
+    return status[valor] ||
+        "Não informado";
 }
 
 
-function formatarData(data) {
-    if (!data) {
-        return "Não informada";
-    }
-
-    const partes =
-        data.split("-");
-
-    if (partes.length !== 3) {
-        return data;
-    }
-
-    return (
-        `${partes[2]}/` +
-        `${partes[1]}/` +
-        `${partes[0]}`
-    );
+function normalizarTexto(valor) {
+    return String(
+        valor ?? ""
+    )
+        .normalize("NFD")
+        .replace(
+            /[\u0300-\u036f]/g,
+            ""
+        )
+        .toLowerCase()
+        .trim();
 }
 
 
 function escaparHtml(valor) {
-    return String(valor ?? "")
+    return String(
+        valor ?? ""
+    )
         .replaceAll(
             "&",
             "&amp;"
@@ -1056,7 +1299,7 @@ function escaparHtml(valor) {
             "&gt;"
         )
         .replaceAll(
-            '"',
+            "\"",
             "&quot;"
         )
         .replaceAll(
@@ -1068,27 +1311,31 @@ function escaparHtml(valor) {
 
 function mostrarMensagem(
     texto,
-    tipo = ""
+    tipo
 ) {
-    const elemento =
+    const mensagem =
         document.getElementById(
             "mensagem"
         );
+
+
+    mensagem.textContent =
+        texto;
+
+
+    mensagem.className =
+        `mensagem ${tipo}`;
+
 
     clearTimeout(
         temporizadorMensagem
     );
 
-    elemento.textContent =
-        texto;
-
-    elemento.className =
-        `mensagem ${tipo}`;
 
     temporizadorMensagem =
         setTimeout(
             () => {
-                elemento.classList.add(
+                mensagem.classList.add(
                     "oculto"
                 );
             },
