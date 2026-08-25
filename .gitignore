@@ -41,3 +41,5 @@ build/
 .DS_Store
 Thumbs.db
 Desktop.ini
+# Arquivos enviados pelos usuários
+backend/uploads/

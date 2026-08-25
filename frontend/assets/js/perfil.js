@@ -1,13 +1,17 @@
-let usuarios = [];
-let perfisProfissionais = [];
-let habilidades = [];
-let habilidadesDosPerfis = [];
+let usuarioPaginaPerfil = null;
+let perfilPaginaPerfil = null;
 
-let usuarioSelecionadoId = null;
-let usuarioEmEdicaoId = null;
-let habilidadeEmEdicaoId = null;
+let habilidadesPaginaPerfil = [];
+let perfilHabilidadesPaginaPerfil = [];
+let experienciasPaginaPerfil = [];
+let formacoesPaginaPerfil = [];
+let projetosPaginaPerfil = [];
 
-let temporizadorMensagem = null;
+let experienciaEmEdicaoId = null;
+let formacaoEmEdicaoId = null;
+let projetoEmEdicaoId = null;
+
+let temporizadorMensagemPerfil = null;
 
 
 document.addEventListener(
@@ -17,97 +21,130 @@ document.addEventListener(
 
 
 async function iniciarPaginaPerfil() {
-    registrarEventos();
+    registrarEventosPerfil();
 
-    await carregarDados();
+    await carregarDadosPerfil();
 }
 
 
-function registrarEventos() {
+function registrarEventosPerfil() {
     document
-        .getElementById("botao-novo-usuario")
+        .getElementById("botao-criar-perfil")
         .addEventListener(
             "click",
-            () => abrirModalUsuario()
+            () => abrirModalPerfil(true)
         );
 
     document
-        .getElementById("botao-primeiro-usuario")
+        .getElementById("botao-editar-perfil")
         .addEventListener(
             "click",
-            () => abrirModalUsuario()
-        );
-
-    document
-        .getElementById("botao-editar-usuario")
-        .addEventListener(
-            "click",
-            editarUsuarioSelecionado
-        );
-
-    document
-        .getElementById("botao-excluir-usuario")
-        .addEventListener(
-            "click",
-            excluirUsuarioSelecionado
-        );
-
-    document
-        .getElementById("formulario-usuario")
-        .addEventListener(
-            "submit",
-            salvarUsuario
+            () => abrirModalPerfil(false)
         );
 
     document
         .getElementById("formulario-perfil")
         .addEventListener(
             "submit",
-            salvarPerfilProfissional
+            salvarPerfil
         );
 
     document
-        .getElementById("botao-excluir-perfil")
+        .getElementById("botao-nova-experiencia")
         .addEventListener(
             "click",
-            excluirPerfilProfissional
+            () => abrirModalExperiencia()
         );
 
     document
-        .getElementById(
-            "formulario-adicionar-habilidade"
-        )
+        .getElementById("formulario-experiencia")
         .addEventListener(
             "submit",
-            adicionarHabilidadeAoPerfil
+            salvarExperiencia
+        );
+
+    document
+        .getElementById("lista-experiencias")
+        .addEventListener(
+            "click",
+            tratarAcaoExperiencia
+        );
+
+    document
+        .getElementById("botao-nova-formacao")
+        .addEventListener(
+            "click",
+            () => abrirModalFormacao()
+        );
+
+    document
+        .getElementById("formulario-formacao")
+        .addEventListener(
+            "submit",
+            salvarFormacao
+        );
+
+    document
+        .getElementById("lista-formacoes")
+        .addEventListener(
+            "click",
+            tratarAcaoFormacao
+        );
+
+    document
+        .getElementById("botao-novo-projeto")
+        .addEventListener(
+            "click",
+            () => abrirModalProjeto()
+        );
+
+    document
+        .getElementById("formulario-projeto")
+        .addEventListener(
+            "submit",
+            salvarProjeto
+        );
+
+    document
+        .getElementById("lista-projetos")
+        .addEventListener(
+            "click",
+            tratarAcaoProjeto
+        );
+
+    document
+        .getElementById("botao-adicionar-habilidade")
+        .addEventListener(
+            "click",
+            abrirModalHabilidade
+        );
+
+    document
+        .getElementById("formulario-habilidade-perfil")
+        .addEventListener(
+            "submit",
+            adicionarHabilidade
         );
 
     document
         .getElementById("lista-habilidades-perfil")
         .addEventListener(
             "click",
-            tratarAcaoHabilidadePerfil
+            tratarAcaoHabilidade
         );
 
     document
-        .getElementById("botao-nova-habilidade")
+        .getElementById("experiencia-atual")
         .addEventListener(
-            "click",
-            () => abrirModalHabilidade()
+            "change",
+            atualizarCampoFimExperiencia
         );
 
     document
-        .getElementById("catalogo-habilidades")
+        .getElementById("formacao-em-andamento")
         .addEventListener(
-            "click",
-            tratarAcaoCatalogo
-        );
-
-    document
-        .getElementById("formulario-habilidade")
-        .addEventListener(
-            "submit",
-            salvarHabilidade
+            "change",
+            atualizarCampoFimFormacao
         );
 
     document
@@ -115,114 +152,147 @@ function registrarEventos() {
         .forEach(botao => {
             botao.addEventListener(
                 "click",
-                () => {
-                    const modal =
-                        document.getElementById(
-                            botao.dataset.fechar
-                        );
-
-                    modal.close();
-                }
+                () => fecharModal(
+                    botao.dataset.fechar
+                )
             );
         });
 }
 
 
-async function carregarDados() {
+async function carregarDadosPerfil() {
+    mostrarCarregamento(true);
+
     try {
+        const sessao = await apiRequest(
+            "/autenticacao/sessao"
+        );
+
+        if (
+            !sessao.autenticado ||
+            !sessao.usuario
+        ) {
+            return;
+        }
+
+        usuarioPaginaPerfil = sessao.usuario;
+
+        if (
+            usuarioPaginaPerfil.tipoConta !==
+            "estudante"
+        ) {
+            window.location.href =
+                "../index.html";
+
+            return;
+        }
+
         const [
-            dadosUsuarios,
-            dadosPerfis,
-            dadosHabilidades,
-            dadosPerfilHabilidades,
+            perfis,
+            habilidades,
+            perfilHabilidades,
+            experiencias,
+            formacoes,
+            projetos,
         ] = await Promise.all([
-            apiRequest("/usuarios"),
-            apiRequest("/perfis-profissionais"),
-            apiRequest("/habilidades"),
-            apiRequest("/perfil-habilidades"),
+            apiRequest(
+                "/perfis-profissionais"
+            ),
+            apiRequest(
+                "/habilidades"
+            ),
+            apiRequest(
+                "/perfil-habilidades"
+            ),
+            apiRequest(
+                "/experiencias-profissionais"
+            ),
+            apiRequest(
+                "/formacoes-academicas"
+            ),
+            apiRequest(
+                "/projetos"
+            ),
         ]);
 
-        usuarios = dadosUsuarios;
-        perfisProfissionais = dadosPerfis;
-        habilidades = dadosHabilidades;
-        habilidadesDosPerfis =
-            dadosPerfilHabilidades;
+        perfilPaginaPerfil =
+            perfis.find(
+                perfil =>
+                    perfil.usuarioId ===
+                    usuarioPaginaPerfil.id
+            ) || null;
 
-        definirUsuarioSelecionado();
+        habilidadesPaginaPerfil =
+            habilidades || [];
 
-        renderizarPagina();
+        if (perfilPaginaPerfil) {
+            const perfilId =
+                perfilPaginaPerfil.id;
+
+            perfilHabilidadesPaginaPerfil =
+                perfilHabilidades.filter(
+                    item =>
+                        item.perfilProfissionalId ===
+                        perfilId
+                );
+
+            experienciasPaginaPerfil =
+                experiencias.filter(
+                    item =>
+                        item.perfilProfissionalId ===
+                        perfilId
+                );
+
+            formacoesPaginaPerfil =
+                formacoes.filter(
+                    item =>
+                        item.perfilProfissionalId ===
+                        perfilId
+                );
+
+            projetosPaginaPerfil =
+                projetos.filter(
+                    item =>
+                        item.perfilProfissionalId ===
+                        perfilId
+                );
+        } else {
+            perfilHabilidadesPaginaPerfil = [];
+            experienciasPaginaPerfil = [];
+            formacoesPaginaPerfil = [];
+            projetosPaginaPerfil = [];
+        }
+
+        renderizarPaginaPerfil();
 
     } catch (erro) {
         console.error(erro);
 
-        mostrarMensagem(
+        mostrarMensagemPerfil(
             erro.message ||
-            "Não foi possível carregar os dados.",
+            "Não foi possível carregar seu perfil.",
             "erro"
         );
+
+    } finally {
+        mostrarCarregamento(false);
     }
 }
 
 
-function definirUsuarioSelecionado() {
-    const idSalvo =
-        Number(
-            localStorage.getItem(
-                "usuarioSelecionadoId"
-            )
-        );
-
-    if (
-        idSalvo &&
-        usuarios.some(
-            usuario =>
-                usuario.id === idSalvo
-        )
-    ) {
-        usuarioSelecionadoId =
-            idSalvo;
-
-        return;
-    }
-
-    usuarioSelecionadoId =
-        usuarios.length
-            ? usuarios[0].id
-            : null;
-
-    salvarUsuarioSelecionado();
-}
-
-
-function salvarUsuarioSelecionado() {
-    if (usuarioSelecionadoId) {
-        localStorage.setItem(
-            "usuarioSelecionadoId",
-            String(usuarioSelecionadoId)
-        );
-    } else {
-        localStorage.removeItem(
-            "usuarioSelecionadoId"
-        );
-    }
-}
-
-
-function renderizarPagina() {
-    renderizarUsuarios();
-
-    const estadoVazio =
+function renderizarPaginaPerfil() {
+    const semPerfil =
         document.getElementById(
-            "perfil-sem-usuario"
+            "perfil-nao-criado"
         );
 
     const conteudo =
         document.getElementById(
-            "conteudo-usuario"
+            "conteudo-perfil"
         );
 
-    if (!usuarioSelecionadoId) {
-        estadoVazio.classList.remove(
+    if (!perfilPaginaPerfil) {
+        semPerfil.classList.remove(
             "oculto"
         );
 
@@ -233,7 +303,7 @@ function renderizarPagina() {
         return;
     }
 
-    estadoVazio.classList.add(
+    semPerfil.classList.add(
         "oculto"
     );
 
@@ -241,500 +311,289 @@ function renderizarPagina() {
         "oculto"
     );
 
-    renderizarUsuarioSelecionado();
-    renderizarPerfilProfissional();
-    renderizarHabilidadesPerfil();
-    renderizarCatalogoHabilidades();
+    renderizarIdentidade();
+    renderizarSobreMim();
+    renderizarExperiencias();
+    renderizarFormacoes();
+    renderizarProjetos();
+    renderizarHabilidades();
+    renderizarPreferencias();
 }
 
 
-function renderizarUsuarios() {
-    const conteiner =
-        document.getElementById(
-            "lista-usuarios"
+function renderizarIdentidade() {
+    document.getElementById(
+        "nome-perfil"
+    ).textContent =
+        usuarioPaginaPerfil.nome;
+
+    document.getElementById(
+        "email-perfil"
+    ).textContent =
+        usuarioPaginaPerfil.email;
+
+    document.getElementById(
+        "objetivo-resumo"
+    ).textContent =
+        perfilPaginaPerfil
+            .objetivoProfissional ||
+        "Objetivo profissional não informado.";
+
+    document.getElementById(
+        "nivel-resumo"
+    ).textContent =
+        formatarNivelExperiencia(
+            perfilPaginaPerfil
+                .nivelExperiencia
         );
 
-    if (!usuarios.length) {
-        conteiner.innerHTML = `
-            <div class="estado-vazio">
-                Nenhum usuário cadastrado.
-            </div>
-        `;
+    document.getElementById(
+        "modalidade-resumo"
+    ).textContent =
+        formatarModalidade(
+            perfilPaginaPerfil
+                .modalidadePreferida
+        );
 
-        return;
-    }
+    document.getElementById(
+        "localizacao-resumo"
+    ).textContent =
+        perfilPaginaPerfil
+            .localizacaoPreferida ||
+        "Localização não informada";
 
-    conteiner.innerHTML =
-        usuarios
-            .map(usuario => {
-                const selecionado =
-                    usuario.id ===
-                    usuarioSelecionadoId;
-
-                const inicial =
-                    obterInicial(
-                        usuario.nome
-                    );
-
-                return `
-                    <button
-                        type="button"
-                        class="
-                            item-usuario
-                            ${
-                                selecionado
-                                    ? "selecionado"
-                                    : ""
-                            }
-                        "
-                        data-usuario-id="${usuario.id}"
-                    >
-                        <span class="avatar-pequeno">
-                            ${inicial}
-                        </span>
-
-                        <span class="dados-item-usuario">
-                            <strong>
-                                ${escaparHtml(usuario.nome)}
-                            </strong>
-
-                            <span>
-                                ${escaparHtml(usuario.email)}
-                            </span>
-                        </span>
-                    </button>
-                `;
-            })
-            .join("");
-
-    conteiner
-        .querySelectorAll(
-            "[data-usuario-id]"
-        )
-        .forEach(botao => {
-            botao.addEventListener(
-                "click",
-                () => {
-                    usuarioSelecionadoId =
-                        Number(
-                            botao.dataset.usuarioId
-                        );
-
-                    salvarUsuarioSelecionado();
-
-                    renderizarPagina();
-                }
-            );
-        });
+    renderizarFotoPerfil();
+    renderizarCurriculo();
 }
 
 
-function renderizarUsuarioSelecionado() {
-    const usuario =
-        obterUsuarioSelecionado();
-
-    if (!usuario) {
-        return;
-    }
-
-    document.getElementById(
-        "nome-usuario"
-    ).textContent =
-        usuario.nome;
-
-    document.getElementById(
-        "email-usuario"
-    ).textContent =
-        usuario.email;
-
-    document.getElementById(
-        "avatar-usuario"
-    ).textContent =
-        obterInicial(
-            usuario.nome
-        );
-
-    const etiqueta =
+function renderizarFotoPerfil() {
+    const imagem =
         document.getElementById(
-            "status-usuario"
+            "imagem-perfil"
         );
 
-    etiqueta.textContent =
-        formatarStatusUsuario(
-            usuario.status
-        );
-
-    etiqueta.classList.toggle(
-        "inativo",
-        usuario.status === "inativo"
-    );
-}
-
-
-function renderizarPerfilProfissional() {
-    const perfil =
-        obterPerfilSelecionado();
-
-    const botaoSalvar =
+    const inicial =
         document.getElementById(
-            "botao-salvar-perfil"
+            "inicial-perfil"
         );
 
-    const botaoExcluir =
-        document.getElementById(
-            "botao-excluir-perfil"
+    inicial.textContent =
+        obterInicialPerfil(
+            usuarioPaginaPerfil.nome
         );
 
-    const situacao =
-        document.getElementById(
-            "situacao-perfil-profissional"
-        );
+    const fotoUrl =
+        perfilPaginaPerfil.fotoUrl;
 
-    limparFormularioPerfil();
-
-    if (!perfil) {
-        situacao.textContent =
-            "Não criado";
-
-        botaoSalvar.textContent =
-            "Criar perfil profissional";
-
-        botaoExcluir.classList.add(
+    if (!fotoUrl) {
+        imagem.classList.add(
             "oculto"
         );
 
-        atualizarFormularioHabilidade();
+        inicial.classList.remove(
+            "oculto"
+        );
+
+        imagem.removeAttribute(
+            "src"
+        );
 
         return;
     }
 
-    situacao.textContent =
-        "Perfil criado";
+    let enderecoFoto = fotoUrl;
 
-    botaoSalvar.textContent =
-        "Salvar alterações";
+    if (
+        !fotoUrl.startsWith("http://") &&
+        !fotoUrl.startsWith("https://")
+    ) {
+        const origemBackend =
+            API_BASE_URL.replace(
+                /\/api$/,
+                ""
+            );
 
-    botaoExcluir.classList.remove(
+        enderecoFoto =
+            `${origemBackend}${fotoUrl}`;
+    }
+
+    imagem.onload = () => {
+        imagem.classList.remove(
+            "oculto"
+        );
+
+        inicial.classList.add(
+            "oculto"
+        );
+    };
+
+    imagem.onerror = () => {
+        imagem.classList.add(
+            "oculto"
+        );
+
+        inicial.classList.remove(
+            "oculto"
+        );
+    };
+
+    imagem.src =
+        `${enderecoFoto}${
+            enderecoFoto.includes("?")
+                ? "&"
+                : "?"
+        }v=${Date.now()}`;
+}
+
+
+function renderizarCurriculo() {
+    const link =
+        document.getElementById(
+            "link-curriculo"
+        );
+
+    const curriculoUrl =
+        perfilPaginaPerfil
+            .curriculoUrl;
+
+    if (!curriculoUrl) {
+        link.classList.add(
+            "oculto"
+        );
+
+        link.removeAttribute(
+            "href"
+        );
+
+        return;
+    }
+
+    if (
+        curriculoUrl.startsWith(
+            "http://"
+        ) ||
+        curriculoUrl.startsWith(
+            "https://"
+        )
+    ) {
+        link.href =
+            curriculoUrl;
+
+    } else {
+        const origemBackend =
+            API_BASE_URL.replace(
+                /\/api$/,
+                ""
+            );
+
+        link.href =
+            `${origemBackend}${curriculoUrl}`;
+    }
+
+    link.classList.remove(
         "oculto"
     );
-
-    document.getElementById(
-        "nivel-experiencia"
-    ).value =
-        perfil.nivelExperiencia || "";
-
-    document.getElementById(
-        "modalidade-preferida"
-    ).value =
-        perfil.modalidadePreferida || "";
-
-    document.getElementById(
-        "localizacao-preferida"
-    ).value =
-        perfil.localizacaoPreferida || "";
-
-    document.getElementById(
-        "horas-estudo"
-    ).value =
-        perfil.horasSemanaisEstudo ?? "";
-
-    document.getElementById(
-        "pretensao-salarial"
-    ).value =
-        perfil.pretensaoSalarial ?? "";
-
-    document.getElementById(
-        "objetivo-profissional"
-    ).value =
-        perfil.objetivoProfissional || "";
-
-    atualizarFormularioHabilidade();
 }
 
 
-function limparFormularioPerfil() {
+function renderizarSobreMim() {
     document.getElementById(
-        "nivel-experiencia"
-    ).value = "";
-
-    document.getElementById(
-        "modalidade-preferida"
-    ).value = "";
-
-    document.getElementById(
-        "localizacao-preferida"
-    ).value = "";
-
-    document.getElementById(
-        "horas-estudo"
-    ).value = "";
-
-    document.getElementById(
-        "pretensao-salarial"
-    ).value = "";
-
-    document.getElementById(
-        "objetivo-profissional"
-    ).value = "";
+        "texto-sobre-mim"
+    ).textContent =
+        perfilPaginaPerfil.sobreMim ||
+        "Você ainda não adicionou uma apresentação ao seu perfil.";
 }
 
 
-function renderizarHabilidadesPerfil() {
+function renderizarExperiencias() {
     const conteiner =
         document.getElementById(
-            "lista-habilidades-perfil"
+            "lista-experiencias"
         );
 
-    const contador =
-        document.getElementById(
-            "quantidade-habilidades-perfil"
-        );
-
-    const perfil =
-        obterPerfilSelecionado();
-
-    if (!perfil) {
-        contador.textContent =
-            "0 habilidades";
-
+    if (
+        !experienciasPaginaPerfil.length
+    ) {
         conteiner.innerHTML = `
             <div class="estado-vazio">
-                Crie primeiro o perfil profissional
-                para adicionar habilidades.
+                Nenhuma experiência profissional adicionada.
             </div>
         `;
 
         return;
     }
 
-    const associacoes =
-        habilidadesDosPerfis.filter(
-            item =>
-                item.perfilProfissionalId ===
-                perfil.id
-        );
-
-    contador.textContent =
-        `${associacoes.length} ${
-            associacoes.length === 1
-                ? "habilidade"
-                : "habilidades"
-        }`;
-
-    if (!associacoes.length) {
-        conteiner.innerHTML = `
-            <div class="estado-vazio">
-                Nenhuma habilidade adicionada ao perfil.
-            </div>
-        `;
-
-        return;
-    }
+    const experiencias =
+        [...experienciasPaginaPerfil]
+            .sort(
+                (a, b) =>
+                    obterTempoData(
+                        b.dataInicio
+                    ) -
+                    obterTempoData(
+                        a.dataInicio
+                    )
+            );
 
     conteiner.innerHTML =
-        associacoes
-            .map(associacao => {
-                const habilidade =
-                    habilidades.find(
-                        item =>
-                            item.id ===
-                            associacao.habilidadeId
-                    );
+        experiencias
+            .map(experiencia => `
+                <article class="item-trajetoria">
 
-                if (!habilidade) {
-                    return "";
-                }
+                    <span class="marcador-trajetoria"></span>
 
-                return `
-                    <div class="item-habilidade-perfil">
+                    <div class="conteudo-trajetoria">
 
-                        <div class="dados-habilidade">
-                            <strong>
-                                ${escaparHtml(habilidade.nome)}
-                            </strong>
-
-                            <span>
-                                ${formatarCategoria(
-                                    habilidade.categoria
-                                )}
-                            </span>
-                        </div>
-
-                        <select
-                            class="seletor-nivel"
-                            data-nivel-id="${associacao.id}"
-                        >
-                            ${criarOpcoesNivel(
-                                associacao.nivelDominio
-                            )}
-                        </select>
-
-                        <div class="acoes-habilidade">
-
-                            <button
-                                type="button"
-                                class="botao-pequeno"
-                                data-salvar-nivel="${associacao.id}"
-                            >
-                                Salvar nível
-                            </button>
-
-                            <button
-                                type="button"
-                                class="botao-pequeno perigo"
-                                data-remover-associacao="${associacao.id}"
-                            >
-                                Remover
-                            </button>
-
-                        </div>
-
-                    </div>
-                `;
-            })
-            .join("");
-}
-
-
-function atualizarFormularioHabilidade() {
-    const seletor =
-        document.getElementById(
-            "habilidade-perfil"
-        );
-
-    const perfil =
-        obterPerfilSelecionado();
-
-    if (!perfil) {
-        seletor.innerHTML = `
-            <option value="">
-                Crie primeiro o perfil profissional
-            </option>
-        `;
-
-        seletor.disabled = true;
-
-        return;
-    }
-
-    seletor.disabled = false;
-
-    const idsJaAssociados =
-        new Set(
-            habilidadesDosPerfis
-                .filter(
-                    item =>
-                        item.perfilProfissionalId ===
-                        perfil.id
-                )
-                .map(
-                    item =>
-                        item.habilidadeId
-                )
-        );
-
-    const disponiveis =
-        habilidades.filter(
-            habilidade =>
-                !idsJaAssociados.has(
-                    habilidade.id
-                )
-        );
-
-    if (!disponiveis.length) {
-        seletor.innerHTML = `
-            <option value="">
-                Nenhuma habilidade disponível
-            </option>
-        `;
-
-        return;
-    }
-
-    seletor.innerHTML = `
-        <option value="">
-            Selecione uma habilidade
-        </option>
-
-        ${disponiveis
-            .map(
-                habilidade => `
-                    <option value="${habilidade.id}">
-                        ${escaparHtml(habilidade.nome)}
-                    </option>
-                `
-            )
-            .join("")}
-    `;
-}
-
-
-function renderizarCatalogoHabilidades() {
-    const conteiner =
-        document.getElementById(
-            "catalogo-habilidades"
-        );
-
-    if (!habilidades.length) {
-        conteiner.innerHTML = `
-            <div class="estado-vazio">
-                Nenhuma habilidade cadastrada no catálogo.
-            </div>
-        `;
-
-        return;
-    }
-
-    const ordenadas =
-        [...habilidades].sort(
-            (a, b) =>
-                a.nome.localeCompare(
-                    b.nome,
-                    "pt-BR"
-                )
-        );
-
-    conteiner.innerHTML =
-        ordenadas
-            .map(habilidade => `
-                <article class="cartao-habilidade">
-
-                    <div class="topo-habilidade">
                         <h3>
-                            ${escaparHtml(habilidade.nome)}
+                            ${escaparHtmlPerfil(
+                                experiencia.cargo
+                            )}
                         </h3>
+
+                        <span class="instituicao-trajetoria">
+                            ${escaparHtmlPerfil(
+                                experiencia.empresa
+                            )}
+                        </span>
+
+                        <span class="periodo-trajetoria">
+                            ${formatarPeriodo(
+                                experiencia.dataInicio,
+                                experiencia.dataFim,
+                                experiencia.atual,
+                                "Atual"
+                            )}
+                        </span>
+
+                        ${
+                            experiencia.descricao
+                                ? `
+                                    <p class="descricao-trajetoria">
+                                        ${escaparHtmlPerfil(
+                                            experiencia.descricao
+                                        )}
+                                    </p>
+                                `
+                                : ""
+                        }
+
                     </div>
 
-                    <span class="categoria-habilidade">
-                        ${formatarCategoria(
-                            habilidade.categoria
-                        )}
-                    </span>
-
-                    <p>
-                        ${
-                            habilidade.descricao
-                                ? escaparHtml(
-                                    habilidade.descricao
-                                )
-                                : "Sem descrição cadastrada."
-                        }
-                    </p>
-
-                    <div class="acoes-cartao-habilidade">
+                    <div class="acoes-item">
 
                         <button
                             type="button"
-                            class="botao-pequeno"
-                            data-editar-habilidade="${habilidade.id}"
+                            class="botao-acao-item"
+                            data-editar-experiencia="${experiencia.id}"
                         >
                             Editar
                         </button>
 
                         <button
                             type="button"
-                            class="botao-pequeno perigo"
-                            data-excluir-habilidade="${habilidade.id}"
+                            class="botao-acao-item perigo"
+                            data-excluir-experiencia="${experiencia.id}"
                         >
                             Excluir
                         </button>
@@ -747,209 +606,514 @@ function renderizarCatalogoHabilidades() {
 }
 
 
-async function salvarUsuario(evento) {
-    evento.preventDefault();
-
-    const nome =
+function renderizarFormacoes() {
+    const conteiner =
         document.getElementById(
-            "usuario-nome"
-        ).value.trim();
-
-    const email =
-        document.getElementById(
-            "usuario-email"
-        ).value.trim();
-
-    const senha =
-        document.getElementById(
-            "usuario-senha"
-        ).value;
-
-    try {
-        if (usuarioEmEdicaoId) {
-            const dados = {
-                nome,
-                email,
-                status:
-                    document.getElementById(
-                        "usuario-status"
-                    ).value,
-            };
-
-            if (senha) {
-                dados.senha = senha;
-            }
-
-            await apiRequest(
-                `/usuarios/${usuarioEmEdicaoId}`,
-                {
-                    method: "PUT",
-                    body: JSON.stringify(dados),
-                }
-            );
-
-            mostrarMensagem(
-                "Usuário atualizado com sucesso.",
-                "sucesso"
-            );
-
-        } else {
-            await apiRequest(
-                "/usuarios",
-                {
-                    method: "POST",
-                    body: JSON.stringify({
-                        nome,
-                        email,
-                        senha,
-                    }),
-                }
-            );
-
-            mostrarMensagem(
-                "Usuário cadastrado com sucesso.",
-                "sucesso"
-            );
-        }
-
-        document
-            .getElementById("modal-usuario")
-            .close();
-
-        await carregarDados();
-
-    } catch (erro) {
-        mostrarMensagem(
-            erro.message,
-            "erro"
+            "lista-formacoes"
         );
+
+    if (!formacoesPaginaPerfil.length) {
+        conteiner.innerHTML = `
+            <div class="estado-vazio">
+                Nenhuma formação acadêmica adicionada.
+            </div>
+        `;
+
+        return;
     }
+
+    const formacoes =
+        [...formacoesPaginaPerfil]
+            .sort(
+                (a, b) =>
+                    obterTempoData(
+                        b.dataInicio
+                    ) -
+                    obterTempoData(
+                        a.dataInicio
+                    )
+            );
+
+    conteiner.innerHTML =
+        formacoes
+            .map(formacao => `
+                <article class="item-trajetoria">
+
+                    <span class="marcador-trajetoria"></span>
+
+                    <div class="conteudo-trajetoria">
+
+                        <h3>
+                            ${escaparHtmlPerfil(
+                                formacao.curso
+                            )}
+                        </h3>
+
+                        <span class="instituicao-trajetoria">
+                            ${escaparHtmlPerfil(
+                                formacao.instituicao
+                            )}
+                        </span>
+
+                        <span class="periodo-trajetoria">
+                            ${
+                                formacao.tipoFormacao
+                                    ? `${escaparHtmlPerfil(
+                                        formacao.tipoFormacao
+                                    )} · `
+                                    : ""
+                            }
+
+                            ${formatarPeriodo(
+                                formacao.dataInicio,
+                                formacao.dataFim,
+                                formacao.emAndamento,
+                                "Em andamento"
+                            )}
+                        </span>
+
+                        ${
+                            formacao.descricao
+                                ? `
+                                    <p class="descricao-trajetoria">
+                                        ${escaparHtmlPerfil(
+                                            formacao.descricao
+                                        )}
+                                    </p>
+                                `
+                                : ""
+                        }
+
+                    </div>
+
+                    <div class="acoes-item">
+
+                        <button
+                            type="button"
+                            class="botao-acao-item"
+                            data-editar-formacao="${formacao.id}"
+                        >
+                            Editar
+                        </button>
+
+                        <button
+                            type="button"
+                            class="botao-acao-item perigo"
+                            data-excluir-formacao="${formacao.id}"
+                        >
+                            Excluir
+                        </button>
+
+                    </div>
+
+                </article>
+            `)
+            .join("");
 }
 
 
-function abrirModalUsuario(
-    usuario = null
-) {
-    usuarioEmEdicaoId =
-        usuario?.id || null;
+function renderizarProjetos() {
+    const conteiner =
+        document.getElementById(
+            "lista-projetos"
+        );
 
+    if (!projetosPaginaPerfil.length) {
+        conteiner.innerHTML = `
+            <div class="estado-vazio">
+                Nenhum projeto ou atividade adicionado.
+            </div>
+        `;
+
+        return;
+    }
+
+    conteiner.innerHTML =
+        projetosPaginaPerfil
+            .map(projeto => `
+                <article class="cartao-projeto">
+
+                    <div class="cabecalho-projeto">
+
+                        <h3>
+                            ${escaparHtmlPerfil(
+                                projeto.nome
+                            )}
+                        </h3>
+
+                        <div class="acoes-item">
+
+                            <button
+                                type="button"
+                                class="botao-acao-item"
+                                data-editar-projeto="${projeto.id}"
+                            >
+                                Editar
+                            </button>
+
+                            <button
+                                type="button"
+                                class="botao-acao-item perigo"
+                                data-excluir-projeto="${projeto.id}"
+                            >
+                                Excluir
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    ${
+                        projeto.tecnologias
+                            ? `
+                                <p class="tecnologias-projeto">
+                                    ${escaparHtmlPerfil(
+                                        projeto.tecnologias
+                                    )}
+                                </p>
+                            `
+                            : ""
+                    }
+
+                    <p class="descricao-projeto">
+                        ${
+                            projeto.descricao
+                                ? escaparHtmlPerfil(
+                                    projeto.descricao
+                                )
+                                : "Sem descrição cadastrada."
+                        }
+                    </p>
+
+                    ${
+                        projeto.link
+                            ? `
+                                <a
+                                    href="${escaparAtributoPerfil(
+                                        projeto.link
+                                    )}"
+                                    class="link-projeto"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    Ver projeto
+                                </a>
+                            `
+                            : ""
+                    }
+
+                </article>
+            `)
+            .join("");
+}
+
+
+function renderizarHabilidades() {
+    const conteiner =
+        document.getElementById(
+            "lista-habilidades-perfil"
+        );
+
+    if (
+        !perfilHabilidadesPaginaPerfil.length
+    ) {
+        conteiner.innerHTML = `
+            <div class="estado-vazio">
+                Nenhuma habilidade adicionada ao perfil.
+            </div>
+        `;
+
+        return;
+    }
+
+    conteiner.innerHTML =
+        perfilHabilidadesPaginaPerfil
+            .map(associacao => {
+                const habilidade =
+                    habilidadesPaginaPerfil
+                        .find(
+                            item =>
+                                item.id ===
+                                associacao.habilidadeId
+                        );
+
+                if (!habilidade) {
+                    return "";
+                }
+
+                return `
+                    <div class="item-habilidade-perfil">
+
+                        <div class="dados-habilidade-perfil">
+
+                            <strong>
+                                ${escaparHtmlPerfil(
+                                    habilidade.nome
+                                )}
+                            </strong>
+
+                            <span>
+                                ${formatarCategoriaHabilidade(
+                                    habilidade.categoria
+                                )}
+                            </span>
+
+                        </div>
+
+                        <span class="nivel-habilidade">
+                            ${formatarNivelHabilidade(
+                                associacao.nivelDominio
+                            )}
+                        </span>
+
+                        <button
+                            type="button"
+                            class="botao-remover-habilidade"
+                            data-remover-habilidade="${associacao.id}"
+                            title="Remover habilidade"
+                        >
+                            ×
+                        </button>
+
+                    </div>
+                `;
+            })
+            .join("");
+}
+
+
+function renderizarPreferencias() {
+    document.getElementById(
+        "preferencia-modalidade"
+    ).textContent =
+        formatarModalidade(
+            perfilPaginaPerfil
+                .modalidadePreferida
+        );
+
+    document.getElementById(
+        "preferencia-localizacao"
+    ).textContent =
+        perfilPaginaPerfil
+            .localizacaoPreferida ||
+        "Não informada";
+
+    document.getElementById(
+        "preferencia-salarial"
+    ).textContent =
+        formatarSalario(
+            perfilPaginaPerfil
+                .pretensaoSalarial
+        );
+}
+
+
+function abrirModalPerfil(criando = false) {
     const modal =
         document.getElementById(
-            "modal-usuario"
-        );
-
-    const campoSenha =
-        document.getElementById(
-            "usuario-senha"
-        );
-
-    const campoStatus =
-        document.getElementById(
-            "campo-status-usuario"
+            "modal-perfil"
         );
 
     document.getElementById(
-        "titulo-modal-usuario"
+        "titulo-modal-perfil"
     ).textContent =
-        usuario
-            ? "Editar usuário"
-            : "Novo usuário";
+        criando
+            ? "Criar perfil"
+            : "Editar perfil";
 
     document.getElementById(
-        "usuario-nome"
-    ).value =
-        usuario?.nome || "";
+        "formulario-perfil"
+    ).reset();
 
-    document.getElementById(
-        "usuario-email"
-    ).value =
-        usuario?.email || "";
-
-    campoSenha.value = "";
-
-    if (usuario) {
-        campoSenha.required = false;
-
+    if (
+        perfilPaginaPerfil &&
+        !criando
+    ) {
         document.getElementById(
-            "rotulo-senha"
-        ).textContent =
-            "Nova senha (opcional)";
-
-        campoStatus.classList.remove(
-            "oculto"
-        );
-
-        document.getElementById(
-            "usuario-status"
+            "perfil-sobre-mim"
         ).value =
-            usuario.status;
-
-    } else {
-        campoSenha.required = true;
+            perfilPaginaPerfil.sobreMim ||
+            "";
 
         document.getElementById(
-            "rotulo-senha"
-        ).textContent =
-            "Senha";
+            "perfil-objetivo"
+        ).value =
+            perfilPaginaPerfil
+                .objetivoProfissional ||
+            "";
 
-        campoStatus.classList.add(
-            "oculto"
-        );
+        document.getElementById(
+            "perfil-nivel"
+        ).value =
+            perfilPaginaPerfil
+                .nivelExperiencia ||
+            "";
+
+        document.getElementById(
+            "perfil-modalidade"
+        ).value =
+            perfilPaginaPerfil
+                .modalidadePreferida ||
+            "";
+
+        document.getElementById(
+            "perfil-localizacao"
+        ).value =
+            perfilPaginaPerfil
+                .localizacaoPreferida ||
+            "";
+
+        document.getElementById(
+            "perfil-pretensao"
+        ).value =
+            perfilPaginaPerfil
+                .pretensaoSalarial ??
+            "";
     }
 
     modal.showModal();
 }
 
 
-function editarUsuarioSelecionado() {
-    const usuario =
-        obterUsuarioSelecionado();
+async function salvarPerfil(evento) {
+    evento.preventDefault();
 
-    if (usuario) {
-        abrirModalUsuario(usuario);
-    }
-}
+    const arquivoFoto =
+        document.getElementById(
+            "perfil-foto-arquivo"
+        ).files[0] || null;
 
+    const arquivoCurriculo =
+        document.getElementById(
+            "perfil-curriculo-arquivo"
+        ).files[0] || null;
 
-async function excluirUsuarioSelecionado() {
-    const usuario =
-        obterUsuarioSelecionado();
+    const dados = {
+        sobreMim:
+            obterTextoCampo(
+                "perfil-sobre-mim"
+            ),
 
-    if (!usuario) {
-        return;
-    }
+        objetivoProfissional:
+            obterTextoCampo(
+                "perfil-objetivo"
+            ),
 
-    const confirmar =
-        window.confirm(
-            `Excluir o usuário "${usuario.nome}"? ` +
-            "Os dados vinculados a ele também poderão ser removidos."
-        );
+        nivelExperiencia:
+            obterTextoCampo(
+                "perfil-nivel"
+            ),
 
-    if (!confirmar) {
-        return;
-    }
+        modalidadePreferida:
+            obterTextoCampo(
+                "perfil-modalidade"
+            ),
+
+        localizacaoPreferida:
+            obterTextoCampo(
+                "perfil-localizacao"
+            ),
+
+        pretensaoSalarial:
+            obterNumeroCampo(
+                "perfil-pretensao"
+            ),
+    };
 
     try {
-        await apiRequest(
-            `/usuarios/${usuario.id}`,
-            {
-                method: "DELETE",
-            }
+        validarArquivoFoto(
+            arquivoFoto
         );
 
-        usuarioSelecionadoId = null;
+        validarArquivoCurriculo(
+            arquivoCurriculo
+        );
 
-        salvarUsuarioSelecionado();
+        const perfilJaExistia =
+            Boolean(
+                perfilPaginaPerfil
+            );
 
-        mostrarMensagem(
-            "Usuário excluído com sucesso.",
+        let perfilSalvo = null;
+
+        if (perfilPaginaPerfil) {
+            perfilSalvo =
+                await apiRequest(
+                    `/perfis-profissionais/${perfilPaginaPerfil.id}`,
+                    {
+                        method: "PUT",
+                        body: JSON.stringify(
+                            dados
+                        ),
+                    }
+                );
+
+        } else {
+            perfilSalvo =
+                await apiRequest(
+                    "/perfis-profissionais",
+                    {
+                        method: "POST",
+                        body: JSON.stringify({
+                            usuarioId:
+                                usuarioPaginaPerfil.id,
+                            ...dados,
+                        }),
+                    }
+                );
+        }
+
+        if (arquivoFoto) {
+            const formularioFoto =
+                new FormData();
+
+            formularioFoto.append(
+                "foto",
+                arquivoFoto
+            );
+
+            await apiRequest(
+                `/perfis-profissionais/${perfilSalvo.id}/foto`,
+                {
+                    method: "POST",
+                    body: formularioFoto,
+                }
+            );
+        }
+
+        if (arquivoCurriculo) {
+            const formularioCurriculo =
+                new FormData();
+
+            formularioCurriculo.append(
+                "curriculo",
+                arquivoCurriculo
+            );
+
+            await apiRequest(
+                `/perfis-profissionais/${perfilSalvo.id}/curriculo`,
+                {
+                    method: "POST",
+                    body: formularioCurriculo,
+                }
+            );
+        }
+
+        fecharModal(
+            "modal-perfil"
+        );
+
+        mostrarMensagemPerfil(
+            perfilJaExistia
+                ? "Perfil atualizado com sucesso."
+                : "Perfil criado com sucesso.",
             "sucesso"
         );
 
-        await carregarDados();
+        await carregarDadosPerfil();
 
     } catch (erro) {
-        mostrarMensagem(
+        mostrarMensagemPerfil(
             erro.message,
             "erro"
         );
@@ -957,70 +1121,239 @@ async function excluirUsuarioSelecionado() {
 }
 
 
-async function salvarPerfilProfissional(
-    evento
-) {
-    evento.preventDefault();
-
-    if (!usuarioSelecionadoId) {
+function validarArquivoFoto(arquivo) {
+    if (!arquivo) {
         return;
     }
 
-    const perfil =
-        obterPerfilSelecionado();
+    const nome =
+        arquivo.name.toLowerCase();
 
-    const dados =
-        obterDadosFormularioPerfil();
+    const extensaoValida =
+        nome.endsWith(".png") ||
+        nome.endsWith(".jpg") ||
+        nome.endsWith(".jpeg");
+
+    const tipoValido =
+        arquivo.type ===
+            "image/png" ||
+        arquivo.type ===
+            "image/jpeg";
+
+    if (
+        !extensaoValida ||
+        !tipoValido
+    ) {
+        throw new Error(
+            "A foto deve estar no formato PNG ou JPEG."
+        );
+    }
+
+    if (
+        arquivo.size >
+        3 * 1024 * 1024
+    ) {
+        throw new Error(
+            "A foto deve possuir no máximo 3 MB."
+        );
+    }
+}
+
+
+function validarArquivoCurriculo(
+    arquivo
+) {
+    if (!arquivo) {
+        return;
+    }
+
+    const nome =
+        arquivo.name.toLowerCase();
+
+    if (
+        arquivo.type !==
+            "application/pdf" &&
+        !nome.endsWith(".pdf")
+    ) {
+        throw new Error(
+            "O currículo deve estar no formato PDF."
+        );
+    }
+
+    if (
+        arquivo.size >
+        5 * 1024 * 1024
+    ) {
+        throw new Error(
+            "O currículo deve possuir no máximo 5 MB."
+        );
+    }
+}
+
+
+function abrirModalExperiencia(
+    experiencia = null
+) {
+    experienciaEmEdicaoId =
+        experiencia?.id || null;
+
+    document.getElementById(
+        "formulario-experiencia"
+    ).reset();
+
+    document.getElementById(
+        "titulo-modal-experiencia"
+    ).textContent =
+        experiencia
+            ? "Editar experiência"
+            : "Nova experiência";
+
+    if (experiencia) {
+        document.getElementById(
+            "experiencia-cargo"
+        ).value =
+            experiencia.cargo || "";
+
+        document.getElementById(
+            "experiencia-empresa"
+        ).value =
+            experiencia.empresa || "";
+
+        document.getElementById(
+            "experiencia-data-inicio"
+        ).value =
+            experiencia.dataInicio || "";
+
+        document.getElementById(
+            "experiencia-data-fim"
+        ).value =
+            experiencia.dataFim || "";
+
+        document.getElementById(
+            "experiencia-atual"
+        ).checked =
+            Boolean(
+                experiencia.atual
+            );
+
+        document.getElementById(
+            "experiencia-descricao"
+        ).value =
+            experiencia.descricao ||
+            "";
+    }
+
+    atualizarCampoFimExperiencia();
+
+    document.getElementById(
+        "modal-experiencia"
+    ).showModal();
+}
+
+
+function atualizarCampoFimExperiencia() {
+    const atual =
+        document.getElementById(
+            "experiencia-atual"
+        ).checked;
+
+    const dataFim =
+        document.getElementById(
+            "experiencia-data-fim"
+        );
+
+    dataFim.disabled = atual;
+
+    if (atual) {
+        dataFim.value = "";
+    }
+}
+
+
+async function salvarExperiencia(evento) {
+    evento.preventDefault();
+
+    if (!perfilPaginaPerfil) {
+        return;
+    }
+
+    const dados = {
+        perfilProfissionalId:
+            perfilPaginaPerfil.id,
+
+        cargo:
+            obterTextoCampo(
+                "experiencia-cargo"
+            ),
+
+        empresa:
+            obterTextoCampo(
+                "experiencia-empresa"
+            ),
+
+        dataInicio:
+            obterTextoCampo(
+                "experiencia-data-inicio"
+            ),
+
+        dataFim:
+            obterTextoCampo(
+                "experiencia-data-fim"
+            ),
+
+        atual:
+            document.getElementById(
+                "experiencia-atual"
+            ).checked,
+
+        descricao:
+            obterTextoCampo(
+                "experiencia-descricao"
+            ),
+    };
 
     try {
-        if (perfil) {
-            if (
-                Object.keys(dados).length === 0
-            ) {
-                mostrarMensagem(
-                    "Preencha ao menos um campo do perfil.",
-                    "erro"
-                );
-
-                return;
-            }
-
+        if (experienciaEmEdicaoId) {
             await apiRequest(
-                `/perfis-profissionais/${perfil.id}`,
+                `/experiencias-profissionais/${experienciaEmEdicaoId}`,
                 {
                     method: "PUT",
-                    body: JSON.stringify(dados),
+                    body: JSON.stringify(
+                        dados
+                    ),
                 }
             );
 
-            mostrarMensagem(
-                "Perfil profissional atualizado.",
+            mostrarMensagemPerfil(
+                "Experiência atualizada.",
                 "sucesso"
             );
 
         } else {
             await apiRequest(
-                "/perfis-profissionais",
+                "/experiencias-profissionais",
                 {
                     method: "POST",
-                    body: JSON.stringify({
-                        usuarioId:
-                            usuarioSelecionadoId,
-                        ...dados,
-                    }),
+                    body: JSON.stringify(
+                        dados
+                    ),
                 }
             );
 
-            mostrarMensagem(
-                "Perfil profissional criado.",
+            mostrarMensagemPerfil(
+                "Experiência adicionada.",
                 "sucesso"
             );
         }
 
-        await carregarDados();
+        fecharModal(
+            "modal-experiencia"
+        );
+
+        await carregarDadosPerfil();
 
     } catch (erro) {
-        mostrarMensagem(
+        mostrarMensagemPerfil(
             erro.message,
             "erro"
         );
@@ -1028,108 +1361,254 @@ async function salvarPerfilProfissional(
 }
 
 
-function obterDadosFormularioPerfil() {
-    const dados = {};
+async function tratarAcaoExperiencia(
+    evento
+) {
+    const botaoEditar =
+        evento.target.closest(
+            "[data-editar-experiencia]"
+        );
 
-    const nivel =
-        document.getElementById(
-            "nivel-experiencia"
-        ).value;
+    const botaoExcluir =
+        evento.target.closest(
+            "[data-excluir-experiencia]"
+        );
 
-    const modalidade =
-        document.getElementById(
-            "modalidade-preferida"
-        ).value;
+    if (botaoEditar) {
+        const id =
+            Number(
+                botaoEditar.dataset
+                    .editarExperiencia
+            );
 
-    const localizacao =
-        document.getElementById(
-            "localizacao-preferida"
-        ).value.trim();
+        const experiencia =
+            experienciasPaginaPerfil.find(
+                item =>
+                    item.id === id
+            );
 
-    const horas =
-        document.getElementById(
-            "horas-estudo"
-        ).value;
+        if (experiencia) {
+            abrirModalExperiencia(
+                experiencia
+            );
+        }
 
-    const salario =
-        document.getElementById(
-            "pretensao-salarial"
-        ).value;
-
-    const objetivo =
-        document.getElementById(
-            "objetivo-profissional"
-        ).value.trim();
-
-    if (nivel) {
-        dados.nivelExperiencia =
-            nivel;
+        return;
     }
 
-    if (modalidade) {
-        dados.modalidadePreferida =
-            modalidade;
-    }
+    if (botaoExcluir) {
+        const id =
+            Number(
+                botaoExcluir.dataset
+                    .excluirExperiencia
+            );
 
-    if (localizacao) {
-        dados.localizacaoPreferida =
-            localizacao;
-    }
+        if (
+            !window.confirm(
+                "Deseja excluir esta experiência?"
+            )
+        ) {
+            return;
+        }
 
-    if (horas !== "") {
-        dados.horasSemanaisEstudo =
-            Number(horas);
-    }
+        try {
+            await apiRequest(
+                `/experiencias-profissionais/${id}`,
+                {
+                    method: "DELETE",
+                }
+            );
 
-    if (salario !== "") {
-        dados.pretensaoSalarial =
-            Number(salario);
-    }
+            mostrarMensagemPerfil(
+                "Experiência excluída.",
+                "sucesso"
+            );
 
-    if (objetivo) {
-        dados.objetivoProfissional =
-            objetivo;
-    }
+            await carregarDadosPerfil();
 
-    return dados;
+        } catch (erro) {
+            mostrarMensagemPerfil(
+                erro.message,
+                "erro"
+            );
+        }
+    }
 }
 
 
-async function excluirPerfilProfissional() {
-    const perfil =
-        obterPerfilSelecionado();
+function abrirModalFormacao(
+    formacao = null
+) {
+    formacaoEmEdicaoId =
+        formacao?.id || null;
 
-    if (!perfil) {
-        return;
+    document.getElementById(
+        "formulario-formacao"
+    ).reset();
+
+    document.getElementById(
+        "titulo-modal-formacao"
+    ).textContent =
+        formacao
+            ? "Editar formação"
+            : "Nova formação";
+
+    if (formacao) {
+        document.getElementById(
+            "formacao-instituicao"
+        ).value =
+            formacao.instituicao || "";
+
+        document.getElementById(
+            "formacao-curso"
+        ).value =
+            formacao.curso || "";
+
+        document.getElementById(
+            "formacao-tipo"
+        ).value =
+            formacao.tipoFormacao || "";
+
+        document.getElementById(
+            "formacao-data-inicio"
+        ).value =
+            formacao.dataInicio || "";
+
+        document.getElementById(
+            "formacao-data-fim"
+        ).value =
+            formacao.dataFim || "";
+
+        document.getElementById(
+            "formacao-em-andamento"
+        ).checked =
+            Boolean(
+                formacao.emAndamento
+            );
+
+        document.getElementById(
+            "formacao-descricao"
+        ).value =
+            formacao.descricao || "";
     }
 
-    const confirmar =
-        window.confirm(
-            "Excluir este perfil profissional? " +
-            "As habilidades associadas ao perfil também serão removidas."
+    atualizarCampoFimFormacao();
+
+    document.getElementById(
+        "modal-formacao"
+    ).showModal();
+}
+
+
+function atualizarCampoFimFormacao() {
+    const emAndamento =
+        document.getElementById(
+            "formacao-em-andamento"
+        ).checked;
+
+    const dataFim =
+        document.getElementById(
+            "formacao-data-fim"
         );
 
-    if (!confirmar) {
+    dataFim.disabled =
+        emAndamento;
+
+    if (emAndamento) {
+        dataFim.value = "";
+    }
+}
+
+
+async function salvarFormacao(evento) {
+    evento.preventDefault();
+
+    if (!perfilPaginaPerfil) {
         return;
     }
+
+    const dados = {
+        perfilProfissionalId:
+            perfilPaginaPerfil.id,
+
+        instituicao:
+            obterTextoCampo(
+                "formacao-instituicao"
+            ),
+
+        curso:
+            obterTextoCampo(
+                "formacao-curso"
+            ),
+
+        tipoFormacao:
+            obterTextoCampo(
+                "formacao-tipo"
+            ),
+
+        dataInicio:
+            obterTextoCampo(
+                "formacao-data-inicio"
+            ),
+
+        dataFim:
+            obterTextoCampo(
+                "formacao-data-fim"
+            ),
+
+        emAndamento:
+            document.getElementById(
+                "formacao-em-andamento"
+            ).checked,
+
+        descricao:
+            obterTextoCampo(
+                "formacao-descricao"
+            ),
+    };
 
     try {
-        await apiRequest(
-            `/perfis-profissionais/${perfil.id}`,
-            {
-                method: "DELETE",
-            }
+        if (formacaoEmEdicaoId) {
+            await apiRequest(
+                `/formacoes-academicas/${formacaoEmEdicaoId}`,
+                {
+                    method: "PUT",
+                    body: JSON.stringify(
+                        dados
+                    ),
+                }
+            );
+
+            mostrarMensagemPerfil(
+                "Formação atualizada.",
+                "sucesso"
+            );
+
+        } else {
+            await apiRequest(
+                "/formacoes-academicas",
+                {
+                    method: "POST",
+                    body: JSON.stringify(
+                        dados
+                    ),
+                }
+            );
+
+            mostrarMensagemPerfil(
+                "Formação adicionada.",
+                "sucesso"
+            );
+        }
+
+        fecharModal(
+            "modal-formacao"
         );
 
-        mostrarMensagem(
-            "Perfil profissional excluído.",
-            "sucesso"
-        );
-
-        await carregarDados();
+        await carregarDadosPerfil();
 
     } catch (erro) {
-        mostrarMensagem(
+        mostrarMensagemPerfil(
             erro.message,
             "erro"
         );
@@ -1137,37 +1616,364 @@ async function excluirPerfilProfissional() {
 }
 
 
-async function adicionarHabilidadeAoPerfil(
+async function tratarAcaoFormacao(
+    evento
+) {
+    const botaoEditar =
+        evento.target.closest(
+            "[data-editar-formacao]"
+        );
+
+    const botaoExcluir =
+        evento.target.closest(
+            "[data-excluir-formacao]"
+        );
+
+    if (botaoEditar) {
+        const id =
+            Number(
+                botaoEditar.dataset
+                    .editarFormacao
+            );
+
+        const formacao =
+            formacoesPaginaPerfil.find(
+                item =>
+                    item.id === id
+            );
+
+        if (formacao) {
+            abrirModalFormacao(
+                formacao
+            );
+        }
+
+        return;
+    }
+
+    if (botaoExcluir) {
+        const id =
+            Number(
+                botaoExcluir.dataset
+                    .excluirFormacao
+            );
+
+        if (
+            !window.confirm(
+                "Deseja excluir esta formação?"
+            )
+        ) {
+            return;
+        }
+
+        try {
+            await apiRequest(
+                `/formacoes-academicas/${id}`,
+                {
+                    method: "DELETE",
+                }
+            );
+
+            mostrarMensagemPerfil(
+                "Formação excluída.",
+                "sucesso"
+            );
+
+            await carregarDadosPerfil();
+
+        } catch (erro) {
+            mostrarMensagemPerfil(
+                erro.message,
+                "erro"
+            );
+        }
+    }
+}
+
+
+function abrirModalProjeto(
+    projeto = null
+) {
+    projetoEmEdicaoId =
+        projeto?.id || null;
+
+    document.getElementById(
+        "formulario-projeto"
+    ).reset();
+
+    document.getElementById(
+        "titulo-modal-projeto"
+    ).textContent =
+        projeto
+            ? "Editar projeto"
+            : "Novo projeto";
+
+    if (projeto) {
+        document.getElementById(
+            "projeto-nome"
+        ).value =
+            projeto.nome || "";
+
+        document.getElementById(
+            "projeto-tecnologias"
+        ).value =
+            projeto.tecnologias || "";
+
+        document.getElementById(
+            "projeto-link"
+        ).value =
+            projeto.link || "";
+
+        document.getElementById(
+            "projeto-descricao"
+        ).value =
+            projeto.descricao || "";
+    }
+
+    document.getElementById(
+        "modal-projeto"
+    ).showModal();
+}
+
+
+async function salvarProjeto(evento) {
+    evento.preventDefault();
+
+    if (!perfilPaginaPerfil) {
+        return;
+    }
+
+    const dados = {
+        perfilProfissionalId:
+            perfilPaginaPerfil.id,
+
+        nome:
+            obterTextoCampo(
+                "projeto-nome"
+            ),
+
+        tecnologias:
+            obterTextoCampo(
+                "projeto-tecnologias"
+            ),
+
+        link:
+            obterTextoCampo(
+                "projeto-link"
+            ),
+
+        descricao:
+            obterTextoCampo(
+                "projeto-descricao"
+            ),
+    };
+
+    try {
+        if (projetoEmEdicaoId) {
+            await apiRequest(
+                `/projetos/${projetoEmEdicaoId}`,
+                {
+                    method: "PUT",
+                    body: JSON.stringify(
+                        dados
+                    ),
+                }
+            );
+
+            mostrarMensagemPerfil(
+                "Projeto atualizado.",
+                "sucesso"
+            );
+
+        } else {
+            await apiRequest(
+                "/projetos",
+                {
+                    method: "POST",
+                    body: JSON.stringify(
+                        dados
+                    ),
+                }
+            );
+
+            mostrarMensagemPerfil(
+                "Projeto adicionado.",
+                "sucesso"
+            );
+        }
+
+        fecharModal(
+            "modal-projeto"
+        );
+
+        await carregarDadosPerfil();
+
+    } catch (erro) {
+        mostrarMensagemPerfil(
+            erro.message,
+            "erro"
+        );
+    }
+}
+
+
+async function tratarAcaoProjeto(
+    evento
+) {
+    const botaoEditar =
+        evento.target.closest(
+            "[data-editar-projeto]"
+        );
+
+    const botaoExcluir =
+        evento.target.closest(
+            "[data-excluir-projeto]"
+        );
+
+    if (botaoEditar) {
+        const id =
+            Number(
+                botaoEditar.dataset
+                    .editarProjeto
+            );
+
+        const projeto =
+            projetosPaginaPerfil.find(
+                item =>
+                    item.id === id
+            );
+
+        if (projeto) {
+            abrirModalProjeto(
+                projeto
+            );
+        }
+
+        return;
+    }
+
+    if (botaoExcluir) {
+        const id =
+            Number(
+                botaoExcluir.dataset
+                    .excluirProjeto
+            );
+
+        if (
+            !window.confirm(
+                "Deseja excluir este projeto?"
+            )
+        ) {
+            return;
+        }
+
+        try {
+            await apiRequest(
+                `/projetos/${id}`,
+                {
+                    method: "DELETE",
+                }
+            );
+
+            mostrarMensagemPerfil(
+                "Projeto excluído.",
+                "sucesso"
+            );
+
+            await carregarDadosPerfil();
+
+        } catch (erro) {
+            mostrarMensagemPerfil(
+                erro.message,
+                "erro"
+            );
+        }
+    }
+}
+
+
+function abrirModalHabilidade() {
+    const seletor =
+        document.getElementById(
+            "habilidade-selecionada"
+        );
+
+    const idsAssociados =
+        new Set(
+            perfilHabilidadesPaginaPerfil
+                .map(
+                    item =>
+                        item.habilidadeId
+                )
+        );
+
+    const disponiveis =
+        habilidadesPaginaPerfil
+            .filter(
+                habilidade =>
+                    !idsAssociados.has(
+                        habilidade.id
+                    )
+            )
+            .sort(
+                (a, b) =>
+                    a.nome.localeCompare(
+                        b.nome,
+                        "pt-BR"
+                    )
+            );
+
+    seletor.innerHTML = `
+        <option value="">
+            Selecione uma habilidade
+        </option>
+
+        ${disponiveis
+            .map(
+                habilidade => `
+                    <option value="${habilidade.id}">
+                        ${escaparHtmlPerfil(
+                            habilidade.nome
+                        )}
+                    </option>
+                `
+            )
+            .join("")}
+    `;
+
+    document.getElementById(
+        "habilidade-nivel"
+    ).value = "basico";
+
+    document.getElementById(
+        "modal-habilidade-perfil"
+    ).showModal();
+}
+
+
+async function adicionarHabilidade(
     evento
 ) {
     evento.preventDefault();
 
-    const perfil =
-        obterPerfilSelecionado();
-
-    if (!perfil) {
-        mostrarMensagem(
-            "Crie primeiro o perfil profissional.",
-            "erro"
-        );
-
+    if (!perfilPaginaPerfil) {
         return;
     }
 
     const habilidadeId =
         Number(
             document.getElementById(
-                "habilidade-perfil"
+                "habilidade-selecionada"
             ).value
         );
 
     const nivelDominio =
         document.getElementById(
-            "nivel-dominio"
+            "habilidade-nivel"
         ).value;
 
     if (!habilidadeId) {
-        mostrarMensagem(
+        mostrarMensagemPerfil(
             "Selecione uma habilidade.",
             "erro"
         );
@@ -1182,22 +1988,26 @@ async function adicionarHabilidadeAoPerfil(
                 method: "POST",
                 body: JSON.stringify({
                     perfilProfissionalId:
-                        perfil.id,
+                        perfilPaginaPerfil.id,
                     habilidadeId,
                     nivelDominio,
                 }),
             }
         );
 
-        mostrarMensagem(
-            "Habilidade adicionada ao perfil.",
+        fecharModal(
+            "modal-habilidade-perfil"
+        );
+
+        mostrarMensagemPerfil(
+            "Habilidade adicionada.",
             "sucesso"
         );
 
-        await carregarDados();
+        await carregarDadosPerfil();
 
     } catch (erro) {
-        mostrarMensagem(
+        mostrarMensagemPerfil(
             erro.message,
             "erro"
         );
@@ -1205,286 +2015,49 @@ async function adicionarHabilidadeAoPerfil(
 }
 
 
-async function tratarAcaoHabilidadePerfil(
+async function tratarAcaoHabilidade(
     evento
 ) {
-    const botaoSalvar =
+    const botao =
         evento.target.closest(
-            "[data-salvar-nivel]"
+            "[data-remover-habilidade]"
         );
 
-    const botaoRemover =
-        evento.target.closest(
-            "[data-remover-associacao]"
-        );
-
-    if (botaoSalvar) {
-        const associacaoId =
-            Number(
-                botaoSalvar.dataset
-                    .salvarNivel
-            );
-
-        const seletor =
-            document.querySelector(
-                `[data-nivel-id="${associacaoId}"]`
-            );
-
-        try {
-            await apiRequest(
-                `/perfil-habilidades/${associacaoId}`,
-                {
-                    method: "PUT",
-                    body: JSON.stringify({
-                        nivelDominio:
-                            seletor.value,
-                    }),
-                }
-            );
-
-            mostrarMensagem(
-                "Nível de domínio atualizado.",
-                "sucesso"
-            );
-
-            await carregarDados();
-
-        } catch (erro) {
-            mostrarMensagem(
-                erro.message,
-                "erro"
-            );
-        }
-
+    if (!botao) {
         return;
     }
 
-    if (botaoRemover) {
-        const associacaoId =
-            Number(
-                botaoRemover.dataset
-                    .removerAssociacao
-            );
-
-        try {
-            await apiRequest(
-                `/perfil-habilidades/${associacaoId}`,
-                {
-                    method: "DELETE",
-                }
-            );
-
-            mostrarMensagem(
-                "Habilidade removida do perfil.",
-                "sucesso"
-            );
-
-            await carregarDados();
-
-        } catch (erro) {
-            mostrarMensagem(
-                erro.message,
-                "erro"
-            );
-        }
-    }
-}
-
-
-function tratarAcaoCatalogo(
-    evento
-) {
-    const botaoEditar =
-        evento.target.closest(
-            "[data-editar-habilidade]"
+    const id =
+        Number(
+            botao.dataset
+                .removerHabilidade
         );
 
-    const botaoExcluir =
-        evento.target.closest(
-            "[data-excluir-habilidade]"
-        );
-
-    if (botaoEditar) {
-        const habilidadeId =
-            Number(
-                botaoEditar.dataset
-                    .editarHabilidade
-            );
-
-        const habilidade =
-            habilidades.find(
-                item =>
-                    item.id === habilidadeId
-            );
-
-        if (habilidade) {
-            abrirModalHabilidade(
-                habilidade
-            );
-        }
-
-        return;
-    }
-
-    if (botaoExcluir) {
-        const habilidadeId =
-            Number(
-                botaoExcluir.dataset
-                    .excluirHabilidade
-            );
-
-        excluirHabilidade(
-            habilidadeId
-        );
-    }
-}
-
-
-function abrirModalHabilidade(
-    habilidade = null
-) {
-    habilidadeEmEdicaoId =
-        habilidade?.id || null;
-
-    document.getElementById(
-        "titulo-modal-habilidade"
-    ).textContent =
-        habilidade
-            ? "Editar habilidade"
-            : "Nova habilidade";
-
-    document.getElementById(
-        "habilidade-nome"
-    ).value =
-        habilidade?.nome || "";
-
-    document.getElementById(
-        "habilidade-categoria"
-    ).value =
-        habilidade?.categoria ||
-        "linguagem";
-
-    document.getElementById(
-        "habilidade-descricao"
-    ).value =
-        habilidade?.descricao || "";
-
-    document
-        .getElementById(
-            "modal-habilidade"
+    if (
+        !window.confirm(
+            "Deseja remover esta habilidade do perfil?"
         )
-        .showModal();
-}
-
-
-async function salvarHabilidade(
-    evento
-) {
-    evento.preventDefault();
-
-    const dados = {
-        nome:
-            document.getElementById(
-                "habilidade-nome"
-            ).value.trim(),
-
-        categoria:
-            document.getElementById(
-                "habilidade-categoria"
-            ).value,
-
-        descricao:
-            document.getElementById(
-                "habilidade-descricao"
-            ).value.trim(),
-    };
-
-    try {
-        if (habilidadeEmEdicaoId) {
-            await apiRequest(
-                `/habilidades/${habilidadeEmEdicaoId}`,
-                {
-                    method: "PUT",
-                    body: JSON.stringify(dados),
-                }
-            );
-
-            mostrarMensagem(
-                "Habilidade atualizada.",
-                "sucesso"
-            );
-
-        } else {
-            await apiRequest(
-                "/habilidades",
-                {
-                    method: "POST",
-                    body: JSON.stringify(dados),
-                }
-            );
-
-            mostrarMensagem(
-                "Habilidade cadastrada.",
-                "sucesso"
-            );
-        }
-
-        document
-            .getElementById(
-                "modal-habilidade"
-            )
-            .close();
-
-        await carregarDados();
-
-    } catch (erro) {
-        mostrarMensagem(
-            erro.message,
-            "erro"
-        );
-    }
-}
-
-
-async function excluirHabilidade(
-    habilidadeId
-) {
-    const habilidade =
-        habilidades.find(
-            item =>
-                item.id === habilidadeId
-        );
-
-    if (!habilidade) {
-        return;
-    }
-
-    const confirmar =
-        window.confirm(
-            `Excluir a habilidade "${habilidade.nome}"?`
-        );
-
-    if (!confirmar) {
+    ) {
         return;
     }
 
     try {
         await apiRequest(
-            `/habilidades/${habilidadeId}`,
+            `/perfil-habilidades/${id}`,
             {
                 method: "DELETE",
             }
         );
 
-        mostrarMensagem(
-            "Habilidade excluída.",
+        mostrarMensagemPerfil(
+            "Habilidade removida.",
             "sucesso"
         );
 
-        await carregarDados();
+        await carregarDadosPerfil();
 
     } catch (erro) {
-        mostrarMensagem(
+        mostrarMensagemPerfil(
             erro.message,
             "erro"
         );
@@ -1492,25 +2065,54 @@ async function excluirHabilidade(
 }
 
 
-function obterUsuarioSelecionado() {
-    return usuarios.find(
-        usuario =>
-            usuario.id ===
-            usuarioSelecionadoId
-    ) || null;
+function mostrarCarregamento(
+    carregando
+) {
+    document.getElementById(
+        "carregando-perfil"
+    ).classList.toggle(
+        "oculto",
+        !carregando
+    );
 }
 
 
-function obterPerfilSelecionado() {
-    return perfisProfissionais.find(
-        perfil =>
-            perfil.usuarioId ===
-            usuarioSelecionadoId
-    ) || null;
+function fecharModal(id) {
+    const modal =
+        document.getElementById(id);
+
+    if (
+        modal &&
+        modal.open
+    ) {
+        modal.close();
+    }
 }
 
 
-function obterInicial(nome) {
+function obterTextoCampo(id) {
+    return document
+        .getElementById(id)
+        .value
+        .trim();
+}
+
+
+function obterNumeroCampo(id) {
+    const valor =
+        document.getElementById(
+            id
+        ).value;
+
+    if (valor === "") {
+        return null;
+    }
+
+    return Number(valor);
+}
+
+
+function obterInicialPerfil(nome) {
     if (!nome) {
         return "U";
     }
@@ -1522,74 +2124,232 @@ function obterInicial(nome) {
 }
 
 
-function formatarStatusUsuario(
-    status
+function formatarNivelExperiencia(
+    nivel
 ) {
-    return status === "inativo"
-        ? "Inativo"
-        : "Ativo";
+    const valores = {
+        iniciante: "Iniciante",
+        junior: "Júnior",
+        pleno: "Pleno",
+        senior: "Sênior",
+    };
+
+    return (
+        valores[nivel] ||
+        "Nível não informado"
+    );
 }
 
 
-function formatarCategoria(
+function formatarModalidade(
+    modalidade
+) {
+    const valores = {
+        presencial: "Presencial",
+        hibrido: "Híbrido",
+        remoto: "Remoto",
+    };
+
+    return (
+        valores[modalidade] ||
+        "Não informada"
+    );
+}
+
+
+function formatarNivelHabilidade(
+    nivel
+) {
+    const valores = {
+        basico: "Básico",
+        intermediario:
+            "Intermediário",
+        avancado: "Avançado",
+    };
+
+    return (
+        valores[nivel] ||
+        nivel ||
+        "Não informado"
+    );
+}
+
+
+function formatarCategoriaHabilidade(
     categoria
 ) {
-    const nomes = {
+    const valores = {
         linguagem: "Linguagem",
         framework: "Framework",
-        banco_dados: "Banco de dados",
+        banco_dados:
+            "Banco de dados",
         ferramenta: "Ferramenta",
         conceito: "Conceito",
         outra: "Outra",
     };
 
-    return nomes[categoria] ||
-        categoria ||
-        "Não informada";
+    return (
+        valores[categoria] ||
+        "Competência"
+    );
 }
 
 
-function criarOpcoesNivel(
-    nivelAtual
+function formatarSalario(valor) {
+    if (
+        valor === null ||
+        valor === undefined ||
+        valor === ""
+    ) {
+        return "Não informada";
+    }
+
+    const numero =
+        Number(valor);
+
+    if (!Number.isFinite(numero)) {
+        return "Não informada";
+    }
+
+    return numero.toLocaleString(
+        "pt-BR",
+        {
+            style: "currency",
+            currency: "BRL",
+        }
+    );
+}
+
+
+function formatarPeriodo(
+    inicio,
+    fim,
+    atual,
+    textoAtual
 ) {
-    const niveis = [
-        ["basico", "Básico"],
-        ["intermediario", "Intermediário"],
-        ["avancado", "Avançado"],
-    ];
+    const inicioFormatado =
+        formatarMesAno(inicio);
 
-    return niveis
-        .map(
-            ([valor, nome]) => `
-                <option
-                    value="${valor}"
-                    ${
-                        valor === nivelAtual
-                            ? "selected"
-                            : ""
-                    }
-                >
-                    ${nome}
-                </option>
-            `
+    const fimFormatado =
+        atual
+            ? textoAtual
+            : formatarMesAno(fim);
+
+    if (
+        !inicioFormatado &&
+        !fimFormatado
+    ) {
+        return "Período não informado";
+    }
+
+    if (!inicioFormatado) {
+        return fimFormatado;
+    }
+
+    if (!fimFormatado) {
+        return inicioFormatado;
+    }
+
+    return (
+        `${inicioFormatado} — ` +
+        `${fimFormatado}`
+    );
+}
+
+
+function formatarMesAno(valor) {
+    if (!valor) {
+        return "";
+    }
+
+    const partes =
+        valor.split("-");
+
+    if (partes.length < 2) {
+        return valor;
+    }
+
+    const ano =
+        Number(partes[0]);
+
+    const mes =
+        Number(partes[1]);
+
+    if (
+        !ano ||
+        !mes
+    ) {
+        return valor;
+    }
+
+    const data =
+        new Date(
+            ano,
+            mes - 1,
+            1
+        );
+
+    return data.toLocaleDateString(
+        "pt-BR",
+        {
+            month: "short",
+            year: "numeric",
+        }
+    );
+}
+
+
+function obterTempoData(valor) {
+    if (!valor) {
+        return 0;
+    }
+
+    const tempo =
+        new Date(valor).getTime();
+
+    return Number.isNaN(tempo)
+        ? 0
+        : tempo;
+}
+
+
+function escaparHtmlPerfil(valor) {
+    return String(
+        valor ?? ""
+    )
+        .replaceAll(
+            "&",
+            "&amp;"
         )
-        .join("");
+        .replaceAll(
+            "<",
+            "&lt;"
+        )
+        .replaceAll(
+            ">",
+            "&gt;"
+        )
+        .replaceAll(
+            "\"",
+            "&quot;"
+        )
+        .replaceAll(
+            "'",
+            "&#039;"
+        );
 }
 
 
-function escaparHtml(valor) {
-    return String(valor ?? "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
+function escaparAtributoPerfil(valor) {
+    return escaparHtmlPerfil(
+        valor
+    );
 }
 
 
-function mostrarMensagem(
-    texto,
-    tipo
+function mostrarMensagemPerfil(
+    mensagem,
+    tipo = "sucesso"
 ) {
     const elemento =
         document.getElementById(
@@ -1597,16 +2357,16 @@ function mostrarMensagem(
         );
 
     clearTimeout(
-        temporizadorMensagem
+        temporizadorMensagemPerfil
     );
 
     elemento.textContent =
-        texto;
+        mensagem;
 
     elemento.className =
-        `mensagem-sistema visivel ${tipo}`;
+        `mensagem-sistema ${tipo} visivel`;
 
-    temporizadorMensagem =
+    temporizadorMensagemPerfil =
         setTimeout(
             () => {
                 elemento.className =

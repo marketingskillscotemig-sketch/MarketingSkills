@@ -9,7 +9,7 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Perfil | Market Skills</title>
+    <title>Meu Perfil | Market Skills</title>
 
     <link
         rel="stylesheet"
@@ -79,21 +79,6 @@
 
 
             <div class="acoes-navegacao">
-
-                <a
-                    href="./perfil.html"
-                    class="botao botao-contorno"
-                >
-                    Meu perfil
-                </a>
-
-                <a
-                    href="./vagas.html"
-                    class="botao botao-principal"
-                >
-                    Explorar vagas
-                </a>
-
             </div>
 
         </div>
@@ -105,195 +90,175 @@
 
         <div class="conteudo-centralizado">
 
-            <section class="cabecalho-pagina">
+            <section class="introducao-perfil">
 
                 <div>
 
                     <span class="rotulo-destaque">
-                        Perfil profissional
+                        Meu perfil
                     </span>
 
                     <h1>
-                        Construa seu perfil para
-                        entender onde evoluir.
+                        Sua trajetória profissional
+                        em um só lugar.
                     </h1>
 
                     <p>
-                        Organize suas informações profissionais,
-                        registre habilidades e mantenha seus
-                        conhecimentos atualizados.
+                        Mantenha suas experiências, formação,
+                        habilidades e projetos atualizados para
+                        receber análises mais relevantes.
                     </p>
-
-                </div>
-
-
-                <div class="status-pagina">
-
-                    <span class="indicador-status"></span>
-
-                    Dados conectados à API
 
                 </div>
 
             </section>
 
 
-            <div class="grade-perfil">
-
-                <!-- USUÁRIOS -->
-
-                <aside class="painel-usuarios">
-
-                    <div class="cabecalho-bloco">
-
-                        <div>
-
-                            <span class="subtitulo-bloco">
-                                Conta
-                            </span>
-
-                            <h2>
-                                Usuários
-                            </h2>
-
-                        </div>
+            <div
+                id="carregando-perfil"
+                class="estado-carregando-principal"
+            >
+                Carregando seu perfil...
+            </div>
 
 
-                        <button
-                            id="botao-novo-usuario"
-                            class="botao-icone"
-                            type="button"
-                            title="Cadastrar usuário"
-                        >
-                            +
-                        </button>
+            <section
+                id="perfil-nao-criado"
+                class="perfil-nao-criado oculto"
+            >
 
-                    </div>
+                <div class="icone-perfil-vazio">
+                    +
+                </div>
 
+                <div>
 
-                    <p class="aviso-autenticacao">
-                        A autenticação ainda não faz parte desta
-                        atividade. Selecione um usuário cadastrado
-                        para administrar o perfil.
+                    <span class="subtitulo-bloco">
+                        Comece por aqui
+                    </span>
+
+                    <h2>
+                        Crie seu perfil profissional
+                    </h2>
+
+                    <p>
+                        Adicione suas principais informações para
+                        que o Market Skills possa entender melhor
+                        seu momento profissional.
                     </p>
 
+                </div>
 
-                    <div
-                        id="lista-usuarios"
-                        class="lista-usuarios"
-                    >
+                <button
+                    id="botao-criar-perfil"
+                    class="botao botao-principal"
+                    type="button"
+                >
+                    Criar meu perfil
+                </button>
 
-                        <div class="estado-carregando">
-                            Carregando usuários...
+            </section>
+
+
+            <div
+                id="conteudo-perfil"
+                class="conteudo-perfil oculto"
+            >
+
+                <section class="cartao-identidade">
+
+                    <div class="area-identidade">
+
+                        <div class="foto-perfil">
+
+                            <img
+                                id="imagem-perfil"
+                                src=""
+                                alt="Foto do perfil"
+                                class="oculto"
+                            >
+
+                            <span id="inicial-perfil">
+                                U
+                            </span>
+
+                        </div>
+
+
+                        <div class="dados-identidade">
+
+                            <span class="subtitulo-bloco">
+                                Perfil profissional
+                            </span>
+
+                            <h2 id="nome-perfil">
+                                Usuário
+                            </h2>
+
+                            <p
+                                id="email-perfil"
+                                class="email-perfil"
+                            >
+                                email@exemplo.com
+                            </p>
+
+                            <p
+                                id="objetivo-resumo"
+                                class="objetivo-resumo"
+                            >
+                                Objetivo profissional não informado.
+                            </p>
+
+
+                            <div class="metadados-perfil">
+
+                                <span id="nivel-resumo">
+                                    Nível não informado
+                                </span>
+
+                                <span id="modalidade-resumo">
+                                    Modalidade não informada
+                                </span>
+
+                                <span id="localizacao-resumo">
+                                    Localização não informada
+                                </span>
+
+                            </div>
+
                         </div>
 
                     </div>
 
-                </aside>
 
+                    <div class="acoes-identidade">
 
-                <!-- CONTEÚDO -->
-
-                <section class="area-perfil">
-
-                    <div
-                        id="perfil-sem-usuario"
-                        class="estado-principal-vazio"
-                    >
-
-                        <div class="icone-estado-vazio">
-                            +
-                        </div>
-
-                        <h2>
-                            Nenhum usuário cadastrado
-                        </h2>
-
-                        <p>
-                            Cadastre um usuário para começar
-                            a montar um perfil profissional.
-                        </p>
+                        <a
+                            id="link-curriculo"
+                            class="botao botao-contorno oculto"
+                            href="#"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            Ver currículo
+                        </a>
 
                         <button
-                            id="botao-primeiro-usuario"
+                            id="botao-editar-perfil"
                             class="botao botao-principal"
                             type="button"
                         >
-                            Cadastrar usuário
+                            Editar perfil
                         </button>
 
                     </div>
 
-
-                    <div
-                        id="conteudo-usuario"
-                        class="conteudo-usuario oculto"
-                    >
-
-                        <!-- RESUMO -->
-
-                        <section class="resumo-usuario">
-
-                            <div class="identidade-usuario">
-
-                                <div
-                                    id="avatar-usuario"
-                                    class="avatar-usuario"
-                                >
-                                    U
-                                </div>
+                </section>
 
 
-                                <div>
+                <div class="grade-conteudo-perfil">
 
-                                    <span class="subtitulo-bloco">
-                                        Perfil selecionado
-                                    </span>
-
-                                    <h2 id="nome-usuario">
-                                        Usuário
-                                    </h2>
-
-                                    <p id="email-usuario">
-                                        email@exemplo.com
-                                    </p>
-
-                                </div>
-
-                            </div>
-
-
-                            <div class="acoes-usuario">
-
-                                <span
-                                    id="status-usuario"
-                                    class="etiqueta-status"
-                                >
-                                    Ativo
-                                </span>
-
-                                <button
-                                    id="botao-editar-usuario"
-                                    class="botao botao-contorno"
-                                    type="button"
-                                >
-                                    Editar usuário
-                                </button>
-
-                                <button
-                                    id="botao-excluir-usuario"
-                                    class="botao botao-perigo"
-                                    type="button"
-                                >
-                                    Excluir
-                                </button>
-
-                            </div>
-
-                        </section>
-
-
-                        <!-- PERFIL PROFISSIONAL -->
+                    <div class="coluna-principal-perfil">
 
                         <section class="cartao-perfil">
 
@@ -302,188 +267,145 @@
                                 <div>
 
                                     <span class="subtitulo-bloco">
-                                        Informações profissionais
+                                        Apresentação
                                     </span>
 
                                     <h2>
-                                        Perfil profissional
+                                        Sobre mim
+                                    </h2>
+
+                                </div>
+
+                            </div>
+
+
+                            <p
+                                id="texto-sobre-mim"
+                                class="texto-sobre-mim"
+                            >
+                                Você ainda não adicionou uma
+                                apresentação ao seu perfil.
+                            </p>
+
+                        </section>
+
+
+                        <section class="cartao-perfil">
+
+                            <div class="cabecalho-cartao">
+
+                                <div>
+
+                                    <span class="subtitulo-bloco">
+                                        Trajetória
+                                    </span>
+
+                                    <h2>
+                                        Experiência profissional
                                     </h2>
 
                                 </div>
 
 
-                                <span
-                                    id="situacao-perfil-profissional"
-                                    class="etiqueta-secundaria"
+                                <button
+                                    id="botao-nova-experiencia"
+                                    class="botao botao-contorno"
+                                    type="button"
                                 >
-                                    Não criado
-                                </span>
+                                    Adicionar experiência
+                                </button>
 
                             </div>
 
 
-                            <form id="formulario-perfil">
-
-                                <div class="grade-formulario">
-
-                                    <label class="campo-formulario">
-
-                                        <span>
-                                            Nível de experiência
-                                        </span>
-
-                                        <select id="nivel-experiencia">
-
-                                            <option value="">
-                                                Não informado
-                                            </option>
-
-                                            <option value="iniciante">
-                                                Iniciante
-                                            </option>
-
-                                            <option value="junior">
-                                                Júnior
-                                            </option>
-
-                                            <option value="pleno">
-                                                Pleno
-                                            </option>
-
-                                            <option value="senior">
-                                                Sênior
-                                            </option>
-
-                                        </select>
-
-                                    </label>
-
-
-                                    <label class="campo-formulario">
-
-                                        <span>
-                                            Modalidade preferida
-                                        </span>
-
-                                        <select id="modalidade-preferida">
-
-                                            <option value="">
-                                                Não informada
-                                            </option>
-
-                                            <option value="presencial">
-                                                Presencial
-                                            </option>
-
-                                            <option value="hibrido">
-                                                Híbrido
-                                            </option>
-
-                                            <option value="remoto">
-                                                Remoto
-                                            </option>
-
-                                        </select>
-
-                                    </label>
-
-
-                                    <label class="campo-formulario">
-
-                                        <span>
-                                            Localização preferida
-                                        </span>
-
-                                        <input
-                                            id="localizacao-preferida"
-                                            type="text"
-                                            maxlength="150"
-                                            placeholder="Ex.: Belo Horizonte"
-                                        >
-
-                                    </label>
-
-
-                                    <label class="campo-formulario">
-
-                                        <span>
-                                            Horas de estudo por semana
-                                        </span>
-
-                                        <input
-                                            id="horas-estudo"
-                                            type="number"
-                                            min="0"
-                                            step="1"
-                                            placeholder="Ex.: 10"
-                                        >
-
-                                    </label>
-
-
-                                    <label class="campo-formulario">
-
-                                        <span>
-                                            Pretensão salarial
-                                        </span>
-
-                                        <input
-                                            id="pretensao-salarial"
-                                            type="number"
-                                            min="0"
-                                            step="0.01"
-                                            placeholder="Ex.: 5000"
-                                        >
-
-                                    </label>
-
-
-                                    <label class="campo-formulario campo-largo">
-
-                                        <span>
-                                            Objetivo profissional
-                                        </span>
-
-                                        <textarea
-                                            id="objetivo-profissional"
-                                            maxlength="255"
-                                            rows="3"
-                                            placeholder="Ex.: Trabalhar como desenvolvedor backend Python"
-                                        ></textarea>
-
-                                    </label>
-
-                                </div>
-
-
-                                <div class="acoes-formulario">
-
-                                    <button
-                                        id="botao-excluir-perfil"
-                                        class="botao botao-perigo oculto"
-                                        type="button"
-                                    >
-                                        Excluir perfil profissional
-                                    </button>
-
-                                    <button
-                                        id="botao-salvar-perfil"
-                                        class="botao botao-principal"
-                                        type="submit"
-                                    >
-                                        Criar perfil profissional
-                                    </button>
-
-                                </div>
-
-                            </form>
+                            <div
+                                id="lista-experiencias"
+                                class="lista-trajetoria"
+                            >
+                            </div>
 
                         </section>
 
 
-                        <!-- HABILIDADES DO PERFIL -->
+                        <section class="cartao-perfil">
+
+                            <div class="cabecalho-cartao">
+
+                                <div>
+
+                                    <span class="subtitulo-bloco">
+                                        Educação
+                                    </span>
+
+                                    <h2>
+                                        Formação acadêmica
+                                    </h2>
+
+                                </div>
+
+
+                                <button
+                                    id="botao-nova-formacao"
+                                    class="botao botao-contorno"
+                                    type="button"
+                                >
+                                    Adicionar formação
+                                </button>
+
+                            </div>
+
+
+                            <div
+                                id="lista-formacoes"
+                                class="lista-trajetoria"
+                            >
+                            </div>
+
+                        </section>
+
 
                         <section class="cartao-perfil">
+
+                            <div class="cabecalho-cartao">
+
+                                <div>
+
+                                    <span class="subtitulo-bloco">
+                                        Portfólio
+                                    </span>
+
+                                    <h2>
+                                        Projetos e atividades
+                                    </h2>
+
+                                </div>
+
+
+                                <button
+                                    id="botao-novo-projeto"
+                                    class="botao botao-contorno"
+                                    type="button"
+                                >
+                                    Adicionar projeto
+                                </button>
+
+                            </div>
+
+
+                            <div
+                                id="lista-projetos"
+                                class="grade-projetos"
+                            >
+                            </div>
+
+                        </section>
+
+                    </div>
+
+
+                    <aside class="coluna-lateral-perfil">
+
+                        <section class="cartao-perfil cartao-habilidades">
 
                             <div class="cabecalho-cartao">
 
@@ -494,83 +416,19 @@
                                     </span>
 
                                     <h2>
-                                        Minhas habilidades
+                                        Habilidades
                                     </h2>
 
                                 </div>
 
-
-                                <span
-                                    id="quantidade-habilidades-perfil"
-                                    class="etiqueta-secundaria"
-                                >
-                                    0 habilidades
-                                </span>
-
                             </div>
 
 
-                            <form
-                                id="formulario-adicionar-habilidade"
-                                class="formulario-habilidade"
-                            >
-
-                                <label class="campo-formulario">
-
-                                    <span>
-                                        Habilidade
-                                    </span>
-
-                                    <select
-                                        id="habilidade-perfil"
-                                        required
-                                    >
-
-                                        <option value="">
-                                            Selecione uma habilidade
-                                        </option>
-
-                                    </select>
-
-                                </label>
-
-
-                                <label class="campo-formulario">
-
-                                    <span>
-                                        Nível de domínio
-                                    </span>
-
-                                    <select
-                                        id="nivel-dominio"
-                                        required
-                                    >
-
-                                        <option value="basico">
-                                            Básico
-                                        </option>
-
-                                        <option value="intermediario">
-                                            Intermediário
-                                        </option>
-
-                                        <option value="avancado">
-                                            Avançado
-                                        </option>
-
-                                    </select>
-
-                                </label>
-
-
-                                <button
-                                    class="botao botao-principal"
-                                    type="submit"
-                                >
-                                    Adicionar habilidade
-                                </button>
-
-                            </form>
+                            <p class="descricao-cartao">
+                                Essas competências ajudam o Market
+                                Skills a comparar seu perfil com as
+                                oportunidades disponíveis.
+                            </p>
 
 
                             <div
@@ -579,10 +437,17 @@
                             >
                             </div>
 
+
+                            <button
+                                id="botao-adicionar-habilidade"
+                                class="botao botao-contorno botao-largo"
+                                type="button"
+                            >
+                                Adicionar habilidade
+                            </button>
+
                         </section>
 
-
-                        <!-- CATÁLOGO -->
 
                         <section class="cartao-perfil">
 
@@ -591,46 +456,65 @@
                                 <div>
 
                                     <span class="subtitulo-bloco">
-                                        Base de competências
+                                        Oportunidades
                                     </span>
 
                                     <h2>
-                                        Catálogo de habilidades
+                                        Preferências profissionais
                                     </h2>
 
                                 </div>
 
-
-                                <button
-                                    id="botao-nova-habilidade"
-                                    class="botao botao-contorno"
-                                    type="button"
-                                >
-                                    Nova habilidade
-                                </button>
-
                             </div>
 
 
-                            <p class="descricao-cartao">
-                                Este catálogo representa as habilidades
-                                disponíveis no sistema. Uma habilidade
-                                pode posteriormente ser associada a
-                                perfis, vagas e planos de estudo.
-                            </p>
+                            <div class="lista-preferencias">
+
+                                <div class="item-preferencia">
+
+                                    <span>
+                                        Modalidade
+                                    </span>
+
+                                    <strong id="preferencia-modalidade">
+                                        Não informada
+                                    </strong>
+
+                                </div>
 
 
-                            <div
-                                id="catalogo-habilidades"
-                                class="catalogo-habilidades"
-                            >
+                                <div class="item-preferencia">
+
+                                    <span>
+                                        Localização
+                                    </span>
+
+                                    <strong id="preferencia-localizacao">
+                                        Não informada
+                                    </strong>
+
+                                </div>
+
+
+                                <div class="item-preferencia">
+
+                                    <span>
+                                        Pretensão salarial
+                                    </span>
+
+                                    <strong id="preferencia-salarial">
+                                        Não informada
+                                    </strong>
+
+                                </div>
+
                             </div>
 
                         </section>
 
-                    </div>
+                    </aside>
 
-                </section>
+                </div>
 
             </div>
 
@@ -639,16 +523,16 @@
     </main>
 
 
-    <!-- MODAL USUÁRIO -->
+    <!-- PERFIL -->
 
     <dialog
-        id="modal-usuario"
+        id="modal-perfil"
         class="modal"
     >
 
         <form
-            id="formulario-usuario"
-            class="conteudo-modal"
+            id="formulario-perfil"
+            class="conteudo-modal conteudo-modal-grande"
         >
 
             <div class="cabecalho-modal">
@@ -656,11 +540,11 @@
                 <div>
 
                     <span class="subtitulo-bloco">
-                        Conta
+                        Perfil profissional
                     </span>
 
-                    <h2 id="titulo-modal-usuario">
-                        Novo usuário
+                    <h2 id="titulo-modal-perfil">
+                        Editar perfil
                     </h2>
 
                 </div>
@@ -669,7 +553,7 @@
                 <button
                     class="fechar-modal"
                     type="button"
-                    data-fechar="modal-usuario"
+                    data-fechar="modal-perfil"
                 >
                     ×
                 </button>
@@ -677,74 +561,176 @@
             </div>
 
 
-            <label class="campo-formulario">
+            <div class="grade-formulario">
 
-                <span>
-                    Nome
-                </span>
+                <label class="campo-formulario campo-largo">
 
-                <input
-                    id="usuario-nome"
-                    type="text"
-                    minlength="2"
-                    required
-                >
+                    <span>
+                        Foto de perfil
+                    </span>
 
-            </label>
+                    <input
+                        id="perfil-foto-arquivo"
+                        type="file"
+                        accept="image/png,image/jpeg,.png,.jpg,.jpeg"
+                    >
 
+                    <small>
+                        Envie uma imagem PNG ou JPEG de até 3 MB.
+                        Caso já possua uma foto, deixe o campo vazio
+                        para mantê-la.
+                    </small>
 
-            <label class="campo-formulario">
-
-                <span>
-                    E-mail
-                </span>
-
-                <input
-                    id="usuario-email"
-                    type="email"
-                    required
-                >
-
-            </label>
+                </label>
 
 
-            <label class="campo-formulario">
+                <label class="campo-formulario campo-largo">
 
-                <span id="rotulo-senha">
-                    Senha
-                </span>
+                    <span>
+                        Sobre mim
+                    </span>
 
-                <input
-                    id="usuario-senha"
-                    type="password"
-                    minlength="6"
-                >
+                    <textarea
+                        id="perfil-sobre-mim"
+                        rows="5"
+                        placeholder="Conte um pouco sobre sua trajetória, seus interesses e o que busca profissionalmente."
+                    ></textarea>
 
-            </label>
+                </label>
 
 
-            <label
-                id="campo-status-usuario"
-                class="campo-formulario oculto"
-            >
+                <label class="campo-formulario campo-largo">
 
-                <span>
-                    Status
-                </span>
+                    <span>
+                        Objetivo profissional
+                    </span>
 
-                <select id="usuario-status">
+                    <input
+                        id="perfil-objetivo"
+                        type="text"
+                        maxlength="255"
+                        placeholder="Ex.: Desenvolvedor Backend Python"
+                    >
 
-                    <option value="ativo">
-                        Ativo
-                    </option>
+                </label>
 
-                    <option value="inativo">
-                        Inativo
-                    </option>
 
-                </select>
+                <label class="campo-formulario">
 
-            </label>
+                    <span>
+                        Nível de experiência
+                    </span>
+
+                    <select id="perfil-nivel">
+
+                        <option value="">
+                            Não informado
+                        </option>
+
+                        <option value="iniciante">
+                            Iniciante
+                        </option>
+
+                        <option value="junior">
+                            Júnior
+                        </option>
+
+                        <option value="pleno">
+                            Pleno
+                        </option>
+
+                        <option value="senior">
+                            Sênior
+                        </option>
+
+                    </select>
+
+                </label>
+
+
+                <label class="campo-formulario">
+
+                    <span>
+                        Modalidade preferida
+                    </span>
+
+                    <select id="perfil-modalidade">
+
+                        <option value="">
+                            Não informada
+                        </option>
+
+                        <option value="presencial">
+                            Presencial
+                        </option>
+
+                        <option value="hibrido">
+                            Híbrido
+                        </option>
+
+                        <option value="remoto">
+                            Remoto
+                        </option>
+
+                    </select>
+
+                </label>
+
+
+                <label class="campo-formulario">
+
+                    <span>
+                        Localização preferida
+                    </span>
+
+                    <input
+                        id="perfil-localizacao"
+                        type="text"
+                        maxlength="150"
+                        placeholder="Ex.: Belo Horizonte"
+                    >
+
+                </label>
+
+
+                <label class="campo-formulario">
+
+                    <span>
+                        Pretensão salarial
+                    </span>
+
+                    <input
+                        id="perfil-pretensao"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        placeholder="Ex.: 5000"
+                    >
+
+                </label>
+
+
+                <label class="campo-formulario campo-largo">
+
+                    <span>
+                        Currículo (PDF)
+                    </span>
+
+                    <input
+                        id="perfil-curriculo-arquivo"
+                        type="file"
+                        accept="application/pdf,.pdf"
+                    >
+
+                    <small>
+                        Envie um PDF de até 5 MB.
+                        Caso já possua um currículo cadastrado,
+                        deixe o campo vazio para mantê-lo.
+                    </small>
+
+                </label>
+
+            </div>
 
 
             <div class="acoes-modal">
@@ -752,7 +738,7 @@
                 <button
                     class="botao botao-escuro"
                     type="button"
-                    data-fechar="modal-usuario"
+                    data-fechar="modal-perfil"
                 >
                     Cancelar
                 </button>
@@ -761,7 +747,7 @@
                     class="botao botao-principal"
                     type="submit"
                 >
-                    Salvar usuário
+                    Salvar perfil
                 </button>
 
             </div>
@@ -771,15 +757,15 @@
     </dialog>
 
 
-    <!-- MODAL HABILIDADE -->
+    <!-- EXPERIÊNCIA -->
 
     <dialog
-        id="modal-habilidade"
+        id="modal-experiencia"
         class="modal"
     >
 
         <form
-            id="formulario-habilidade"
+            id="formulario-experiencia"
             class="conteudo-modal"
         >
 
@@ -788,11 +774,11 @@
                 <div>
 
                     <span class="subtitulo-bloco">
-                        Catálogo
+                        Trajetória profissional
                     </span>
 
-                    <h2 id="titulo-modal-habilidade">
-                        Nova habilidade
+                    <h2 id="titulo-modal-experiencia">
+                        Nova experiência
                     </h2>
 
                 </div>
@@ -801,7 +787,7 @@
                 <button
                     class="fechar-modal"
                     type="button"
-                    data-fechar="modal-habilidade"
+                    data-fechar="modal-experiencia"
                 >
                     ×
                 </button>
@@ -812,12 +798,13 @@
             <label class="campo-formulario">
 
                 <span>
-                    Nome
+                    Cargo
                 </span>
 
                 <input
-                    id="habilidade-nome"
+                    id="experiencia-cargo"
                     type="text"
+                    maxlength="180"
                     required
                 >
 
@@ -827,39 +814,61 @@
             <label class="campo-formulario">
 
                 <span>
-                    Categoria
+                    Empresa
                 </span>
 
-                <select
-                    id="habilidade-categoria"
+                <input
+                    id="experiencia-empresa"
+                    type="text"
+                    maxlength="180"
                     required
                 >
 
-                    <option value="linguagem">
-                        Linguagem
-                    </option>
+            </label>
 
-                    <option value="framework">
-                        Framework
-                    </option>
 
-                    <option value="banco_dados">
-                        Banco de dados
-                    </option>
+            <div class="grade-formulario">
 
-                    <option value="ferramenta">
-                        Ferramenta
-                    </option>
+                <label class="campo-formulario">
 
-                    <option value="conceito">
-                        Conceito
-                    </option>
+                    <span>
+                        Data de início
+                    </span>
 
-                    <option value="outra">
-                        Outra
-                    </option>
+                    <input
+                        id="experiencia-data-inicio"
+                        type="date"
+                    >
 
-                </select>
+                </label>
+
+
+                <label class="campo-formulario">
+
+                    <span>
+                        Data de término
+                    </span>
+
+                    <input
+                        id="experiencia-data-fim"
+                        type="date"
+                    >
+
+                </label>
+
+            </div>
+
+
+            <label class="campo-checkbox">
+
+                <input
+                    id="experiencia-atual"
+                    type="checkbox"
+                >
+
+                <span>
+                    Trabalho atualmente nesta empresa
+                </span>
 
             </label>
 
@@ -871,7 +880,178 @@
                 </span>
 
                 <textarea
-                    id="habilidade-descricao"
+                    id="experiencia-descricao"
+                    maxlength="1000"
+                    rows="5"
+                ></textarea>
+
+            </label>
+
+
+            <div class="acoes-modal">
+
+                <button
+                    class="botao botao-escuro"
+                    type="button"
+                    data-fechar="modal-experiencia"
+                >
+                    Cancelar
+                </button>
+
+                <button
+                    class="botao botao-principal"
+                    type="submit"
+                >
+                    Salvar experiência
+                </button>
+
+            </div>
+
+        </form>
+
+    </dialog>
+
+
+    <!-- FORMAÇÃO -->
+
+    <dialog
+        id="modal-formacao"
+        class="modal"
+    >
+
+        <form
+            id="formulario-formacao"
+            class="conteudo-modal"
+        >
+
+            <div class="cabecalho-modal">
+
+                <div>
+
+                    <span class="subtitulo-bloco">
+                        Formação acadêmica
+                    </span>
+
+                    <h2 id="titulo-modal-formacao">
+                        Nova formação
+                    </h2>
+
+                </div>
+
+
+                <button
+                    class="fechar-modal"
+                    type="button"
+                    data-fechar="modal-formacao"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <label class="campo-formulario">
+
+                <span>
+                    Instituição
+                </span>
+
+                <input
+                    id="formacao-instituicao"
+                    type="text"
+                    maxlength="180"
+                    required
+                >
+
+            </label>
+
+
+            <label class="campo-formulario">
+
+                <span>
+                    Curso
+                </span>
+
+                <input
+                    id="formacao-curso"
+                    type="text"
+                    maxlength="180"
+                    required
+                >
+
+            </label>
+
+
+            <label class="campo-formulario">
+
+                <span>
+                    Tipo de formação
+                </span>
+
+                <input
+                    id="formacao-tipo"
+                    type="text"
+                    maxlength="80"
+                    placeholder="Ex.: Técnico, Graduação, Pós-graduação"
+                >
+
+            </label>
+
+
+            <div class="grade-formulario">
+
+                <label class="campo-formulario">
+
+                    <span>
+                        Data de início
+                    </span>
+
+                    <input
+                        id="formacao-data-inicio"
+                        type="date"
+                    >
+
+                </label>
+
+
+                <label class="campo-formulario">
+
+                    <span>
+                        Data de conclusão
+                    </span>
+
+                    <input
+                        id="formacao-data-fim"
+                        type="date"
+                    >
+
+                </label>
+
+            </div>
+
+
+            <label class="campo-checkbox">
+
+                <input
+                    id="formacao-em-andamento"
+                    type="checkbox"
+                >
+
+                <span>
+                    Formação em andamento
+                </span>
+
+            </label>
+
+
+            <label class="campo-formulario">
+
+                <span>
+                    Descrição
+                </span>
+
+                <textarea
+                    id="formacao-descricao"
                     maxlength="500"
                     rows="4"
                 ></textarea>
@@ -884,7 +1064,7 @@
                 <button
                     class="botao botao-escuro"
                     type="button"
-                    data-fechar="modal-habilidade"
+                    data-fechar="modal-formacao"
                 >
                     Cancelar
                 </button>
@@ -893,7 +1073,242 @@
                     class="botao botao-principal"
                     type="submit"
                 >
-                    Salvar habilidade
+                    Salvar formação
+                </button>
+
+            </div>
+
+        </form>
+
+    </dialog>
+
+
+    <!-- PROJETO -->
+
+    <dialog
+        id="modal-projeto"
+        class="modal"
+    >
+
+        <form
+            id="formulario-projeto"
+            class="conteudo-modal"
+        >
+
+            <div class="cabecalho-modal">
+
+                <div>
+
+                    <span class="subtitulo-bloco">
+                        Portfólio
+                    </span>
+
+                    <h2 id="titulo-modal-projeto">
+                        Novo projeto
+                    </h2>
+
+                </div>
+
+
+                <button
+                    class="fechar-modal"
+                    type="button"
+                    data-fechar="modal-projeto"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <label class="campo-formulario">
+
+                <span>
+                    Nome do projeto ou atividade
+                </span>
+
+                <input
+                    id="projeto-nome"
+                    type="text"
+                    maxlength="180"
+                    required
+                >
+
+            </label>
+
+
+            <label class="campo-formulario">
+
+                <span>
+                    Tecnologias utilizadas
+                </span>
+
+                <input
+                    id="projeto-tecnologias"
+                    type="text"
+                    maxlength="255"
+                    placeholder="Ex.: Python, Flask, MySQL"
+                >
+
+            </label>
+
+
+            <label class="campo-formulario">
+
+                <span>
+                    Link
+                </span>
+
+                <input
+                    id="projeto-link"
+                    type="url"
+                    maxlength="500"
+                    placeholder="https://..."
+                >
+
+            </label>
+
+
+            <label class="campo-formulario">
+
+                <span>
+                    Descrição
+                </span>
+
+                <textarea
+                    id="projeto-descricao"
+                    maxlength="1000"
+                    rows="5"
+                ></textarea>
+
+            </label>
+
+
+            <div class="acoes-modal">
+
+                <button
+                    class="botao botao-escuro"
+                    type="button"
+                    data-fechar="modal-projeto"
+                >
+                    Cancelar
+                </button>
+
+                <button
+                    class="botao botao-principal"
+                    type="submit"
+                >
+                    Salvar projeto
+                </button>
+
+            </div>
+
+        </form>
+
+    </dialog>
+
+
+    <!-- HABILIDADE -->
+
+    <dialog
+        id="modal-habilidade-perfil"
+        class="modal"
+    >
+
+        <form
+            id="formulario-habilidade-perfil"
+            class="conteudo-modal conteudo-modal-pequeno"
+        >
+
+            <div class="cabecalho-modal">
+
+                <div>
+
+                    <span class="subtitulo-bloco">
+                        Competências
+                    </span>
+
+                    <h2>
+                        Adicionar habilidade
+                    </h2>
+
+                </div>
+
+
+                <button
+                    class="fechar-modal"
+                    type="button"
+                    data-fechar="modal-habilidade-perfil"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <label class="campo-formulario">
+
+                <span>
+                    Habilidade
+                </span>
+
+                <select
+                    id="habilidade-selecionada"
+                    required
+                >
+
+                    <option value="">
+                        Selecione uma habilidade
+                    </option>
+
+                </select>
+
+            </label>
+
+
+            <label class="campo-formulario">
+
+                <span>
+                    Nível de domínio
+                </span>
+
+                <select
+                    id="habilidade-nivel"
+                    required
+                >
+
+                    <option value="basico">
+                        Básico
+                    </option>
+
+                    <option value="intermediario">
+                        Intermediário
+                    </option>
+
+                    <option value="avancado">
+                        Avançado
+                    </option>
+
+                </select>
+
+            </label>
+
+
+            <div class="acoes-modal">
+
+                <button
+                    class="botao botao-escuro"
+                    type="button"
+                    data-fechar="modal-habilidade-perfil"
+                >
+                    Cancelar
+                </button>
+
+                <button
+                    class="botao botao-principal"
+                    type="submit"
+                >
+                    Adicionar
                 </button>
 
             </div>
