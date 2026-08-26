@@ -144,6 +144,10 @@ a.ativo::after {
     line-height: 1.75;
 }
 
+.acao-hero-empresa {
+    margin-top: 22px;
+}
+
 
 /* RESUMO */
 
@@ -213,6 +217,10 @@ a.ativo::after {
 
     background:
         rgba(10, 16, 35, 0.76);
+}
+
+.painel-filtros.oculto {
+    display: none;
 }
 
 .campo-filtro {
@@ -847,6 +855,7 @@ a.ativo::after {
 
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
 
     gap: 9px;
 
@@ -930,6 +939,504 @@ a.ativo::after {
 }
 
 
+/* MODAL DE VAGA */
+
+.modal-vaga {
+    width:
+        min(
+            820px,
+            calc(100% - 32px)
+        );
+
+    max-height:
+        calc(100vh - 40px);
+
+    padding: 0;
+
+    overflow: hidden;
+
+    border:
+        1px solid rgba(103, 123, 255, 0.2);
+
+    border-radius: 22px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #0b1124,
+            #070b19
+        );
+
+    color: #ffffff;
+
+    box-shadow:
+        0 30px 100px
+        rgba(0, 0, 0, 0.65);
+}
+
+.modal-vaga::backdrop {
+    background:
+        rgba(0, 3, 12, 0.76);
+
+    backdrop-filter:
+        blur(7px);
+}
+
+.formulario-vaga {
+    max-height:
+        calc(100vh - 40px);
+
+    padding: 30px;
+
+    overflow-y: auto;
+}
+
+.formulario-vaga::-webkit-scrollbar {
+    width: 7px;
+}
+
+.formulario-vaga::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+
+    background:
+        rgba(255, 255, 255, 0.12);
+}
+
+.cabecalho-modal-vaga {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding-bottom: 24px;
+
+    border-bottom:
+        1px solid rgba(255, 255, 255, 0.07);
+}
+
+.cabecalho-modal-vaga h2 {
+    margin-top: 7px;
+
+    color: #ffffff;
+
+    font-size: 27px;
+    letter-spacing: -0.8px;
+}
+
+.cabecalho-modal-vaga p {
+    max-width: 520px;
+
+    margin-top: 8px;
+
+    color: #77839d;
+
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+.botao-fechar-modal-vaga {
+    width: 38px;
+    height: 38px;
+
+    flex: 0 0 auto;
+
+    display: grid;
+    place-items: center;
+
+    border:
+        1px solid rgba(255, 255, 255, 0.08);
+
+    border-radius: 10px;
+
+    background:
+        rgba(255, 255, 255, 0.035);
+
+    color: #9ca7bd;
+
+    font-size: 20px;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.botao-fechar-modal-vaga:hover {
+    color: #ffffff;
+
+    border-color:
+        rgba(73, 161, 255, 0.25);
+
+    background:
+        rgba(33, 118, 255, 0.08);
+}
+
+
+/* SEÇÕES DO FORMULÁRIO */
+
+.secao-formulario-vaga {
+    padding: 26px 0;
+
+    border-bottom:
+        1px solid rgba(255, 255, 255, 0.065);
+}
+
+.cabecalho-secao-formulario {
+    margin-bottom: 19px;
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 20px;
+}
+
+.numero-secao-formulario {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #5f9eff;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    letter-spacing: 1.3px;
+}
+
+.cabecalho-secao-formulario h3 {
+    color: #ffffff;
+
+    font-size: 17px;
+}
+
+.cabecalho-secao-formulario p {
+    max-width: 500px;
+
+    margin-top: 5px;
+
+    color: #727e99;
+
+    font-size: 10px;
+    line-height: 1.55;
+}
+
+
+/* CAMPOS */
+
+.grade-formulario-vaga {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 14px;
+}
+
+.campo-formulario-vaga {
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+.campo-largo-vaga {
+    grid-column:
+        1 / -1;
+}
+
+.campo-formulario-vaga > span {
+    color: #98a4bc;
+
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.campo-opcional {
+    margin-left: 5px;
+
+    color: #5f6b84;
+
+    font-size: 8px;
+    font-weight: 500;
+}
+
+.campo-formulario-vaga input,
+.campo-formulario-vaga select,
+.campo-formulario-vaga textarea,
+.lista-requisitos-formulario select {
+    width: 100%;
+
+    border:
+        1px solid rgba(255, 255, 255, 0.085);
+
+    border-radius: 11px;
+
+    outline: none;
+
+    background:
+        rgba(2, 7, 22, 0.72);
+
+    color: #eef2fc;
+
+    font: inherit;
+
+    font-size: 11px;
+
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease;
+}
+
+.campo-formulario-vaga input,
+.campo-formulario-vaga select {
+    height: 44px;
+
+    padding:
+        0 13px;
+}
+
+.campo-formulario-vaga textarea {
+    min-height: 100px;
+
+    padding: 13px;
+
+    resize: vertical;
+
+    line-height: 1.6;
+}
+
+.campo-formulario-vaga input::placeholder,
+.campo-formulario-vaga textarea::placeholder {
+    color: #505c76;
+}
+
+.campo-formulario-vaga input:focus,
+.campo-formulario-vaga select:focus,
+.campo-formulario-vaga textarea:focus,
+.lista-requisitos-formulario select:focus {
+    border-color:
+        rgba(79, 145, 255, 0.46);
+
+    background:
+        rgba(5, 12, 34, 0.95);
+}
+
+.campo-formulario-vaga input:disabled {
+    opacity: 0.45;
+
+    cursor: not-allowed;
+}
+
+.ajuda-campo-vaga {
+    color: #5e6a82;
+
+    font-size: 9px;
+    line-height: 1.5;
+}
+
+
+/* SALÁRIO A DEFINIR */
+
+.opcao-salario-definir {
+    margin-bottom: 16px;
+    padding: 14px 15px;
+
+    display: flex;
+    align-items: flex-start;
+
+    gap: 11px;
+
+    border:
+        1px solid rgba(255, 255, 255, 0.065);
+
+    border-radius: 12px;
+
+    background:
+        rgba(255, 255, 255, 0.018);
+
+    cursor: pointer;
+}
+
+.opcao-salario-definir input {
+    width: 16px;
+    height: 16px;
+
+    margin-top: 2px;
+
+    accent-color: #4b7cff;
+}
+
+.opcao-salario-definir strong {
+    display: block;
+
+    color: #e9eef8;
+
+    font-size: 10px;
+}
+
+.opcao-salario-definir small {
+    display: block;
+
+    margin-top: 3px;
+
+    color: #68748d;
+
+    font-size: 9px;
+    line-height: 1.45;
+}
+
+
+/* REQUISITOS NO FORMULÁRIO */
+
+.lista-requisitos-formulario {
+    display: flex;
+    flex-direction: column;
+
+    gap: 10px;
+}
+
+.lista-requisitos-formulario
+.requisito-vaga {
+    display: grid;
+
+    grid-template-columns:
+        1.5fr 1fr 1fr auto;
+
+    align-items: end;
+
+    gap: 10px;
+
+    padding: 14px;
+
+    border:
+        1px solid rgba(255, 255, 255, 0.065);
+
+    border-radius: 13px;
+
+    background:
+        rgba(255, 255, 255, 0.018);
+}
+
+.lista-requisitos-formulario
+.requisito-vaga label {
+    display: flex;
+    flex-direction: column;
+
+    gap: 7px;
+}
+
+.lista-requisitos-formulario
+.requisito-vaga label > span {
+    color: #7d89a3;
+
+    font-size: 9px;
+    font-weight: 600;
+}
+
+.lista-requisitos-formulario select {
+    height: 41px;
+
+    padding: 0 10px;
+}
+
+.lista-requisitos-formulario
+[data-remover-requisito] {
+    min-height: 41px;
+
+    padding: 0 12px;
+
+    border:
+        1px solid rgba(255, 92, 115, 0.15);
+
+    border-radius: 9px;
+
+    background:
+        rgba(255, 80, 105, 0.045);
+
+    color: #ff8295;
+
+    font: inherit;
+
+    font-size: 9px;
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+.lista-requisitos-formulario
+[data-remover-requisito]:hover {
+    background:
+        rgba(255, 80, 105, 0.09);
+}
+
+.estado-vazio-formulario {
+    min-height: 90px;
+
+    border:
+        1px dashed rgba(255, 255, 255, 0.075);
+
+    border-radius: 12px;
+
+    background:
+        rgba(255, 255, 255, 0.012);
+}
+
+
+/* MENSAGEM E AÇÕES DO MODAL */
+
+#mensagem-formulario-vaga {
+    margin-top: 18px;
+}
+
+#mensagem-formulario-vaga.erro {
+    padding: 11px 13px;
+
+    border:
+        1px solid rgba(255, 94, 115, 0.18);
+
+    border-radius: 10px;
+
+    background:
+        rgba(255, 79, 102, 0.055);
+
+    color: #ff8da0;
+
+    font-size: 10px;
+}
+
+.acoes-modal-vaga {
+    padding-top: 22px;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 10px;
+}
+
+
+/* BENEFÍCIOS NO DETALHE */
+
+.bloco-beneficios-vaga {
+    padding: 14px 15px;
+
+    border:
+        1px solid rgba(84, 179, 255, 0.09);
+
+    border-radius: 11px;
+
+    background:
+        rgba(33, 118, 255, 0.025);
+}
+
+.bloco-beneficios-vaga p {
+    margin: 0;
+
+    white-space: pre-line;
+}
+
+
 /* RESPONSIVIDADE */
 
 @media (max-width: 1050px) {
@@ -975,6 +1482,32 @@ a.ativo::after {
 }
 
 
+@media (max-width: 760px) {
+
+    .formulario-vaga {
+        padding: 22px;
+    }
+
+    .grade-formulario-vaga {
+        grid-template-columns: 1fr;
+    }
+
+    .campo-largo-vaga {
+        grid-column: auto;
+    }
+
+    .lista-requisitos-formulario
+    .requisito-vaga {
+        grid-template-columns: 1fr;
+    }
+
+    .cabecalho-secao-formulario {
+        flex-direction: column;
+    }
+
+}
+
+
 @media (max-width: 700px) {
 
     .resumo-vagas {
@@ -1001,6 +1534,35 @@ a.ativo::after {
     .coluna-listagem,
     .detalhe-vaga {
         padding: 17px;
+    }
+
+    .modal-vaga {
+        width:
+            calc(100% - 18px);
+
+        max-height:
+            calc(100vh - 18px);
+
+        border-radius: 16px;
+    }
+
+    .formulario-vaga {
+        max-height:
+            calc(100vh - 18px);
+
+        padding: 18px;
+    }
+
+    .cabecalho-modal-vaga h2 {
+        font-size: 22px;
+    }
+
+    .acoes-modal-vaga {
+        flex-direction: column-reverse;
+    }
+
+    .acoes-modal-vaga .botao {
+        width: 100%;
     }
 
 }

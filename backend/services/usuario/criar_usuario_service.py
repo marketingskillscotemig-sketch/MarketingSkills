@@ -1,5 +1,7 @@
 from werkzeug.security import generate_password_hash
 
+from extensions import db
+from models.empresa import Empresa
 from models.enums import TipoConta
 from models.usuario import Usuario
 
@@ -15,9 +17,14 @@ class CriarUsuarioService:
         nome = dados.get("nome")
         email = dados.get("email")
         senha = dados.get("senha")
+
         tipo_conta = dados.get(
             "tipoConta",
             TipoConta.ESTUDANTE.value,
+        )
+
+        nome_empresa = dados.get(
+            "nomeEmpresa"
         )
 
         if not nome or not nome.strip():
@@ -53,8 +60,10 @@ class CriarUsuarioService:
                 "A senha deve possuir pelo menos 6 caracteres."
             )
 
-        usuario_existente = Usuario.buscar_por_email(
-            email
+        usuario_existente = (
+            Usuario.buscar_por_email(
+                email
+            )
         )
 
         if usuario_existente:
@@ -73,6 +82,28 @@ class CriarUsuarioService:
                 "Use 'estudante' ou 'empresa'."
             ) from erro
 
+        if (
+            tipo_conta_enum ==
+            TipoConta.EMPRESA
+        ):
+            if (
+                not nome_empresa
+                or not nome_empresa.strip()
+            ):
+                raise ValueError(
+                    "O nome da empresa é obrigatório."
+                )
+
+            nome_empresa = (
+                nome_empresa.strip()
+            )
+
+            if len(nome_empresa) < 2:
+                raise ValueError(
+                    "O nome da empresa deve possuir "
+                    "pelo menos 2 caracteres."
+                )
+
         usuario = Usuario(
             nome=nome,
             email=email,
@@ -82,4 +113,30 @@ class CriarUsuarioService:
             tipo_conta=tipo_conta_enum,
         )
 
-        return usuario.salvar()
+        try:
+            db.session.add(
+                usuario
+            )
+
+            db.session.flush()
+
+            if (
+                tipo_conta_enum ==
+                TipoConta.EMPRESA
+            ):
+                empresa = Empresa(
+                    usuario_id=usuario.id,
+                    nome=nome_empresa,
+                )
+
+                db.session.add(
+                    empresa
+                )
+
+            db.session.commit()
+
+            return usuario
+
+        except Exception:
+            db.session.rollback()
+            raise

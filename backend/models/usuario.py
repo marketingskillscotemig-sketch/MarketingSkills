@@ -1,13 +1,20 @@
 from datetime import date
 
 from extensions import db
-from models.enums import StatusUsuario, TipoConta, enum_values
+from models.enums import (
+    StatusUsuario,
+    TipoConta,
+    enum_values,
+)
 
 
 class Usuario(db.Model):
     __tablename__ = "usuarios"
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(
+        db.Integer,
+        primary_key=True,
+    )
 
     nome = db.Column(
         db.String(120),
@@ -60,6 +67,13 @@ class Usuario(db.Model):
         cascade="all, delete-orphan",
     )
 
+    empresa = db.relationship(
+        "Empresa",
+        back_populates="usuario",
+        uselist=False,
+        cascade="all, delete-orphan",
+    )
+
     planos_estudo = db.relationship(
         "PlanoEstudo",
         back_populates="usuario",
@@ -85,7 +99,6 @@ class Usuario(db.Model):
         status=None,
         tipo_conta=None,
     ):
-    
         if nome is not None:
             self.nome = nome
 
@@ -116,7 +129,10 @@ class Usuario(db.Model):
 
     @staticmethod
     def buscar_por_id(id):
-        return db.session.get(Usuario, id)
+        return db.session.get(
+            Usuario,
+            id,
+        )
 
     @staticmethod
     def buscar_por_email(email):

@@ -46,7 +46,9 @@ async function realizarLogin(evento) {
             "botao-login"
         );
 
-    limparMensagem(mensagem);
+    limparMensagem(
+        mensagem
+    );
 
     const email =
         document.getElementById(
@@ -60,14 +62,14 @@ async function realizarLogin(evento) {
 
     try {
         botao.disabled = true;
-        botao.textContent = "Entrando...";
+        botao.textContent =
+            "Entrando...";
 
         const resposta =
             await apiRequest(
                 "/autenticacao/login",
                 {
                     method: "POST",
-
                     body: JSON.stringify({
                         email,
                         senha,
@@ -98,7 +100,8 @@ async function realizarLogin(evento) {
         );
 
         botao.disabled = false;
-        botao.textContent = "Entrar";
+        botao.textContent =
+            "Entrar";
     }
 }
 
@@ -116,7 +119,9 @@ async function realizarCadastro(evento) {
             "botao-cadastro"
         );
 
-    limparMensagem(mensagem);
+    limparMensagem(
+        mensagem
+    );
 
     const nome =
         document.getElementById(
@@ -143,10 +148,36 @@ async function realizarCadastro(evento) {
             'input[name="tipoConta"]:checked'
         ).value;
 
-    if (senha !== confirmarSenha) {
+    const campoNomeEmpresa =
+        document.getElementById(
+            "cadastro-nome-empresa"
+        );
+
+    const nomeEmpresa =
+        campoNomeEmpresa
+            ? campoNomeEmpresa.value.trim()
+            : "";
+
+    if (
+        senha !==
+        confirmarSenha
+    ) {
         mostrarMensagem(
             mensagem,
             "As senhas não coincidem.",
+            "erro"
+        );
+
+        return;
+    }
+
+    if (
+        tipoConta === "empresa" &&
+        !nomeEmpresa
+    ) {
+        mostrarMensagem(
+            mensagem,
+            "Informe o nome da empresa.",
             "erro"
         );
 
@@ -170,6 +201,11 @@ async function realizarCadastro(evento) {
                         email,
                         senha,
                         tipoConta,
+                        nomeEmpresa:
+                            tipoConta ===
+                            "empresa"
+                                ? nomeEmpresa
+                                : null,
                     }),
                 }
             );
@@ -220,51 +256,72 @@ function registrarMudancaTipoConta() {
             "cadastro-nome"
         );
 
+    const conteinerEmpresa =
+        document.getElementById(
+            "campo-nome-empresa"
+        );
+
+    const campoNomeEmpresa =
+        document.getElementById(
+            "cadastro-nome-empresa"
+        );
+
+    function atualizarCampos() {
+        const tipoSelecionado =
+            document.querySelector(
+                'input[name="tipoConta"]:checked'
+            )?.value;
+
+        const empresaSelecionada =
+            tipoSelecionado ===
+            "empresa";
+
+        if (empresaSelecionada) {
+            rotuloNome.textContent =
+                "Nome do responsável";
+
+            campoNome.placeholder =
+                "Pessoa responsável pela conta";
+
+            conteinerEmpresa.hidden =
+                false;
+
+            campoNomeEmpresa.required =
+                true;
+
+            return;
+        }
+
+        rotuloNome.textContent =
+            "Nome completo";
+
+        campoNome.placeholder =
+            "";
+
+        conteinerEmpresa.hidden =
+            true;
+
+        campoNomeEmpresa.required =
+            false;
+
+        campoNomeEmpresa.value =
+            "";
+    }
+
     opcoes.forEach(opcao => {
         opcao.addEventListener(
             "change",
-            () => {
-                if (
-                    opcao.value === "empresa" &&
-                    opcao.checked
-                ) {
-                    rotuloNome.textContent =
-                        "Nome do responsável";
-
-                    campoNome.placeholder =
-                        "Pessoa responsável pela conta";
-
-                    return;
-                }
-
-                if (
-                    opcao.value === "estudante" &&
-                    opcao.checked
-                ) {
-                    rotuloNome.textContent =
-                        "Nome completo";
-
-                    campoNome.placeholder =
-                        "";
-                }
-            }
+            atualizarCampos
         );
     });
+
+    atualizarCampos();
 }
 
 
 function redirecionarAposAutenticacao(
     usuario
 ) {
-    /*
-     * Por enquanto estudante e empresa
-     * retornam à Home.
-     *
-     * Quando as duas áreas estiverem
-     * concluídas, o redirecionamento
-     * será separado pelo tipo de conta.
-     */
-
     if (!usuario) {
         window.location.href =
             "../index.html";
@@ -297,7 +354,8 @@ function mostrarMensagem(
 
 
 function limparMensagem(elemento) {
-    elemento.textContent = "";
+    elemento.textContent =
+        "";
 
     elemento.className =
         "mensagem-formulario";

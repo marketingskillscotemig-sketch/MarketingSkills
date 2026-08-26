@@ -51,7 +51,10 @@
             </a>
 
 
-            <nav class="navegacao-principal">
+            <nav
+                id="navegacao-vagas"
+                class="navegacao-principal"
+            >
 
                 <a href="../index.html">
                     Home
@@ -92,20 +95,39 @@
 
             <div class="conteudo-centralizado">
 
-                <span class="rotulo-vagas">
+                <span
+                    id="rotulo-hero-vagas"
+                    class="rotulo-vagas"
+                >
                     Oportunidades
                 </span>
 
-                <h1>
+                <h1 id="titulo-hero-vagas">
                     Encontre vagas que fazem
                     sentido para sua carreira.
                 </h1>
 
-                <p>
+                <p id="descricao-hero-vagas">
                     Pesquise oportunidades, compare requisitos
                     com seu perfil e entenda o que cada empresa
                     procura antes de se candidatar.
                 </p>
+
+
+                <div
+                    id="acao-hero-empresa"
+                    class="acao-hero-empresa oculto"
+                >
+
+                    <button
+                        id="botao-criar-vaga"
+                        class="botao botao-principal"
+                        type="button"
+                    >
+                        + Criar nova vaga
+                    </button>
+
+                </div>
 
             </div>
 
@@ -117,35 +139,50 @@
             <div class="resumo-vagas">
 
                 <article>
-                    <span>Vagas disponíveis</span>
+
+                    <span id="rotulo-total-vagas">
+                        Vagas disponíveis
+                    </span>
 
                     <strong id="total-vagas">
                         —
                     </strong>
+
                 </article>
 
 
                 <article>
-                    <span>Empresas contratando</span>
+
+                    <span id="rotulo-total-empresas">
+                        Empresas contratando
+                    </span>
 
                     <strong id="total-empresas">
                         —
                     </strong>
+
                 </article>
 
 
                 <article>
-                    <span>Competências procuradas</span>
+
+                    <span id="rotulo-total-habilidades">
+                        Competências procuradas
+                    </span>
 
                     <strong id="total-habilidades">
                         —
                     </strong>
+
                 </article>
 
             </div>
 
 
-            <section class="painel-filtros">
+            <section
+                id="painel-filtros"
+                class="painel-filtros"
+            >
 
                 <label class="campo-filtro campo-pesquisa">
 
@@ -273,13 +310,18 @@
                     <div class="cabecalho-listagem">
 
                         <div>
-                            <span class="rotulo-vagas">
+
+                            <span
+                                id="rotulo-listagem"
+                                class="rotulo-vagas"
+                            >
                                 Resultados
                             </span>
 
-                            <h2>
+                            <h2 id="titulo-listagem">
                                 Vagas disponíveis
                             </h2>
+
                         </div>
 
                         <span id="quantidade-resultados">
@@ -331,6 +373,377 @@
         </section>
 
     </main>
+
+
+    <!-- CRIAR / EDITAR VAGA -->
+
+    <dialog
+        id="modal-vaga"
+        class="modal-vaga"
+    >
+
+        <form
+            id="formulario-vaga"
+            class="formulario-vaga"
+        >
+
+            <div class="cabecalho-modal-vaga">
+
+                <div>
+
+                    <span class="rotulo-vagas">
+                        Gestão de oportunidade
+                    </span>
+
+                    <h2 id="titulo-modal-vaga">
+                        Criar nova vaga
+                    </h2>
+
+                    <p>
+                        Preencha as informações que serão
+                        apresentadas aos profissionais.
+                    </p>
+
+                </div>
+
+
+                <button
+                    id="botao-fechar-modal-vaga"
+                    class="botao-fechar-modal-vaga"
+                    type="button"
+                    aria-label="Fechar"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <section class="secao-formulario-vaga">
+
+                <div class="cabecalho-secao-formulario">
+
+                    <div>
+
+                        <span class="numero-secao-formulario">
+                            01
+                        </span>
+
+                        <h3>
+                            Informações da oportunidade
+                        </h3>
+
+                    </div>
+
+                </div>
+
+
+                <div class="grade-formulario-vaga">
+
+                    <label class="campo-formulario-vaga campo-largo-vaga">
+
+                        <span>
+                            Cargo
+                        </span>
+
+                        <input
+                            id="vaga-titulo"
+                            type="text"
+                            maxlength="180"
+                            placeholder="Ex.: Desenvolvedor Backend"
+                            required
+                        >
+
+                    </label>
+
+
+                    <label class="campo-formulario-vaga campo-largo-vaga">
+
+                        <span>
+                            Descrição
+                        </span>
+
+                        <textarea
+                            id="vaga-descricao"
+                            rows="6"
+                            placeholder="Descreva responsabilidades, rotina, objetivos e informações importantes sobre a oportunidade."
+                        ></textarea>
+
+                    </label>
+
+
+                    <label class="campo-formulario-vaga">
+
+                        <span>
+                            Nível de experiência
+                        </span>
+
+                        <select
+                            id="vaga-nivel"
+                            required
+                        >
+
+                            <option value="">
+                                Selecione
+                            </option>
+
+                            <option value="iniciante">
+                                Iniciante
+                            </option>
+
+                            <option value="junior">
+                                Júnior
+                            </option>
+
+                            <option value="pleno">
+                                Pleno
+                            </option>
+
+                            <option value="senior">
+                                Sênior
+                            </option>
+
+                        </select>
+
+                    </label>
+
+
+                    <label class="campo-formulario-vaga">
+
+                        <span>
+                            Modalidade
+                        </span>
+
+                        <select
+                            id="vaga-modalidade"
+                            required
+                        >
+
+                            <option value="">
+                                Selecione
+                            </option>
+
+                            <option value="presencial">
+                                Presencial
+                            </option>
+
+                            <option value="hibrido">
+                                Híbrido
+                            </option>
+
+                            <option value="remoto">
+                                Remoto
+                            </option>
+
+                        </select>
+
+                    </label>
+
+
+                    <label class="campo-formulario-vaga campo-largo-vaga">
+
+                        <span>
+                            Localização
+                        </span>
+
+                        <input
+                            id="vaga-localizacao"
+                            type="text"
+                            maxlength="150"
+                            placeholder="Ex.: Belo Horizonte - MG"
+                        >
+
+                    </label>
+
+                </div>
+
+            </section>
+
+
+            <section class="secao-formulario-vaga">
+
+                <div class="cabecalho-secao-formulario">
+
+                    <div>
+
+                        <span class="numero-secao-formulario">
+                            02
+                        </span>
+
+                        <h3>
+                            Remuneração e benefícios
+                        </h3>
+
+                    </div>
+
+                </div>
+
+
+                <label class="opcao-salario-definir">
+
+                    <input
+                        id="vaga-salario-definir"
+                        type="checkbox"
+                    >
+
+                    <span>
+
+                        <strong>
+                            Salário a definir
+                        </strong>
+
+                        <small>
+                            Marque esta opção caso a remuneração
+                            seja negociada durante o processo seletivo.
+                        </small>
+
+                    </span>
+
+                </label>
+
+
+                <div
+                    id="campos-salario"
+                    class="grade-formulario-vaga"
+                >
+
+                    <label class="campo-formulario-vaga">
+
+                        <span>
+                            Salário mínimo
+                        </span>
+
+                        <input
+                            id="vaga-salario-minimo"
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            placeholder="Ex.: 3500"
+                        >
+
+                    </label>
+
+
+                    <label class="campo-formulario-vaga">
+
+                        <span>
+                            Salário máximo
+                        </span>
+
+                        <input
+                            id="vaga-salario-maximo"
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            placeholder="Ex.: 5000"
+                        >
+
+                    </label>
+
+                </div>
+
+
+                <label class="campo-formulario-vaga campo-largo-vaga">
+
+                    <span>
+                        Benefícios
+                        <small class="campo-opcional">
+                            opcional
+                        </small>
+                    </span>
+
+                    <textarea
+                        id="vaga-beneficios"
+                        rows="4"
+                        placeholder="Ex.: Vale-refeição, plano de saúde, auxílio home office, vale-transporte..."
+                    ></textarea>
+
+                    <small class="ajuda-campo-vaga">
+                        A empresa pode deixar este campo vazio
+                        caso não queira informar benefícios.
+                    </small>
+
+                </label>
+
+            </section>
+
+
+            <section class="secao-formulario-vaga">
+
+                <div class="cabecalho-secao-formulario">
+
+                    <div>
+
+                        <span class="numero-secao-formulario">
+                            03
+                        </span>
+
+                        <h3>
+                            Requisitos e diferenciais
+                        </h3>
+
+                        <p>
+                            Separe aquilo que o candidato precisa
+                            possuir do que será considerado um diferencial.
+                        </p>
+
+                    </div>
+
+
+                    <button
+                        id="botao-adicionar-requisito"
+                        class="botao botao-contorno"
+                        type="button"
+                    >
+                        + Adicionar requisito
+                    </button>
+
+                </div>
+
+
+                <div
+                    id="lista-requisitos-formulario"
+                    class="lista-requisitos-formulario"
+                >
+
+                    <div class="estado-vazio estado-vazio-formulario">
+                        Nenhum requisito adicionado.
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <div
+                id="mensagem-formulario-vaga"
+                class="mensagem-formulario"
+            ></div>
+
+
+            <div class="acoes-modal-vaga">
+
+                <button
+                    id="botao-cancelar-vaga"
+                    class="botao botao-escuro"
+                    type="button"
+                >
+                    Cancelar
+                </button>
+
+                <button
+                    id="botao-salvar-vaga"
+                    class="botao botao-principal"
+                    type="submit"
+                >
+                    Publicar vaga
+                </button>
+
+            </div>
+
+        </form>
+
+    </dialog>
 
 
     <script src="../assets/js/api.js"></script>

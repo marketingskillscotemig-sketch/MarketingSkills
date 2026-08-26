@@ -4,7 +4,21 @@ from extensions import db
 class Empresa(db.Model):
     __tablename__ = "empresas"
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(
+        db.Integer,
+        primary_key=True,
+    )
+
+    usuario_id = db.Column(
+        db.Integer,
+        db.ForeignKey(
+            "usuarios.id",
+            ondelete="CASCADE",
+        ),
+        nullable=False,
+        unique=True,
+        index=True,
+    )
 
     nome = db.Column(
         db.String(150),
@@ -26,9 +40,15 @@ class Empresa(db.Model):
         nullable=True,
     )
 
+    usuario = db.relationship(
+        "Usuario",
+        back_populates="empresa",
+    )
+
     vagas = db.relationship(
         "Vaga",
         back_populates="empresa",
+        cascade="all, delete-orphan",
     )
 
     def salvar(self):
@@ -70,11 +90,26 @@ class Empresa(db.Model):
 
     @staticmethod
     def buscar_por_id(id):
-        return db.session.get(Empresa, id)
+        return db.session.get(
+            Empresa,
+            id,
+        )
+
+    @staticmethod
+    def buscar_por_usuario_id(
+        usuario_id
+    ):
+        return db.session.execute(
+            db.select(Empresa).where(
+                Empresa.usuario_id ==
+                usuario_id
+            )
+        ).scalar_one_or_none()
 
     def to_dict(self):
         return {
             "id": self.id,
+            "usuarioId": self.usuario_id,
             "nome": self.nome,
             "setor": self.setor,
             "descricao": self.descricao,

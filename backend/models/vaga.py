@@ -9,10 +9,16 @@ from models.enums import (
 )
 
 
+_NAO_INFORMADO = object()
+
+
 class Vaga(db.Model):
     __tablename__ = "vagas"
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(
+        db.Integer,
+        primary_key=True,
+    )
 
     empresa_id = db.Column(
         db.Integer,
@@ -27,6 +33,11 @@ class Vaga(db.Model):
     )
 
     descricao = db.Column(
+        db.Text,
+        nullable=True,
+    )
+
+    beneficios = db.Column(
         db.Text,
         nullable=True,
     )
@@ -101,11 +112,12 @@ class Vaga(db.Model):
         empresa_id=None,
         titulo=None,
         descricao=None,
+        beneficios=None,
         nivel_experiencia=None,
         modalidade=None,
         localizacao=None,
-        salario_minimo=None,
-        salario_maximo=None,
+        salario_minimo=_NAO_INFORMADO,
+        salario_maximo=_NAO_INFORMADO,
         data_publicacao=None,
         status=None,
     ):
@@ -118,6 +130,9 @@ class Vaga(db.Model):
         if descricao is not None:
             self.descricao = descricao
 
+        if beneficios is not None:
+            self.beneficios = beneficios
+
         if nivel_experiencia is not None:
             self.nivel_experiencia = nivel_experiencia
 
@@ -127,10 +142,10 @@ class Vaga(db.Model):
         if localizacao is not None:
             self.localizacao = localizacao
 
-        if salario_minimo is not None:
+        if salario_minimo is not _NAO_INFORMADO:
             self.salario_minimo = salario_minimo
 
-        if salario_maximo is not None:
+        if salario_maximo is not _NAO_INFORMADO:
             self.salario_maximo = salario_maximo
 
         if data_publicacao is not None:
@@ -140,6 +155,7 @@ class Vaga(db.Model):
             self.status = status
 
         db.session.commit()
+
         return self
 
     def deletar(self):
@@ -154,7 +170,10 @@ class Vaga(db.Model):
 
     @staticmethod
     def buscar_por_id(id):
-        return db.session.get(Vaga, id)
+        return db.session.get(
+            Vaga,
+            id,
+        )
 
     def to_dict(self):
         return {
@@ -162,6 +181,7 @@ class Vaga(db.Model):
             "empresaId": self.empresa_id,
             "titulo": self.titulo,
             "descricao": self.descricao,
+            "beneficios": self.beneficios,
             "nivelExperiencia": (
                 self.nivel_experiencia.value
                 if self.nivel_experiencia
