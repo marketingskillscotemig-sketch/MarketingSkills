@@ -140,7 +140,7 @@ function atualizarNavegacaoEmpresa() {
             Dashboard
         </a>
 
-        <a href="#talentos-empresa">
+        <a href="./pages/talentos.html?v=1">
             Talentos
         </a>
 
@@ -188,7 +188,7 @@ function atualizarDestaqueEmpresa() {
         </a>
 
         <a
-            href="#talentos-empresa"
+            href="./pages/talentos.html?v=1"
             class="botao botao-escuro botao-grande"
         >
             Buscar talentos
@@ -381,7 +381,7 @@ function atualizarPainelTalentosEmpresa() {
                 <span>Backend</span>
             </div>
 
-            <a href="#talentos-empresa">
+            <a href="./pages/talentos.html?v=1">
                 Ver talentos →
             </a>
 
@@ -453,7 +453,7 @@ function atualizarFluxoEmpresa() {
                 maior aderência à oportunidade.
             </p>
 
-            <a href="#talentos-empresa">
+            <a href="./pages/talentos.html?v=1">
                 Ver exemplo →
             </a>
 
@@ -480,7 +480,7 @@ function atualizarFluxoEmpresa() {
                 para sua busca.
             </p>
 
-            <a href="#talentos-empresa">
+            <a href="./pages/talentos.html?v=1">
                 Buscar talentos →
             </a>
 
@@ -630,7 +630,7 @@ function atualizarChamadaEmpresa() {
         </a>
 
         <a
-            href="#talentos-empresa"
+            href="./pages/talentos.html?v=1"
             class="botao botao-escuro botao-grande"
         >
             Buscar talentos
@@ -653,7 +653,7 @@ function atualizarRodapeEmpresa() {
             Dashboard
         </a>
 
-        <a href="#talentos-empresa">
+        <a href="./pages/talentos.html?v=1">
             Talentos
         </a>
 

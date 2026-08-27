@@ -18,7 +18,7 @@
 
     <link
         rel="stylesheet"
-        href="../assets/css/autenticacao.css"
+        href="../assets/css/autenticacao.css?v=2"
     >
 </head>
 
@@ -172,7 +172,7 @@
                     >
 
                         <span>
-                            Nome da empresa
+                            Nome fantasia
                         </span>
 
                         <input
@@ -182,6 +182,49 @@
                             maxlength="150"
                             autocomplete="organization"
                             placeholder="Ex.: Tech Solutions"
+                        >
+
+                    </label>
+
+
+                    <label
+                        id="campo-razao-social"
+                        class="campo-autenticacao"
+                        hidden
+                    >
+
+                        <span>
+                            Razão Social
+                        </span>
+
+                        <input
+                            id="cadastro-razao-social"
+                            type="text"
+                            minlength="2"
+                            maxlength="180"
+                            placeholder="Ex.: Tech Solutions LTDA"
+                        >
+
+                    </label>
+
+
+                    <label
+                        id="campo-cnpj"
+                        class="campo-autenticacao"
+                        hidden
+                    >
+
+                        <span>
+                            CNPJ
+                        </span>
+
+                        <input
+                            id="cadastro-cnpj"
+                            type="text"
+                            inputmode="numeric"
+                            maxlength="18"
+                            autocomplete="off"
+                            placeholder="00.000.000/0000-00"
                         >
 
                     </label>
@@ -276,7 +319,7 @@
 
 
     <script src="../assets/js/api.js"></script>
-    <script src="../assets/js/autenticacao.js"></script>
+    <script src="../assets/js/autenticacao.js?v=2"></script>
 
 </body>
 

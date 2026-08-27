@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Encontre profissionais compatíveis com as oportunidades da sua empresa."
+    >
+
+    <title>Talentos | Market Skills</title>
+
+    <link
+    rel="stylesheet"
+    href="../assets/css/styles.css"
+>
+
+<link
+    rel="stylesheet"
+    href="../assets/css/home.css"
+>
+
+<link
+    rel="stylesheet"
+    href="../assets/css/sessao.css"
+>
+
+<link
+    rel="stylesheet"
+    href="../assets/css/talentos.css?v=2"
+>
+</head>
+
+
+<body
+    data-pagina-protegida="true"
+    class="pagina-talentos-empresa"
+>
+
+    <header class="cabecalho-site">
+
+        <div class="conteudo-centralizado conteudo-navegacao">
+
+            <a
+                href="../index.html"
+                class="marca"
+                aria-label="Market Skills"
+            >
+                <span class="icone-marca">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+
+                <span class="texto-marca">
+                    Market<span>Skills</span>
+                </span>
+            </a>
+
+
+            <nav
+                class="navegacao-principal navegacao-talentos"
+                aria-label="Navegação principal"
+            >
+                <a href="../index.html">
+                    Dashboard
+                </a>
+
+                <a
+                    href="./talentos.html?v=1"
+                    class="ativo"
+                >
+                    Talentos
+                </a>
+
+                <a href="./vagas.html?v=20260826">
+                    Minhas Vagas
+                </a>
+
+                <a href="./perfil.html?v=20260826">
+                    Perfil
+                </a>
+            </nav>
+
+
+            <div class="acoes-navegacao"></div>
+
+        </div>
+
+    </header>
+
+
+    <main class="pagina-talentos">
+
+        <section class="hero-talentos">
+
+            <div class="conteudo-centralizado">
+
+                <span class="rotulo-talentos">
+                    RADAR DE RECRUTAMENTO
+                </span>
+
+                <div class="cabecalho-hero-talentos">
+
+                    <div>
+                        <h1>
+                            Encontre profissionais
+                            alinhados às suas vagas.
+                        </h1>
+
+                        <p>
+                            Pesquise perfis, filtre competências e
+                            compare candidatos automaticamente com
+                            os requisitos das oportunidades da sua empresa.
+                        </p>
+                    </div>
+
+
+                    <div class="resumo-radar-talentos">
+
+                        <span>
+                            Profissionais encontrados
+                        </span>
+
+                        <strong id="quantidade-talentos">
+                            0
+                        </strong>
+
+                        <small>
+                            perfis profissionais disponíveis
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section class="conteudo-centralizado area-radar-talentos">
+
+            <div class="painel-filtros-talentos">
+
+                <div class="barra-busca-talentos">
+
+                    <span aria-hidden="true">
+                        ⌕
+                    </span>
+
+                    <input
+                        id="busca-talentos"
+                        type="search"
+                        placeholder="Buscar por nome, objetivo, localização ou tecnologia..."
+                        autocomplete="off"
+                    >
+
+                </div>
+
+
+                <div class="grade-filtros-talentos">
+
+                    <label>
+                        <span>Nível</span>
+
+                        <select id="filtro-nivel-talentos">
+                            <option value="">
+                                Todos os níveis
+                            </option>
+                        </select>
+                    </label>
+
+
+                    <label>
+                        <span>Modalidade</span>
+
+                        <select id="filtro-modalidade-talentos">
+                            <option value="">
+                                Todas as modalidades
+                            </option>
+                        </select>
+                    </label>
+
+
+                    <label>
+                        <span>Localização</span>
+
+                        <select id="filtro-localizacao-talentos">
+                            <option value="">
+                                Todas as localizações
+                            </option>
+                        </select>
+                    </label>
+
+
+                    <label>
+                        <span>Habilidade</span>
+
+                        <select id="filtro-habilidade-talentos">
+                            <option value="">
+                                Todas as habilidades
+                            </option>
+                        </select>
+                    </label>
+
+                </div>
+
+            </div>
+
+
+            <section class="painel-comparacao-talentos">
+
+                <div class="icone-comparacao-talentos">
+                    &lt;/&gt;
+                </div>
+
+                <div class="texto-comparacao-talentos">
+
+                    <span class="rotulo-talentos">
+                        COMPARAÇÃO INTELIGENTE
+                    </span>
+
+                    <h2>
+                        Comparar com a vaga
+                    </h2>
+
+                    <p>
+                        Selecione uma oportunidade para ordenar os
+                        profissionais pelo percentual de compatibilidade.
+                    </p>
+
+                </div>
+
+
+                <div class="campo-comparacao-talentos">
+
+                    <select id="comparar-vaga-talentos">
+                        <option value="">
+                            Sem comparação
+                        </option>
+                    </select>
+
+                </div>
+
+            </section>
+
+
+            <div class="barra-resultados-talentos">
+
+                <div>
+                    <span class="rotulo-talentos">
+                        PROFISSIONAIS
+                    </span>
+
+                    <h2>
+                        Radar de talentos
+                    </h2>
+                </div>
+
+
+                <div
+                    id="indicador-comparacao-talentos"
+                    class="indicador-comparacao-talentos oculto"
+                >
+                    Ordenado por compatibilidade
+                </div>
+
+            </div>
+
+
+            <div
+                id="estado-talentos"
+                class="estado-talentos"
+            >
+                Carregando profissionais...
+            </div>
+
+
+            <div
+                id="grade-talentos"
+                class="grade-talentos oculto"
+            ></div>
+
+        </section>
+
+    </main>
+
+
+    <dialog
+        id="painel-talento"
+        class="painel-talento"
+    >
+
+        <div id="conteudo-painel-talento"></div>
+
+    </dialog>
+
+
+    <div
+        id="mensagem-talentos"
+        class="mensagem-talentos"
+    ></div>
+
+
+    <script src="../assets/js/api.js"></script>
+    <script src="../assets/js/sessao.js"></script>
+    <script src="../assets/js/talentos.js?v=1"></script>
+
+</body>
+
+</html>

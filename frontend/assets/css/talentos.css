@@ -1,0 +1,838 @@
+.pagina-talentos-empresa {
+    margin: 0;
+    background: #030817;
+    color: #f7f9ff;
+}
+
+
+.pagina-talentos {
+    min-height: calc(100vh - 80px);
+    padding-bottom: 80px;
+    background:
+        radial-gradient(
+            circle at 85% 4%,
+            rgba(120, 62, 255, 0.12),
+            transparent 25%
+        ),
+        radial-gradient(
+            circle at 12% 18%,
+            rgba(42, 121, 255, 0.08),
+            transparent 24%
+        ),
+        #030817;
+}
+
+
+.navegacao-talentos a.ativo {
+    color: #ffffff;
+}
+
+
+/* HERO */
+
+
+.hero-talentos {
+    padding: 68px 0 42px;
+}
+
+
+.rotulo-talentos {
+    display: block;
+    color: #69b6ff;
+    font-size: 0.7rem;
+    font-weight: 900;
+    letter-spacing: 0.13em;
+}
+
+
+.cabecalho-hero-talentos {
+    display: grid;
+    grid-template-columns:
+        minmax(0, 1fr)
+        260px;
+    gap: 40px;
+    align-items: end;
+    margin-top: 12px;
+}
+
+
+.cabecalho-hero-talentos h1 {
+    max-width: 750px;
+    margin: 0;
+    color: #ffffff;
+    font-size: clamp(2.2rem, 5vw, 4.1rem);
+    line-height: 1.02;
+    letter-spacing: -0.05em;
+}
+
+
+.cabecalho-hero-talentos p {
+    max-width: 720px;
+    margin: 24px 0 0;
+    color: #8f9ab1;
+    font-size: 1rem;
+    line-height: 1.8;
+}
+
+
+.resumo-radar-talentos {
+    padding: 21px;
+    border: 1px solid #1b2947;
+    border-radius: 18px;
+    background: #091122;
+}
+
+
+.resumo-radar-talentos span,
+.resumo-radar-talentos small {
+    display: block;
+    color: #75829c;
+    font-size: 0.75rem;
+}
+
+
+.resumo-radar-talentos strong {
+    display: block;
+    margin: 7px 0 3px;
+    color: #ffffff;
+    font-size: 2.3rem;
+}
+
+
+/* FILTROS */
+
+
+.area-radar-talentos {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+
+.painel-filtros-talentos {
+    padding: 20px;
+    border: 1px solid #192640;
+    border-radius: 18px;
+    background: #081020;
+}
+
+
+.barra-busca-talentos {
+    display: flex;
+    min-height: 50px;
+    align-items: center;
+    gap: 12px;
+    padding: 0 15px;
+    border: 1px solid #243453;
+    border-radius: 12px;
+    background: #050b17;
+}
+
+
+.barra-busca-talentos span {
+    color: #677994;
+    font-size: 1.35rem;
+}
+
+
+.barra-busca-talentos input {
+    width: 100%;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: #ffffff;
+    font: inherit;
+}
+
+
+.barra-busca-talentos input::placeholder {
+    color: #64718a;
+}
+
+
+.grade-filtros-talentos {
+    display: grid;
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 14px;
+}
+
+
+.grade-filtros-talentos label {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+
+.grade-filtros-talentos label > span {
+    color: #8290a9;
+    font-size: 0.72rem;
+    font-weight: 800;
+}
+
+
+.grade-filtros-talentos select,
+.campo-comparacao-talentos select {
+    width: 100%;
+    min-height: 43px;
+    padding: 0 11px;
+    border: 1px solid #22314e;
+    border-radius: 10px;
+    outline: none;
+    background: #070d19;
+    color: #dfe7f8;
+    font: inherit;
+}
+
+
+/* COMPARAÇÃO */
+
+
+.painel-comparacao-talentos {
+    display: grid;
+    grid-template-columns:
+        auto minmax(0, 1fr) minmax(260px, 360px);
+    gap: 18px;
+    align-items: center;
+    padding: 22px;
+    border: 1px solid #283663;
+    border-radius: 18px;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(39, 74, 163, 0.17),
+            rgba(82, 34, 139, 0.14)
+        ),
+        #081020;
+}
+
+
+.icone-comparacao-talentos {
+    display: grid;
+    width: 48px;
+    height: 48px;
+    place-items: center;
+    border: 1px solid #2b4d91;
+    border-radius: 13px;
+    background: #0c1b3a;
+    color: #75b8ff;
+    font-size: 0.78rem;
+    font-weight: 900;
+}
+
+
+.texto-comparacao-talentos h2 {
+    margin: 4px 0 0;
+    font-size: 1.08rem;
+}
+
+
+.texto-comparacao-talentos p {
+    margin: 6px 0 0;
+    color: #77849f;
+    font-size: 0.8rem;
+    line-height: 1.5;
+}
+
+
+/* RESULTADOS */
+
+
+.barra-resultados-talentos {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 20px;
+    margin-top: 16px;
+}
+
+
+.barra-resultados-talentos h2 {
+    margin: 5px 0 0;
+    font-size: 1.3rem;
+}
+
+
+.indicador-comparacao-talentos {
+    padding: 7px 11px;
+    border: 1px solid #274f66;
+    border-radius: 999px;
+    background: #0b232e;
+    color: #78d9c1;
+    font-size: 0.72rem;
+    font-weight: 800;
+}
+
+
+.estado-talentos {
+    padding: 60px 20px;
+    border: 1px dashed #26334b;
+    border-radius: 17px;
+    color: #71809a;
+    text-align: center;
+}
+
+
+.grade-talentos {
+    display: grid;
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}
+
+
+.cartao-talento {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    padding: 19px;
+    border: 1px solid #182641;
+    border-radius: 18px;
+    background: #081020;
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease;
+}
+
+
+.cartao-talento:hover {
+    transform: translateY(-3px);
+    border-color: #31549a;
+}
+
+
+.cabecalho-talento {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 13px;
+}
+
+
+.foto-talento {
+    display: grid;
+    width: 58px;
+    height: 58px;
+    place-items: center;
+    overflow: hidden;
+    border: 1px solid #2a3e64;
+    border-radius: 15px;
+    background:
+        linear-gradient(
+            135deg,
+            #315cff,
+            #843cff
+        );
+    color: #ffffff;
+    font-size: 1.3rem;
+    font-weight: 900;
+}
+
+
+.foto-talento img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+
+.identidade-talento {
+    min-width: 0;
+}
+
+
+.identidade-talento h3 {
+    overflow: hidden;
+    margin: 2px 0 0;
+    color: #ffffff;
+    font-size: 1rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+.objetivo-talento {
+    overflow: hidden;
+    margin-top: 4px;
+    color: #8d9ab4;
+    font-size: 0.78rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+.localizacao-talento {
+    margin-top: 12px;
+    color: #6f7c95;
+    font-size: 0.76rem;
+}
+
+
+.tags-talento {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 14px;
+}
+
+
+.tag-talento {
+    padding: 6px 9px;
+    border: 1px solid #223760;
+    border-radius: 999px;
+    background: #0c1730;
+    color: #9fc7ff;
+    font-size: 0.69rem;
+    font-weight: 800;
+}
+
+
+.sem-habilidades-talento {
+    color: #68758c;
+    font-size: 0.75rem;
+}
+
+
+.compatibilidade-talento {
+    margin-top: 17px;
+    padding-top: 15px;
+    border-top: 1px solid #172139;
+}
+
+
+.linha-compatibilidade-talento {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    align-items: center;
+}
+
+
+.linha-compatibilidade-talento span {
+    color: #74819b;
+    font-size: 0.72rem;
+}
+
+
+.linha-compatibilidade-talento strong {
+    color: #ffffff;
+    font-size: 1.25rem;
+}
+
+
+.barra-match-talento {
+    height: 6px;
+    margin-top: 9px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: #172035;
+}
+
+
+.barra-match-talento div {
+    height: 100%;
+    border-radius: inherit;
+    background:
+        linear-gradient(
+            90deg,
+            #347bff,
+            #a63cff
+        );
+}
+
+
+.resumo-requisitos-talento {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    color: #77849d;
+    font-size: 0.69rem;
+}
+
+
+.requisito-atendido {
+    color: #56d6b1;
+}
+
+
+.requisito-faltante {
+    color: #ff8499;
+}
+
+
+.rodape-cartao-talento {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-top: auto;
+    padding-top: 18px;
+}
+
+
+.nivel-talento {
+    color: #78859c;
+    font-size: 0.72rem;
+}
+
+
+.botao-ver-talento {
+    min-height: 36px;
+    padding: 0 13px;
+    border: 1px solid #345da6;
+    border-radius: 9px;
+    background: #0e1a31;
+    color: #a8cbff;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.75rem;
+    font-weight: 800;
+}
+
+
+/* PAINEL LATERAL */
+
+
+.painel-talento {
+    width: min(94vw, 590px);
+    height: 100vh;
+    max-height: none;
+    margin: 0 0 0 auto;
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+    border-left: 1px solid #24324e;
+    background: #071020;
+    color: #ffffff;
+}
+
+
+.painel-talento::backdrop {
+    background: rgba(2, 6, 16, 0.72);
+    backdrop-filter: blur(4px);
+}
+
+
+.conteudo-painel-talento {
+    height: 100%;
+    overflow-y: auto;
+}
+
+
+.cabecalho-painel-talento {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid #19263e;
+    background: rgba(7, 16, 32, 0.97);
+}
+
+
+.cabecalho-painel-talento h2 {
+    margin: 4px 0 0;
+    font-size: 1.25rem;
+}
+
+
+.botao-fechar-painel-talento {
+    display: grid;
+    width: 36px;
+    height: 36px;
+    place-items: center;
+    border: 1px solid #263754;
+    border-radius: 10px;
+    background: #0b1528;
+    color: #9aa8c0;
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+
+.corpo-painel-talento {
+    padding: 24px;
+}
+
+
+.perfil-topo-painel {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 15px;
+    align-items: center;
+}
+
+
+.foto-talento-grande {
+    display: grid;
+    width: 76px;
+    height: 76px;
+    place-items: center;
+    overflow: hidden;
+    border-radius: 19px;
+    background:
+        linear-gradient(
+            135deg,
+            #315cff,
+            #843cff
+        );
+    color: #ffffff;
+    font-size: 1.6rem;
+    font-weight: 900;
+}
+
+
+.foto-talento-grande img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+
+.perfil-topo-painel h3 {
+    margin: 0;
+    font-size: 1.3rem;
+}
+
+
+.perfil-topo-painel p {
+    margin: 5px 0 0;
+    color: #8794ad;
+}
+
+
+.metadados-painel-talento {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-top: 14px;
+}
+
+
+.metadados-painel-talento span {
+    padding: 6px 9px;
+    border: 1px solid #20304d;
+    border-radius: 999px;
+    color: #8796af;
+    font-size: 0.7rem;
+}
+
+
+.secao-painel-talento {
+    margin-top: 25px;
+    padding-top: 22px;
+    border-top: 1px solid #172239;
+}
+
+
+.secao-painel-talento h4 {
+    margin: 0 0 13px;
+    font-size: 0.98rem;
+}
+
+
+.secao-painel-talento > p {
+    margin: 0;
+    color: #8b98b1;
+    font-size: 0.83rem;
+    line-height: 1.7;
+    white-space: pre-line;
+}
+
+
+.item-trajetoria-talento {
+    padding: 12px 0;
+    border-bottom: 1px solid #152039;
+}
+
+
+.item-trajetoria-talento:last-child {
+    border-bottom: 0;
+}
+
+
+.item-trajetoria-talento strong {
+    display: block;
+    color: #e8eefc;
+    font-size: 0.83rem;
+}
+
+
+.item-trajetoria-talento span {
+    display: block;
+    margin-top: 4px;
+    color: #72809a;
+    font-size: 0.75rem;
+}
+
+
+.item-trajetoria-talento p {
+    margin: 7px 0 0;
+    color: #8693ab;
+    font-size: 0.78rem;
+    line-height: 1.55;
+}
+
+
+.requisitos-painel-talento {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+
+.item-requisito-painel {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 11px 12px;
+    border: 1px solid #1d2a44;
+    border-radius: 10px;
+    background: #0a1427;
+}
+
+
+.item-requisito-painel strong {
+    font-size: 0.78rem;
+}
+
+
+.item-requisito-painel span {
+    font-size: 0.72rem;
+}
+
+
+.acoes-painel-talento {
+    position: sticky;
+    bottom: 0;
+    display: flex;
+    justify-content: flex-end;
+    gap: 9px;
+    padding: 16px 24px;
+    border-top: 1px solid #1c2943;
+    background: rgba(7, 16, 32, 0.98);
+}
+
+
+.botao-copiar-contato {
+    min-height: 42px;
+    padding: 0 17px;
+    border: 0;
+    border-radius: 10px;
+    background:
+        linear-gradient(
+            135deg,
+            #3977ff,
+            #8b3df3
+        );
+    color: #ffffff;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 800;
+}
+
+
+.botao-copiar-contato:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+}
+
+
+/* MENSAGEM */
+
+
+.mensagem-talentos {
+    position: fixed;
+    right: 22px;
+    bottom: 22px;
+    z-index: 1100;
+    max-width: 360px;
+    padding: 12px 16px;
+    border-radius: 11px;
+    background: #123e35;
+    color: #ffffff;
+    font-size: 0.82rem;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(10px);
+    transition:
+        opacity 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.mensagem-talentos.visivel {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+
+.oculto {
+    display: none !important;
+}
+
+
+/* RESPONSIVO */
+
+
+@media (max-width: 1050px) {
+    .grade-talentos {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+
+    .grade-filtros-talentos {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+}
+
+
+@media (max-width: 800px) {
+    .cabecalho-hero-talentos {
+        grid-template-columns: 1fr;
+    }
+
+
+    .resumo-radar-talentos {
+        max-width: 280px;
+    }
+
+
+    .painel-comparacao-talentos {
+        grid-template-columns: auto 1fr;
+    }
+
+
+    .campo-comparacao-talentos {
+        grid-column: 1 / -1;
+    }
+}
+
+
+@media (max-width: 680px) {
+    .hero-talentos {
+        padding-top: 38px;
+    }
+
+
+    .grade-talentos,
+    .grade-filtros-talentos {
+        grid-template-columns: 1fr;
+    }
+
+
+    .barra-resultados-talentos {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+
+    .painel-talento {
+        width: 100vw;
+    }
+}

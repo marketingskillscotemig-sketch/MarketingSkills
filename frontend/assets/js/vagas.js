@@ -153,7 +153,7 @@ function configurarNavegacaoEmpresa() {
             Dashboard
         </a>
 
-        <a href="../index.html#talentos-empresa">
+        <a href="./talentos.html?v=1">
             Talentos
         </a>
 

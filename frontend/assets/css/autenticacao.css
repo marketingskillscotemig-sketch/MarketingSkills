@@ -437,3 +437,6 @@
         font-size: 39px;
     }
 }
+.campo-autenticacao[hidden] {
+    display: none !important;
+}

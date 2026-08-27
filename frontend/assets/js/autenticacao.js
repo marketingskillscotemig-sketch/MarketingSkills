@@ -29,6 +29,7 @@ function iniciarAutenticacao() {
         );
 
         registrarMudancaTipoConta();
+        registrarMascaraCnpj();
     }
 }
 
@@ -153,9 +154,31 @@ async function realizarCadastro(evento) {
             "cadastro-nome-empresa"
         );
 
+    const campoRazaoSocial =
+        document.getElementById(
+            "cadastro-razao-social"
+        );
+
+    const campoCnpj =
+        document.getElementById(
+            "cadastro-cnpj"
+        );
+
     const nomeEmpresa =
         campoNomeEmpresa
             ? campoNomeEmpresa.value.trim()
+            : "";
+
+    const razaoSocial =
+        campoRazaoSocial
+            ? campoRazaoSocial.value.trim()
+            : "";
+
+    const cnpj =
+        campoCnpj
+            ? somenteNumeros(
+                campoCnpj.value
+            )
             : "";
 
     if (
@@ -172,16 +195,39 @@ async function realizarCadastro(evento) {
     }
 
     if (
-        tipoConta === "empresa" &&
-        !nomeEmpresa
+        tipoConta === "empresa"
     ) {
-        mostrarMensagem(
-            mensagem,
-            "Informe o nome da empresa.",
-            "erro"
-        );
+        if (!nomeEmpresa) {
+            mostrarMensagem(
+                mensagem,
+                "Informe o nome fantasia da empresa.",
+                "erro"
+            );
 
-        return;
+            return;
+        }
+
+        if (!razaoSocial) {
+            mostrarMensagem(
+                mensagem,
+                "Informe a Razão Social da empresa.",
+                "erro"
+            );
+
+            return;
+        }
+
+        if (
+            cnpj.length !== 14
+        ) {
+            mostrarMensagem(
+                mensagem,
+                "Informe um CNPJ com 14 dígitos.",
+                "erro"
+            );
+
+            return;
+        }
     }
 
     try {
@@ -201,10 +247,23 @@ async function realizarCadastro(evento) {
                         email,
                         senha,
                         tipoConta,
+
                         nomeEmpresa:
                             tipoConta ===
                             "empresa"
                                 ? nomeEmpresa
+                                : null,
+
+                        razaoSocial:
+                            tipoConta ===
+                            "empresa"
+                                ? razaoSocial
+                                : null,
+
+                        cnpj:
+                            tipoConta ===
+                            "empresa"
+                                ? cnpj
                                 : null,
                     }),
                 }
@@ -256,14 +315,34 @@ function registrarMudancaTipoConta() {
             "cadastro-nome"
         );
 
-    const conteinerEmpresa =
+    const conteinerNomeEmpresa =
         document.getElementById(
             "campo-nome-empresa"
+        );
+
+    const conteinerRazaoSocial =
+        document.getElementById(
+            "campo-razao-social"
+        );
+
+    const conteinerCnpj =
+        document.getElementById(
+            "campo-cnpj"
         );
 
     const campoNomeEmpresa =
         document.getElementById(
             "cadastro-nome-empresa"
+        );
+
+    const campoRazaoSocial =
+        document.getElementById(
+            "cadastro-razao-social"
+        );
+
+    const campoCnpj =
+        document.getElementById(
+            "cadastro-cnpj"
         );
 
     function atualizarCampos() {
@@ -283,10 +362,22 @@ function registrarMudancaTipoConta() {
             campoNome.placeholder =
                 "Pessoa responsável pela conta";
 
-            conteinerEmpresa.hidden =
+            conteinerNomeEmpresa.hidden =
+                false;
+
+            conteinerRazaoSocial.hidden =
+                false;
+
+            conteinerCnpj.hidden =
                 false;
 
             campoNomeEmpresa.required =
+                true;
+
+            campoRazaoSocial.required =
+                true;
+
+            campoCnpj.required =
                 true;
 
             return;
@@ -298,24 +389,104 @@ function registrarMudancaTipoConta() {
         campoNome.placeholder =
             "";
 
-        conteinerEmpresa.hidden =
+        conteinerNomeEmpresa.hidden =
+            true;
+
+        conteinerRazaoSocial.hidden =
+            true;
+
+        conteinerCnpj.hidden =
             true;
 
         campoNomeEmpresa.required =
             false;
 
+        campoRazaoSocial.required =
+            false;
+
+        campoCnpj.required =
+            false;
+
         campoNomeEmpresa.value =
+            "";
+
+        campoRazaoSocial.value =
+            "";
+
+        campoCnpj.value =
             "";
     }
 
-    opcoes.forEach(opcao => {
-        opcao.addEventListener(
-            "change",
-            atualizarCampos
-        );
-    });
+    opcoes.forEach(
+        opcao => {
+            opcao.addEventListener(
+                "change",
+                atualizarCampos
+            );
+        }
+    );
 
     atualizarCampos();
+}
+
+
+function registrarMascaraCnpj() {
+    const campo =
+        document.getElementById(
+            "cadastro-cnpj"
+        );
+
+    if (!campo) {
+        return;
+    }
+
+    campo.addEventListener(
+        "input",
+        () => {
+            let valor =
+                somenteNumeros(
+                    campo.value
+                ).slice(
+                    0,
+                    14
+                );
+
+            valor = valor.replace(
+                /^(\d{2})(\d)/,
+                "$1.$2"
+            );
+
+            valor = valor.replace(
+                /^(\d{2})\.(\d{3})(\d)/,
+                "$1.$2.$3"
+            );
+
+            valor = valor.replace(
+                /\.(\d{3})(\d)/,
+                ".$1/$2"
+            );
+
+            valor = valor.replace(
+                /(\d{4})(\d)/,
+                "$1-$2"
+            );
+
+            campo.value =
+                valor;
+        }
+    );
+}
+
+
+function somenteNumeros(
+    valor
+) {
+    return String(
+        valor || ""
+    ).replace(
+        /\D/g,
+        ""
+    );
 }
 
 
@@ -353,7 +524,9 @@ function mostrarMensagem(
 }
 
 
-function limparMensagem(elemento) {
+function limparMensagem(
+    elemento
+) {
     elemento.textContent =
         "";
 
