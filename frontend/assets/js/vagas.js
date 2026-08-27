@@ -1,107 +1,63 @@
-let usuarioVagas = null;
-let empresaVagas = null;
+let usuario = null;
+let empresaAtual = null;
 
 let vagas = [];
 let empresas = [];
 let requisitos = [];
 let habilidades = [];
 
-let perfilProfissional = null;
+let perfil = null;
 let habilidadesPerfil = [];
 
 let vagaSelecionadaId = null;
-let vagaEmEdicaoId = null;
-
+let vagaEditandoId = null;
 let requisitosFormulario = [];
 
 
-document.addEventListener(
-    "DOMContentLoaded",
-    iniciarPaginaVagas
-);
+document.addEventListener("DOMContentLoaded", iniciarPagina);
 
 
-async function iniciarPaginaVagas() {
+async function iniciarPagina() {
     try {
-        const [
-            sessao,
-            dadosVagas,
-            dadosEmpresas,
-            dadosRequisitos,
-            dadosHabilidades,
-            perfis,
-            perfisHabilidades,
-        ] = await Promise.all([
-            apiRequest(
-                "/autenticacao/sessao"
-            ),
-            apiRequest(
-                "/vagas"
-            ),
-            apiRequest(
-                "/empresas"
-            ),
-            apiRequest(
-                "/requisitos-vaga"
-            ),
-            apiRequest(
-                "/habilidades"
-            ),
-            apiRequest(
-                "/perfis-profissionais"
-            ),
-            apiRequest(
-                "/perfil-habilidades"
-            ),
+        const dados = await Promise.all([
+            apiRequest("/autenticacao/sessao"),
+            apiRequest("/vagas"),
+            apiRequest("/empresas"),
+            apiRequest("/requisitos-vaga"),
+            apiRequest("/habilidades"),
+            apiRequest("/perfis-profissionais"),
+            apiRequest("/perfil-habilidades"),
         ]);
 
-        if (
-            !sessao.autenticado ||
-            !sessao.usuario
-        ) {
-            window.location.href =
-                "./login.html";
+        const sessao = dados[0];
 
+        if (!sessao.autenticado) {
+            window.location.href = "./login.html";
             return;
         }
 
-        usuarioVagas =
-            sessao.usuario;
+        usuario = sessao.usuario;
+        vagas = dados[1] || [];
+        empresas = dados[2] || [];
+        requisitos = dados[3] || [];
+        habilidades = dados[4] || [];
 
-        vagas =
-            dadosVagas || [];
+        const perfis = dados[5] || [];
+        const perfisHabilidades = dados[6] || [];
 
-        empresas =
-            dadosEmpresas || [];
-
-        requisitos =
-            dadosRequisitos || [];
-
-        habilidades =
-            dadosHabilidades || [];
-
-        if (
-            usuarioVagas.tipoConta ===
-            "empresa"
-        ) {
-            iniciarExperienciaEmpresa();
-            return;
+        if (usuario.tipoConta === "empresa") {
+            iniciarEmpresa();
+        } else {
+            iniciarEstudante(
+                perfis,
+                perfisHabilidades
+            );
         }
-
-        iniciarExperienciaEstudante(
-            perfis,
-            perfisHabilidades
-        );
 
     } catch (erro) {
-        console.error(
-            "Erro ao carregar vagas:",
-            erro
-        );
+        console.error(erro);
 
-        document.getElementById(
-            "lista-vagas"
-        ).innerHTML = `
+        document.getElementById("lista-vagas").innerHTML = `
             <div class="estado-vazio">
                 Não foi possível carregar as vagas.
             </div>
@@ -110,30 +66,586 @@ async function iniciarPaginaVagas() {
 }
 
 
-/* ============================= */
-/* EMPRESA                       */
-/* ============================= */
+/* =========================================================
+   ESTUDANTE
+========================================================= */
 
 
-function iniciarExperienciaEmpresa() {
-    empresaVagas =
+function iniciarEstudante(
+    perfis,
+    perfisHabilidades
+) {
+    perfil = perfis.find(
+        item => item.usuarioId === usuario.id
+    );
+
+    if (perfil) {
+        habilidadesPerfil = perfisHabilidades.filter(
+            item => item.perfilProfissionalId === perfil.id
+        );
+    }
+
+    registrarEventosEstudante();
+    atualizarResumoEstudante();
+    buscarVagas();
+}
+
+
+function registrarEventosEstudante() {
+    document.getElementById("filtro-busca")
+        .addEventListener("input", buscarVagas);
+
+    document.getElementById("filtro-modalidade")
+        .addEventListener("change", buscarVagas);
+
+    document.getElementById("filtro-experiencia")
+        .addEventListener("change", buscarVagas);
+
+    document.getElementById("filtro-localizacao")
+        .addEventListener("input", buscarVagas);
+
+    document.getElementById("filtro-ordem")
+        .addEventListener("change", buscarVagas);
+
+    document.getElementById("lista-vagas")
+        .addEventListener("click", function (evento) {
+            const botao = evento.target.closest("[data-vaga-id]");
+
+            if (!botao) {
+                return;
+            }
+
+            selecionarVaga(
+                Number(botao.dataset.vagaId)
+            );
+        });
+}
+
+
+async function buscarVagas() {
+    const texto =
+        document.getElementById("filtro-busca").value.trim();
+
+    const modalidade =
+        document.getElementById("filtro-modalidade").value;
+
+    const nivel =
+        document.getElementById("filtro-experiencia").value;
+
+    const localizacao =
+        document.getElementById("filtro-localizacao").value.trim();
+
+    const ordem =
+        document.getElementById("filtro-ordem").value;
+
+    const parametros = new URLSearchParams();
+
+    if (texto) {
+        parametros.set("texto", texto);
+    }
+
+    if (modalidade) {
+        parametros.set("modalidade", modalidade);
+    }
+
+    if (nivel) {
+        parametros.set("nivel", nivel);
+    }
+
+    if (localizacao) {
+        parametros.set("localizacao", localizacao);
+    }
+
+    try {
+        let rota = "/vagas/busca-avancada";
+
+        if (parametros.toString()) {
+            rota += "?" + parametros.toString();
+        }
+
+        const resultado =
+            await apiRequest(rota);
+
+        ordenarVagas(
+            resultado,
+            ordem
+        );
+
+        mostrarVagasEstudante(
+            resultado
+        );
+
+    } catch (erro) {
+        console.error(erro);
+
+        document.getElementById("lista-vagas").innerHTML = `
+            <div class="estado-vazio">
+                Erro ao buscar vagas.
+            </div>
+        `;
+    }
+}
+
+
+function ordenarVagas(lista, ordem) {
+    if (ordem === "titulo") {
+        lista.sort(
+            (a, b) =>
+                a.titulo.localeCompare(
+                    b.titulo,
+                    "pt-BR"
+                )
+        );
+
+        return;
+    }
+
+    if (ordem === "salario") {
+        lista.sort(
+            (a, b) =>
+                maiorSalario(b) -
+                maiorSalario(a)
+        );
+
+        return;
+    }
+
+    lista.sort(
+        (a, b) =>
+            new Date(b.dataPublicacao || 0) -
+            new Date(a.dataPublicacao || 0)
+    );
+}
+
+
+function maiorSalario(vaga) {
+    return Number(
+        vaga.salarioMaximo ||
+        vaga.salarioMinimo ||
+        0
+    );
+}
+
+
+function mostrarVagasEstudante(lista) {
+    const div = document.getElementById("lista-vagas");
+
+    document.getElementById(
+        "quantidade-resultados"
+    ).textContent =
+        `${lista.length} resultado(s)`;
+
+    if (lista.length === 0) {
+        div.innerHTML = `
+            <div class="estado-vazio">
+                Nenhuma vaga encontrada.
+            </div>
+        `;
+
+        return;
+    }
+
+    let html = "";
+
+    lista.forEach(function (vaga) {
+        const empresa =
+            buscarEmpresa(vaga.empresaId);
+
+        const ativo =
+            vaga.id === vagaSelecionadaId
+                ? "ativo"
+                : "";
+
+        html += `
+            <button
+                class="cartao-vaga ${ativo}"
+                data-vaga-id="${vaga.id}"
+                type="button"
+            >
+                <div class="topo-cartao-vaga">
+                    <div>
+                        <h3>${escapar(vaga.titulo)}</h3>
+
+                        <span class="nome-empresa-vaga">
+                            ${escapar(
+                                empresa
+                                    ? empresa.nome
+                                    : vaga.empresaNome || "Empresa"
+                            )}
+                        </span>
+                    </div>
+
+                    <span class="tag-vaga">
+                        Ativa
+                    </span>
+                </div>
+
+                <div class="informacoes-cartao-vaga">
+                    <span>
+                        ${formatarExperiencia(
+                            vaga.nivelExperiencia
+                        )}
+                    </span>
+
+                    <span>
+                        ${formatarModalidade(
+                            vaga.modalidade
+                        )}
+                    </span>
+
+                    <span>
+                        ${escapar(
+                            vaga.localizacao ||
+                            "Localização não informada"
+                        )}
+                    </span>
+                </div>
+
+                <div class="rodape-cartao-vaga">
+                    <span class="salario-cartao">
+                        ${formatarSalario(vaga)}
+                    </span>
+
+                    <span class="data-cartao">
+                        ${formatarData(
+                            vaga.dataPublicacao
+                        )}
+                    </span>
+                </div>
+            </button>
+        `;
+    });
+
+    div.innerHTML = html;
+}
+
+
+function selecionarVaga(id) {
+    vagaSelecionadaId = id;
+
+    const vaga =
+        vagas.find(
+            item => item.id === id
+        );
+
+    if (!vaga) {
+        return;
+    }
+
+    buscarVagas();
+    mostrarDetalheEstudante(vaga);
+}
+
+
+function mostrarDetalheEstudante(vaga) {
+    const empresa =
+        buscarEmpresa(vaga.empresaId);
+
+    const requisitosVaga =
+        buscarRequisitos(vaga.id);
+
+    const idsHabilidades =
+        habilidadesPerfil.map(
+            item => item.habilidadeId
+        );
+
+    let atendidos = 0;
+
+    requisitosVaga.forEach(function (requisito) {
+        if (
+            idsHabilidades.includes(
+                requisito.habilidadeId
+            )
+        ) {
+            atendidos++;
+        }
+    });
+
+    let compatibilidade = null;
+
+    if (
+        perfil &&
+        requisitosVaga.length > 0
+    ) {
+        compatibilidade = Math.round(
+            atendidos /
+            requisitosVaga.length *
+            100
+        );
+    }
+
+    let htmlRequisitos = "";
+
+    requisitosVaga.forEach(function (requisito) {
+        const habilidade =
+            buscarHabilidade(
+                requisito.habilidadeId
+            );
+
+        const possui =
+            idsHabilidades.includes(
+                requisito.habilidadeId
+            );
+
+        htmlRequisitos += `
+            <div class="
+                requisito-vaga
+                ${
+                    possui
+                        ? "requisito-atendido"
+                        : "requisito-pendente"
+                }
+            ">
+                <div class="requisito-identidade">
+                    <span class="estado-requisito">
+                        ${possui ? "✓" : "+"}
+                    </span>
+
+                    <div>
+                        <strong>
+                            ${escapar(
+                                habilidade
+                                    ? habilidade.nome
+                                    : "Habilidade"
+                            )}
+                        </strong>
+
+                        <small>
+                            Nível:
+                            ${formatarNivel(
+                                requisito.nivelExigido
+                            )}
+                        </small>
+                    </div>
+                </div>
+
+                <span class="tipo-requisito">
+                    ${
+                        requisito.obrigatorio
+                            ? "Obrigatório"
+                            : "Diferencial"
+                    }
+                </span>
+            </div>
+        `;
+    });
+
+    if (!htmlRequisitos) {
+        htmlRequisitos = `
+            <div class="estado-vazio">
+                Nenhum requisito cadastrado.
+            </div>
+        `;
+    }
+
+    let htmlCompatibilidade = "";
+
+    if (!perfil) {
+        htmlCompatibilidade = `
+            <div class="compatibilidade-vaga">
+                Complete seu perfil para comparar
+                suas habilidades.
+            </div>
+        `;
+
+    } else if (compatibilidade !== null) {
+        htmlCompatibilidade = `
+            <div class="compatibilidade-vaga">
+                <div class="topo-compatibilidade">
+                    <span>
+                        Compatibilidade com seu perfil
+                    </span>
+
+                    <strong>
+                        ${compatibilidade}%
+                    </strong>
+                </div>
+
+                <div class="barra-compatibilidade-vaga">
+                    <span
+                        style="width: ${compatibilidade}%"
+                    ></span>
+                </div>
+
+                <p class="texto-compatibilidade">
+                    Você possui ${atendidos} de
+                    ${requisitosVaga.length}
+                    requisito(s).
+                </p>
+            </div>
+        `;
+    }
+
+    const div =
+        document.getElementById(
+            "detalhe-vaga"
+        );
+
+    div.innerHTML = `
+        <div class="cabecalho-detalhe-vaga">
+            <span class="empresa-detalhe">
+                ${escapar(
+                    empresa
+                        ? empresa.nome
+                        : "Empresa"
+                )}
+            </span>
+
+            <h2>
+                ${escapar(vaga.titulo)}
+            </h2>
+
+            <div class="metadados-detalhe">
+                <span>
+                    ${formatarExperiencia(
+                        vaga.nivelExperiencia
+                    )}
+                </span>
+
+                <span>
+                    ${formatarModalidade(
+                        vaga.modalidade
+                    )}
+                </span>
+
+                <span>
+                    ${escapar(
+                        vaga.localizacao ||
+                        "Localização não informada"
+                    )}
+                </span>
+            </div>
+
+            <div class="salario-detalhe">
+                ${formatarSalario(vaga)}
+            </div>
+        </div>
+
+        ${htmlCompatibilidade}
+
+        <section class="secao-detalhe">
+            <h3>Sobre a oportunidade</h3>
+
+            <p>
+                ${escapar(
+                    vaga.descricao ||
+                    "Sem descrição."
+                )}
+            </p>
+        </section>
+
+        <section class="secao-detalhe">
+            <h3>Requisitos</h3>
+
+            <div class="lista-requisitos">
+                ${htmlRequisitos}
+            </div>
+        </section>
+
+        <section class="secao-detalhe">
+            <h3>Sobre a empresa</h3>
+
+            <div class="bloco-empresa">
+                <strong>
+                    ${escapar(
+                        empresa
+                            ? empresa.nome
+                            : "Empresa"
+                    )}
+                </strong>
+
+                <p>
+                    ${escapar(
+                        empresa &&
+                        empresa.descricao
+                            ? empresa.descricao
+                            : "Sem descrição."
+                    )}
+                </p>
+            </div>
+        </section>
+
+        <div class="acoes-detalhe">
+            <button
+                class="botao-candidatura"
+                disabled
+            >
+                Candidatura em breve
+            </button>
+        </div>
+    `;
+}
+
+
+function atualizarResumoEstudante() {
+    const ativas =
+        vagas.filter(
+            vaga => vaga.status === "ativa"
+        );
+
+    const idsEmpresas =
+        new Set(
+            ativas.map(
+                vaga => vaga.empresaId
+            )
+        );
+
+    const idsVagas =
+        ativas.map(
+            vaga => vaga.id
+        );
+
+    const idsHabilidades =
+        requisitos
+            .filter(
+                requisito =>
+                    idsVagas.includes(
+                        requisito.vagaId
+                    )
+            )
+            .map(
+                requisito =>
+                    requisito.habilidadeId
+            );
+
+    document.getElementById(
+        "total-vagas"
+    ).textContent =
+        ativas.length;
+
+    document.getElementById(
+        "total-empresas"
+    ).textContent =
+        idsEmpresas.size;
+
+    document.getElementById(
+        "total-habilidades"
+    ).textContent =
+        new Set(idsHabilidades).size;
+}
+
+
+/* =========================================================
+   EMPRESA
+========================================================= */
+
+
+function iniciarEmpresa() {
+    empresaAtual =
         empresas.find(
-            empresa =>
-                empresa.usuarioId ===
-                usuarioVagas.id
-        ) || null;
+            item =>
+                item.usuarioId === usuario.id
+        );
 
-    configurarNavegacaoEmpresa();
     configurarTelaEmpresa();
     registrarEventosEmpresa();
 
-    if (!empresaVagas) {
+    if (!empresaAtual) {
         document.getElementById(
             "lista-vagas"
         ).innerHTML = `
             <div class="estado-vazio">
-                Não foi possível localizar o perfil
-                empresarial desta conta.
+                Empresa não encontrada.
             </div>
         `;
 
@@ -141,11 +653,14 @@ function iniciarExperienciaEmpresa() {
     }
 
     atualizarResumoEmpresa();
-    renderizarVagasEmpresa();
+    mostrarVagasEmpresa();
 }
 
 
-function configurarNavegacaoEmpresa() {
+function configurarTelaEmpresa() {
+    document.title =
+        "Minhas Vagas | Market Skills";
+
     document.getElementById(
         "navegacao-vagas"
     ).innerHTML = `
@@ -164,16 +679,10 @@ function configurarNavegacaoEmpresa() {
             Minhas Vagas
         </a>
 
-        <a href="./perfil.html?v=20260826">
+        <a href="./perfil.html">
             Perfil
         </a>
     `;
-}
-
-
-function configurarTelaEmpresa() {
-    document.title =
-        "Minhas Vagas | Market Skills";
 
     document.getElementById(
         "rotulo-hero-vagas"
@@ -188,13 +697,15 @@ function configurarTelaEmpresa() {
     document.getElementById(
         "descricao-hero-vagas"
     ).textContent =
-        "Crie vagas, organize requisitos e acompanhe o status de cada oportunidade publicada no Market Skills.";
+        "Crie vagas, organize requisitos e acompanhe suas publicações.";
 
     document.getElementById(
         "acao-hero-empresa"
-    ).classList.remove(
-        "oculto"
-    );
+    ).classList.remove("oculto");
+
+    document.getElementById(
+        "painel-filtros"
+    ).classList.add("oculto");
 
     document.getElementById(
         "rotulo-total-vagas"
@@ -212,42 +723,9 @@ function configurarTelaEmpresa() {
         "Vagas encerradas";
 
     document.getElementById(
-        "painel-filtros"
-    ).classList.add(
-        "oculto"
-    );
-
-    document.getElementById(
-        "rotulo-listagem"
-    ).textContent =
-        "Publicações";
-
-    document.getElementById(
         "titulo-listagem"
     ).textContent =
         "Minhas vagas";
-
-    document.getElementById(
-        "detalhe-vaga"
-    ).innerHTML = `
-        <div class="detalhe-vazio">
-
-            <div class="icone-detalhe">
-                &lt;/&gt;
-            </div>
-
-            <h2>
-                Selecione uma vaga
-            </h2>
-
-            <p>
-                Clique em uma oportunidade para
-                visualizar informações, requisitos
-                e ações de gerenciamento.
-            </p>
-
-        </div>
-    `;
 }
 
 
@@ -256,349 +734,300 @@ function registrarEventosEmpresa() {
         "botao-criar-vaga"
     ).addEventListener(
         "click",
-        () => abrirModalVaga()
+        function () {
+            abrirModal();
+        }
     );
 
     document.getElementById(
         "botao-fechar-modal-vaga"
     ).addEventListener(
         "click",
-        fecharModalVaga
+        fecharModal
     );
 
     document.getElementById(
         "botao-cancelar-vaga"
     ).addEventListener(
         "click",
-        fecharModalVaga
+        fecharModal
     );
 
     document.getElementById(
         "botao-adicionar-requisito"
     ).addEventListener(
         "click",
-        adicionarRequisitoFormulario
+        adicionarRequisito
     );
 
     document.getElementById(
         "vaga-salario-definir"
     ).addEventListener(
         "change",
-        atualizarEstadoSalario
-    );
-
-    document.getElementById(
-        "lista-requisitos-formulario"
-    ).addEventListener(
-        "click",
-        tratarAcaoRequisitoFormulario
-    );
-
-    document.getElementById(
-        "lista-requisitos-formulario"
-    ).addEventListener(
-        "change",
-        atualizarRequisitoFormulario
+        atualizarSalario
     );
 
     document.getElementById(
         "formulario-vaga"
     ).addEventListener(
         "submit",
-        salvarVagaEmpresa
+        salvarVaga
     );
 
     document.getElementById(
         "lista-vagas"
     ).addEventListener(
         "click",
-        tratarAcaoListaEmpresa
+        clicarVagaEmpresa
     );
 
     document.getElementById(
         "detalhe-vaga"
     ).addEventListener(
         "click",
-        tratarAcaoDetalheEmpresa
+        clicarAcaoEmpresa
+    );
+
+    document.getElementById(
+        "lista-requisitos-formulario"
+    ).addEventListener(
+        "click",
+        removerRequisito
+    );
+
+    document.getElementById(
+        "lista-requisitos-formulario"
+    ).addEventListener(
+        "change",
+        alterarRequisito
     );
 }
 
 
-function obterVagasDaEmpresa() {
-    if (!empresaVagas) {
-        return [];
-    }
-
+function vagasDaEmpresa() {
     return vagas.filter(
         vaga =>
             vaga.empresaId ===
-            empresaVagas.id
+            empresaAtual.id
     );
 }
 
 
 function atualizarResumoEmpresa() {
-    const minhasVagas =
-        obterVagasDaEmpresa();
+    const lista =
+        vagasDaEmpresa();
 
     document.getElementById(
         "total-vagas"
     ).textContent =
-        minhasVagas.filter(
-            vaga =>
-                vaga.status === "ativa"
+        lista.filter(
+            vaga => vaga.status === "ativa"
         ).length;
 
     document.getElementById(
         "total-empresas"
     ).textContent =
-        minhasVagas.filter(
-            vaga =>
-                vaga.status === "pausada"
+        lista.filter(
+            vaga => vaga.status === "pausada"
         ).length;
 
     document.getElementById(
         "total-habilidades"
     ).textContent =
-        minhasVagas.filter(
-            vaga =>
-                vaga.status === "encerrada"
+        lista.filter(
+            vaga => vaga.status === "encerrada"
         ).length;
 }
 
 
-function renderizarVagasEmpresa() {
-    const conteiner =
-        document.getElementById(
-            "lista-vagas"
-        );
+function mostrarVagasEmpresa() {
+    const lista =
+        vagasDaEmpresa();
 
-    const minhasVagas =
-        obterVagasDaEmpresa()
-            .sort(
-                (a, b) =>
-                    new Date(
-                        b.dataPublicacao || 0
-                    ) -
-                    new Date(
-                        a.dataPublicacao || 0
-                    )
-            );
+    lista.sort(
+        (a, b) =>
+            new Date(b.dataPublicacao || 0) -
+            new Date(a.dataPublicacao || 0)
+    );
 
     document.getElementById(
         "quantidade-resultados"
     ).textContent =
-        `${minhasVagas.length} vaga(s)`;
+        `${lista.length} vaga(s)`;
 
-    if (!minhasVagas.length) {
-        conteiner.innerHTML = `
+    const div =
+        document.getElementById(
+            "lista-vagas"
+        );
+
+    if (lista.length === 0) {
+        div.innerHTML = `
             <div class="estado-vazio">
-                Sua empresa ainda não publicou
-                nenhuma vaga.
+                Nenhuma vaga cadastrada.
             </div>
         `;
 
         return;
     }
 
-    conteiner.innerHTML =
-        minhasVagas
-            .map(vaga => {
+    let html = "";
 
-                const selecionada =
-                    vaga.id ===
-                    vagaSelecionadaId;
+    lista.forEach(function (vaga) {
+        const ativo =
+            vaga.id === vagaSelecionadaId
+                ? "ativo"
+                : "";
 
-                return `
-                    <button
-                        class="cartao-vaga ${
-                            selecionada
-                                ? "ativo"
-                                : ""
-                        }"
-                        data-vaga-id="${vaga.id}"
-                        type="button"
-                    >
+        html += `
+            <button
+                class="cartao-vaga ${ativo}"
+                data-vaga-id="${vaga.id}"
+                type="button"
+            >
+                <div class="topo-cartao-vaga">
+                    <div>
+                        <h3>
+                            ${escapar(vaga.titulo)}
+                        </h3>
 
-                        <div class="topo-cartao-vaga">
+                        <span class="nome-empresa-vaga">
+                            ${escapar(
+                                empresaAtual.nome
+                            )}
+                        </span>
+                    </div>
 
-                            <div>
+                    <span class="tag-vaga">
+                        ${formatarStatus(
+                            vaga.status
+                        )}
+                    </span>
+                </div>
 
-                                <h3>
-                                    ${escaparHtml(
-                                        vaga.titulo
-                                    )}
-                                </h3>
+                <div class="informacoes-cartao-vaga">
+                    <span>
+                        ${formatarExperiencia(
+                            vaga.nivelExperiencia
+                        )}
+                    </span>
 
-                                <span class="nome-empresa-vaga">
-                                    ${escaparHtml(
-                                        empresaVagas.nome
-                                    )}
-                                </span>
+                    <span>
+                        ${formatarModalidade(
+                            vaga.modalidade
+                        )}
+                    </span>
 
-                            </div>
+                    <span>
+                        ${escapar(
+                            vaga.localizacao ||
+                            "Não informada"
+                        )}
+                    </span>
+                </div>
 
-                            <span class="tag-vaga">
-                                ${formatarStatusVaga(
-                                    vaga.status
-                                )}
-                            </span>
+                <div class="rodape-cartao-vaga">
+                    <span>
+                        ${formatarSalario(vaga)}
+                    </span>
 
-                        </div>
+                    <span>
+                        ${formatarData(
+                            vaga.dataPublicacao
+                        )}
+                    </span>
+                </div>
+            </button>
+        `;
+    });
 
-                        <div class="informacoes-cartao-vaga">
-
-                            <span>
-                                ${formatarExperiencia(
-                                    vaga.nivelExperiencia
-                                )}
-                            </span>
-
-                            <span>
-                                ${formatarModalidade(
-                                    vaga.modalidade
-                                )}
-                            </span>
-
-                            <span>
-                                ${escaparHtml(
-                                    vaga.localizacao ||
-                                    "Localização não informada"
-                                )}
-                            </span>
-
-                        </div>
-
-                        <div class="rodape-cartao-vaga">
-
-                            <span class="salario-cartao">
-                                ${formatarFaixaSalarial(
-                                    vaga
-                                )}
-                            </span>
-
-                            <span class="data-cartao">
-                                ${formatarData(
-                                    vaga.dataPublicacao
-                                )}
-                            </span>
-
-                        </div>
-
-                    </button>
-                `;
-            })
-            .join("");
+    div.innerHTML = html;
 }
 
 
-function tratarAcaoListaEmpresa(evento) {
-    const cartao =
+function clicarVagaEmpresa(evento) {
+    const botao =
         evento.target.closest(
             "[data-vaga-id]"
         );
 
-    if (!cartao) {
+    if (!botao) {
         return;
     }
 
-    selecionarVagaEmpresa(
-        Number(
-            cartao.dataset.vagaId
-        )
-    );
-}
-
-
-function selecionarVagaEmpresa(id) {
     vagaSelecionadaId =
-        id;
+        Number(
+            botao.dataset.vagaId
+        );
+
+    mostrarVagasEmpresa();
 
     const vaga =
         vagas.find(
             item =>
-                item.id === id &&
-                item.empresaId ===
-                empresaVagas.id
+                item.id === vagaSelecionadaId
         );
 
-    if (!vaga) {
-        return;
+    if (vaga) {
+        mostrarDetalheEmpresa(vaga);
     }
-
-    renderizarVagasEmpresa();
-
-    renderizarDetalheEmpresa(
-        vaga
-    );
 }
 
 
-function renderizarDetalheEmpresa(vaga) {
-    const conteiner =
-        document.getElementById(
-            "detalhe-vaga"
-        );
-
+function mostrarDetalheEmpresa(vaga) {
     const requisitosVaga =
-        obterRequisitosVaga(
-            vaga.id
-        );
+        buscarRequisitos(vaga.id);
 
-    const obrigatorios =
-        requisitosVaga.filter(
-            requisito =>
-                requisito.obrigatorio
-        );
+    let htmlObrigatorios = "";
+    let htmlDiferenciais = "";
 
-    const diferenciais =
-        requisitosVaga.filter(
-            requisito =>
-                !requisito.obrigatorio
-        );
+    requisitosVaga.forEach(function (requisito) {
+        const habilidade =
+            buscarHabilidade(
+                requisito.habilidadeId
+            );
 
-    const beneficiosHtml =
-        vaga.beneficios
-            ? `
-                <section class="secao-detalhe">
+        const html = `
+            <div class="requisito-vaga">
+                <strong>
+                    ${escapar(
+                        habilidade
+                            ? habilidade.nome
+                            : "Habilidade"
+                    )}
+                </strong>
 
-                    <h3>
-                        Benefícios
-                    </h3>
+                <small>
+                    ${formatarNivel(
+                        requisito.nivelExigido
+                    )}
+                </small>
+            </div>
+        `;
 
-                    <div class="bloco-beneficios-vaga">
+        if (requisito.obrigatorio) {
+            htmlObrigatorios += html;
+        } else {
+            htmlDiferenciais += html;
+        }
+    });
 
-                        <p>
-                            ${escaparHtml(
-                                vaga.beneficios
-                            )}
-                        </p>
-
-                    </div>
-
-                </section>
-            `
-            : "";
-
-    conteiner.innerHTML = `
+    document.getElementById(
+        "detalhe-vaga"
+    ).innerHTML = `
         <div class="cabecalho-detalhe-vaga">
-
             <span class="empresa-detalhe">
-                ${escaparHtml(
-                    empresaVagas.nome
+                ${escapar(
+                    empresaAtual.nome
                 )}
             </span>
 
             <h2>
-                ${escaparHtml(
-                    vaga.titulo
-                )}
+                ${escapar(vaga.titulo)}
             </h2>
 
             <div class="metadados-detalhe">
-
                 <span>
-                    ${formatarStatusVaga(
+                    ${formatarStatus(
                         vaga.status
                     )}
                 </span>
@@ -614,99 +1043,50 @@ function renderizarDetalheEmpresa(vaga) {
                         vaga.modalidade
                     )}
                 </span>
-
-                <span>
-                    ${escaparHtml(
-                        vaga.localizacao ||
-                        "Localização não informada"
-                    )}
-                </span>
-
-                <span>
-                    Publicada em
-                    ${formatarData(
-                        vaga.dataPublicacao
-                    )}
-                </span>
-
             </div>
 
             <div class="salario-detalhe">
-                ${formatarFaixaSalarial(
-                    vaga
-                )}
+                ${formatarSalario(vaga)}
             </div>
-
         </div>
 
         <section class="secao-detalhe">
-
-            <h3>
-                Sobre a oportunidade
-            </h3>
+            <h3>Sobre a oportunidade</h3>
 
             <p>
-                ${escaparHtml(
+                ${escapar(
                     vaga.descricao ||
-                    "Nenhuma descrição cadastrada."
+                    "Sem descrição."
                 )}
             </p>
-
         </section>
 
-        ${beneficiosHtml}
-
         <section class="secao-detalhe">
-
-            <h3>
-                Requisitos obrigatórios
-            </h3>
+            <h3>Requisitos obrigatórios</h3>
 
             <div class="lista-requisitos">
-
-                ${criarHtmlRequisitosEmpresa(
-                    obrigatorios
-                )}
-
+                ${
+                    htmlObrigatorios ||
+                    "Nenhum requisito obrigatório."
+                }
             </div>
-
         </section>
 
         <section class="secao-detalhe">
-
-            <h3>
-                Diferenciais
-            </h3>
+            <h3>Diferenciais</h3>
 
             <div class="lista-requisitos">
-
-                ${criarHtmlRequisitosEmpresa(
-                    diferenciais
-                )}
-
+                ${
+                    htmlDiferenciais ||
+                    "Nenhum diferencial."
+                }
             </div>
-
-        </section>
-
-        <section class="secao-detalhe">
-
-            <h3>
-                Candidaturas
-            </h3>
-
-            <p>
-                A gestão de candidatos será habilitada
-                na próxima etapa do projeto.
-            </p>
-
         </section>
 
         <div class="acoes-detalhe">
-
             <button
                 class="botao botao-principal"
-                type="button"
-                data-editar-vaga="${vaga.id}"
+                data-editar="${vaga.id}"
             >
                 Editar
             </button>
@@ -716,8 +1096,7 @@ function renderizarDetalheEmpresa(vaga) {
                     ? `
                         <button
                             class="botao botao-contorno"
-                            type="button"
-                            data-status-vaga="${vaga.id}"
+                            data-status="${vaga.id}"
                             data-novo-status="pausada"
                         >
                             Pausar
@@ -731,8 +1110,7 @@ function renderizarDetalheEmpresa(vaga) {
                     ? `
                         <button
                             class="botao botao-contorno"
-                            type="button"
-                            data-status-vaga="${vaga.id}"
+                            data-status="${vaga.id}"
                             data-novo-status="ativa"
                         >
                             Reativar
@@ -741,253 +1119,86 @@ function renderizarDetalheEmpresa(vaga) {
                     : ""
             }
 
-            ${
-                vaga.status !== "encerrada"
-                    ? `
-                        <button
-                            class="botao botao-contorno"
-                            type="button"
-                            data-status-vaga="${vaga.id}"
-                            data-novo-status="encerrada"
-                        >
-                            Encerrar
-                        </button>
-                    `
-                    : ""
-            }
+            <button
+                class="botao botao-contorno"
+                data-status="${vaga.id}"
+                data-novo-status="encerrada"
+            >
+                Encerrar
+            </button>
 
             <button
                 class="botao botao-escuro"
-                type="button"
-                data-excluir-vaga="${vaga.id}"
+                data-excluir="${vaga.id}"
             >
                 Excluir
             </button>
-
         </div>
     `;
 }
 
 
-function criarHtmlRequisitosEmpresa(
-    lista
-) {
-    if (!lista.length) {
-        return `
-            <div class="estado-vazio">
-                Nenhum item cadastrado.
-            </div>
-        `;
-    }
-
-    return lista
-        .map(requisito => {
-
-            const habilidade =
-                obterHabilidade(
-                    requisito.habilidadeId
-                );
-
-            return `
-                <div class="requisito-vaga">
-
-                    <div class="requisito-identidade">
-
-                        <span class="estado-requisito">
-                            ✓
-                        </span>
-
-                        <div>
-
-                            <strong>
-                                ${escaparHtml(
-                                    habilidade?.nome ||
-                                    "Habilidade"
-                                )}
-                            </strong>
-
-                            <small>
-                                Nível:
-                                ${formatarNivelHabilidade(
-                                    requisito.nivelExigido
-                                )}
-                            </small>
-
-                        </div>
-
-                    </div>
-
-                </div>
-            `;
-        })
-        .join("");
-}
-
-
-async function tratarAcaoDetalheEmpresa(
-    evento
-) {
+async function clicarAcaoEmpresa(evento) {
     const editar =
         evento.target.closest(
-            "[data-editar-vaga]"
+            "[data-editar]"
         );
 
-    const alterarStatus =
+    const status =
         evento.target.closest(
-            "[data-status-vaga]"
+            "[data-status]"
         );
 
     const excluir =
         evento.target.closest(
-            "[data-excluir-vaga]"
+            "[data-excluir]"
         );
 
     if (editar) {
-        const id =
-            Number(
-                editar.dataset.editarVaga
-            );
-
         const vaga =
             vagas.find(
                 item =>
-                    item.id === id &&
-                    item.empresaId ===
-                    empresaVagas.id
+                    item.id ===
+                    Number(
+                        editar.dataset.editar
+                    )
             );
 
         if (vaga) {
-            abrirModalVaga(
-                vaga
-            );
+            abrirModal(vaga);
         }
 
         return;
     }
 
-    if (alterarStatus) {
-        const id =
-            Number(
-                alterarStatus.dataset
-                    .statusVaga
-            );
-
-        const novoStatus =
-            alterarStatus.dataset
-                .novoStatus;
-
-        await alterarStatusVaga(
-            id,
-            novoStatus
+    if (status) {
+        await mudarStatus(
+            Number(status.dataset.status),
+            status.dataset.novoStatus
         );
 
         return;
     }
 
     if (excluir) {
-        const id =
+        await excluirVaga(
             Number(
-                excluir.dataset.excluirVaga
-            );
-
-        await excluirVagaEmpresa(
-            id
+                excluir.dataset.excluir
+            )
         );
     }
 }
 
 
-async function alterarStatusVaga(
-    id,
-    novoStatus
-) {
-    try {
-        await apiRequest(
-            `/vagas/${id}`,
-            {
-                method: "PUT",
+function abrirModal(vaga = null) {
+    vagaEditandoId =
+        vaga ? vaga.id : null;
 
-                body: JSON.stringify({
-                    status:
-                        novoStatus,
-                }),
-            }
-        );
-
-        await recarregarDadosEmpresa(
-            id
-        );
-
-    } catch (erro) {
-        window.alert(
-            erro.message
-        );
-    }
-}
-
-
-async function excluirVagaEmpresa(id) {
-    if (
-        !window.confirm(
-            "Deseja realmente excluir esta vaga? Esta ação não poderá ser desfeita."
-        )
-    ) {
-        return;
-    }
-
-    try {
-        await apiRequest(
-            `/vagas/${id}`,
-            {
-                method: "DELETE",
-            }
-        );
-
-        vagaSelecionadaId =
-            null;
-
-        document.getElementById(
-            "detalhe-vaga"
-        ).innerHTML = `
-            <div class="detalhe-vazio">
-
-                <div class="icone-detalhe">
-                    &lt;/&gt;
-                </div>
-
-                <h2>
-                    Vaga excluída
-                </h2>
-
-                <p>
-                    Selecione outra oportunidade
-                    para continuar.
-                </p>
-
-            </div>
-        `;
-
-        await recarregarDadosEmpresa();
-
-    } catch (erro) {
-        window.alert(
-            erro.message
-        );
-    }
-}
-
-
-function abrirModalVaga(
-    vaga = null
-) {
-    vagaEmEdicaoId =
-        vaga?.id || null;
+    requisitosFormulario = [];
 
     document.getElementById(
         "formulario-vaga"
     ).reset();
-
-    requisitosFormulario = [];
 
     document.getElementById(
         "titulo-modal-vaga"
@@ -1002,8 +1213,6 @@ function abrirModalVaga(
         vaga
             ? "Salvar alterações"
             : "Publicar vaga";
-
-    limparMensagemFormularioVaga();
 
     if (vaga) {
         document.getElementById(
@@ -1024,70 +1233,56 @@ function abrirModalVaga(
         document.getElementById(
             "vaga-nivel"
         ).value =
-            vaga.nivelExperiencia ||
-            "";
+            vaga.nivelExperiencia || "";
 
         document.getElementById(
             "vaga-modalidade"
         ).value =
-            vaga.modalidade ||
-            "";
+            vaga.modalidade || "";
 
         document.getElementById(
             "vaga-localizacao"
         ).value =
-            vaga.localizacao ||
-            "";
+            vaga.localizacao || "";
 
         document.getElementById(
             "vaga-salario-minimo"
         ).value =
-            vaga.salarioMinimo ??
-            "";
+            vaga.salarioMinimo ?? "";
 
         document.getElementById(
             "vaga-salario-maximo"
         ).value =
-            vaga.salarioMaximo ??
-            "";
+            vaga.salarioMaximo ?? "";
 
-        const salarioADefinir =
+        const semSalario =
             vaga.salarioMinimo === null &&
             vaga.salarioMaximo === null;
 
         document.getElementById(
             "vaga-salario-definir"
         ).checked =
-            salarioADefinir;
+            semSalario;
 
         requisitosFormulario =
-            obterRequisitosVaga(
+            buscarRequisitos(
                 vaga.id
             ).map(
                 requisito => ({
                     habilidadeId:
-                        requisito
-                            .habilidadeId,
+                        requisito.habilidadeId,
 
                     nivelExigido:
-                        requisito
-                            .nivelExigido,
+                        requisito.nivelExigido,
 
                     obrigatorio:
-                        requisito
-                            .obrigatorio,
+                        requisito.obrigatorio,
                 })
             );
-
-    } else {
-        document.getElementById(
-            "vaga-salario-definir"
-        ).checked =
-            false;
     }
 
-    atualizarEstadoSalario();
-    renderizarRequisitosFormulario();
+    atualizarSalario();
+    mostrarRequisitosFormulario();
 
     document.getElementById(
         "modal-vaga"
@@ -1095,72 +1290,33 @@ function abrirModalVaga(
 }
 
 
-function fecharModalVaga() {
-    const modal =
-        document.getElementById(
-            "modal-vaga"
-        );
-
-    if (modal.open) {
-        modal.close();
-    }
+function fecharModal() {
+    document.getElementById(
+        "modal-vaga"
+    ).close();
 }
 
 
-function atualizarEstadoSalario() {
-    const salarioADefinir =
-        document.getElementById(
-            "vaga-salario-definir"
-        ).checked;
-
-    const salarioMinimo =
-        document.getElementById(
-            "vaga-salario-minimo"
-        );
-
-    const salarioMaximo =
-        document.getElementById(
-            "vaga-salario-maximo"
-        );
-
-    salarioMinimo.disabled =
-        salarioADefinir;
-
-    salarioMaximo.disabled =
-        salarioADefinir;
-
-    if (salarioADefinir) {
-        salarioMinimo.value =
-            "";
-
-        salarioMaximo.value =
-            "";
-    }
-}
-
-
-function adicionarRequisitoFormulario() {
+function adicionarRequisito() {
     requisitosFormulario.push({
         habilidadeId: "",
-        nivelExigido:
-            "basico",
-        obrigatorio:
-            true,
+        nivelExigido: "basico",
+        obrigatorio: true,
     });
 
-    renderizarRequisitosFormulario();
+    mostrarRequisitosFormulario();
 }
 
 
-function renderizarRequisitosFormulario() {
-    const conteiner =
+function mostrarRequisitosFormulario() {
+    const div =
         document.getElementById(
             "lista-requisitos-formulario"
         );
 
-    if (!requisitosFormulario.length) {
-        conteiner.innerHTML = `
-            <div class="estado-vazio estado-vazio-formulario">
+    if (requisitosFormulario.length === 0) {
+        div.innerHTML = `
+            <div class="estado-vazio">
                 Nenhum requisito adicionado.
             </div>
         `;
@@ -1168,348 +1324,252 @@ function renderizarRequisitosFormulario() {
         return;
     }
 
-    conteiner.innerHTML =
-        requisitosFormulario
-            .map(
-                (
-                    requisito,
-                    indice
-                ) => `
-                    <div
-                        class="requisito-vaga"
-                        data-requisito-indice="${indice}"
-                    >
+    let html = "";
 
-                        <label>
+    requisitosFormulario.forEach(
+        function (requisito, indice) {
 
-                            <span>
-                                Habilidade
-                            </span>
+            let opcoes = "";
 
-                            <select
-                                data-campo-requisito="habilidadeId"
-                                required
-                            >
+            habilidades.forEach(
+                function (habilidade) {
 
-                                <option value="">
-                                    Selecione
-                                </option>
+                    const selecionado =
+                        Number(
+                            requisito.habilidadeId
+                        ) === habilidade.id
+                            ? "selected"
+                            : "";
 
-                                ${habilidades
-                                    .map(
-                                        habilidade => `
-                                            <option
-                                                value="${habilidade.id}"
-                                                ${
-                                                    Number(
-                                                        requisito.habilidadeId
-                                                    ) ===
-                                                    habilidade.id
-                                                        ? "selected"
-                                                        : ""
-                                                }
-                                            >
-                                                ${escaparHtml(
-                                                    habilidade.nome
-                                                )}
-                                            </option>
-                                        `
-                                    )
-                                    .join("")}
-
-                            </select>
-
-                        </label>
-
-                        <label>
-
-                            <span>
-                                Nível exigido
-                            </span>
-
-                            <select
-                                data-campo-requisito="nivelExigido"
-                            >
-
-                                <option
-                                    value="basico"
-                                    ${
-                                        requisito.nivelExigido ===
-                                        "basico"
-                                            ? "selected"
-                                            : ""
-                                    }
-                                >
-                                    Básico
-                                </option>
-
-                                <option
-                                    value="intermediario"
-                                    ${
-                                        requisito.nivelExigido ===
-                                        "intermediario"
-                                            ? "selected"
-                                            : ""
-                                    }
-                                >
-                                    Intermediário
-                                </option>
-
-                                <option
-                                    value="avancado"
-                                    ${
-                                        requisito.nivelExigido ===
-                                        "avancado"
-                                            ? "selected"
-                                            : ""
-                                    }
-                                >
-                                    Avançado
-                                </option>
-
-                            </select>
-
-                        </label>
-
-                        <label>
-
-                            <span>
-                                Categoria
-                            </span>
-
-                            <select
-                                data-campo-requisito="obrigatorio"
-                            >
-
-                                <option
-                                    value="true"
-                                    ${
-                                        requisito.obrigatorio
-                                            ? "selected"
-                                            : ""
-                                    }
-                                >
-                                    Obrigatório
-                                </option>
-
-                                <option
-                                    value="false"
-                                    ${
-                                        !requisito.obrigatorio
-                                            ? "selected"
-                                            : ""
-                                    }
-                                >
-                                    Diferencial
-                                </option>
-
-                            </select>
-
-                        </label>
-
-                        <button
-                            type="button"
-                            data-remover-requisito="${indice}"
+                    opcoes += `
+                        <option
+                            value="${habilidade.id}"
+                            ${selecionado}
                         >
-                            Remover
-                        </button>
+                            ${escapar(
+                                habilidade.nome
+                            )}
+                        </option>
+                    `;
+                }
+            );
 
-                    </div>
-                `
-            )
-            .join("");
+            html += `
+                <div
+                    class="requisito-vaga"
+                    data-indice="${indice}"
+                >
+                    <label>
+                        <span>Habilidade</span>
+
+                        <select data-campo="habilidadeId">
+                            <option value="">
+                                Selecione
+                            </option>
+
+                            ${opcoes}
+                        </select>
+                    </label>
+
+                    <label>
+                        <span>Nível</span>
+
+                        <select data-campo="nivelExigido">
+                            <option
+                                value="basico"
+                                ${
+                                    requisito.nivelExigido ===
+                                    "basico"
+                                        ? "selected"
+                                        : ""
+                                }
+                            >
+                                Básico
+                            </option>
+
+                            <option
+                                value="intermediario"
+                                ${
+                                    requisito.nivelExigido ===
+                                    "intermediario"
+                                        ? "selected"
+                                        : ""
+                                }
+                            >
+                                Intermediário
+                            </option>
+
+                            <option
+                                value="avancado"
+                                ${
+                                    requisito.nivelExigido ===
+                                    "avancado"
+                                        ? "selected"
+                                        : ""
+                                }
+                            >
+                                Avançado
+                            </option>
+                        </select>
+                    </label>
+
+                    <label>
+                        <span>Categoria</span>
+
+                        <select data-campo="obrigatorio">
+                            <option
+                                value="true"
+                                ${
+                                    requisito.obrigatorio
+                                        ? "selected"
+                                        : ""
+                                }
+                            >
+                                Obrigatório
+                            </option>
+
+                            <option
+                                value="false"
+                                ${
+                                    !requisito.obrigatorio
+                                        ? "selected"
+                                        : ""
+                                }
+                            >
+                                Diferencial
+                            </option>
+                        </select>
+                    </label>
+
+                    <button
+                        type="button"
+                        data-remover="${indice}"
+                    >
+                        Remover
+                    </button>
+                </div>
+            `;
+        }
+    );
+
+    div.innerHTML = html;
 }
 
 
-function atualizarRequisitoFormulario(
-    evento
-) {
-    const elemento =
+function alterarRequisito(evento) {
+    const campo =
         evento.target.closest(
-            "[data-campo-requisito]"
+            "[data-campo]"
         );
 
-    if (!elemento) {
+    if (!campo) {
         return;
     }
 
     const linha =
-        elemento.closest(
-            "[data-requisito-indice]"
+        campo.closest(
+            "[data-indice]"
         );
-
-    if (!linha) {
-        return;
-    }
 
     const indice =
         Number(
-            linha.dataset
-                .requisitoIndice
+            linha.dataset.indice
         );
 
-    const campo =
-        elemento.dataset
-            .campoRequisito;
+    const nome =
+        campo.dataset.campo;
 
     let valor =
-        elemento.value;
+        campo.value;
 
-    if (
-        campo ===
-        "habilidadeId"
-    ) {
+    if (nome === "habilidadeId") {
         valor =
             valor
                 ? Number(valor)
                 : "";
     }
 
-    if (
-        campo ===
-        "obrigatorio"
-    ) {
+    if (nome === "obrigatorio") {
         valor =
             valor === "true";
     }
 
     requisitosFormulario[
         indice
-    ][campo] = valor;
+    ][nome] = valor;
 }
 
 
-function tratarAcaoRequisitoFormulario(
-    evento
-) {
+function removerRequisito(evento) {
     const botao =
         evento.target.closest(
-            "[data-remover-requisito]"
+            "[data-remover]"
         );
 
     if (!botao) {
         return;
     }
 
-    const indice =
-        Number(
-            botao.dataset
-                .removerRequisito
-        );
-
     requisitosFormulario.splice(
-        indice,
+        Number(
+            botao.dataset.remover
+        ),
         1
     );
 
-    renderizarRequisitosFormulario();
+    mostrarRequisitosFormulario();
 }
 
 
-async function salvarVagaEmpresa(
-    evento
-) {
-    evento.preventDefault();
-
-    limparMensagemFormularioVaga();
-
-    if (!empresaVagas) {
-        mostrarMensagemFormularioVaga(
-            "Perfil empresarial não encontrado."
-        );
-
-        return;
-    }
-
-    const habilidadesSelecionadas =
-        requisitosFormulario
-            .filter(
-                requisito =>
-                    requisito.habilidadeId
-            )
-            .map(
-                requisito =>
-                    Number(
-                        requisito.habilidadeId
-                    )
-            );
-
-    if (
-        new Set(
-            habilidadesSelecionadas
-        ).size !==
-        habilidadesSelecionadas.length
-    ) {
-        mostrarMensagemFormularioVaga(
-            "A mesma habilidade não pode ser adicionada duas vezes."
-        );
-
-        return;
-    }
-
-    if (
-        requisitosFormulario.some(
-            requisito =>
-                !requisito.habilidadeId
-        )
-    ) {
-        mostrarMensagemFormularioVaga(
-            "Selecione a habilidade de todos os requisitos."
-        );
-
-        return;
-    }
-
-    const salarioADefinir =
+function atualizarSalario() {
+    const semSalario =
         document.getElementById(
             "vaga-salario-definir"
         ).checked;
 
-    const salarioMinimo =
-        salarioADefinir
-            ? null
-            : obterNumeroCampo(
-                "vaga-salario-minimo"
-            );
-
-    const salarioMaximo =
-        salarioADefinir
-            ? null
-            : obterNumeroCampo(
-                "vaga-salario-maximo"
-            );
-
-    if (
-        salarioMinimo !== null &&
-        salarioMaximo !== null &&
-        salarioMaximo <
-        salarioMinimo
-    ) {
-        mostrarMensagemFormularioVaga(
-            "O salário máximo não pode ser menor que o salário mínimo."
+    const minimo =
+        document.getElementById(
+            "vaga-salario-minimo"
         );
 
-        return;
+    const maximo =
+        document.getElementById(
+            "vaga-salario-maximo"
+        );
+
+    minimo.disabled =
+        semSalario;
+
+    maximo.disabled =
+        semSalario;
+
+    if (semSalario) {
+        minimo.value = "";
+        maximo.value = "";
     }
+}
+
+
+async function salvarVaga(evento) {
+    evento.preventDefault();
+
+    const semSalario =
+        document.getElementById(
+            "vaga-salario-definir"
+        ).checked;
 
     const dados = {
         empresaId:
-            empresaVagas.id,
+            empresaAtual.id,
 
         titulo:
-            obterTextoCampo(
-                "vaga-titulo"
-            ),
+            valor("vaga-titulo"),
 
         descricao:
-            obterTextoCampo(
-                "vaga-descricao"
-            ),
+            valor("vaga-descricao"),
 
         beneficios:
-            obterTextoCampo(
-                "vaga-beneficios"
-            ),
+            valor("vaga-beneficios"),
 
         nivelExperiencia:
             document.getElementById(
@@ -1522,45 +1582,40 @@ async function salvarVagaEmpresa(
             ).value,
 
         localizacao:
-            obterTextoCampo(
-                "vaga-localizacao"
-            ),
+            valor("vaga-localizacao"),
 
-        salarioMinimo,
+        salarioMinimo:
+            semSalario
+                ? null
+                : numero(
+                    "vaga-salario-minimo"
+                ),
 
-        salarioMaximo,
+        salarioMaximo:
+            semSalario
+                ? null
+                : numero(
+                    "vaga-salario-maximo"
+                ),
     };
 
-    const botao =
-        document.getElementById(
-            "botao-salvar-vaga"
-        );
-
     try {
-        botao.disabled =
-            true;
+        let vagaSalva;
 
-        botao.textContent =
-            vagaEmEdicaoId
-                ? "Salvando..."
-                : "Publicando...";
-
-        let vagaSalva = null;
-
-        if (vagaEmEdicaoId) {
+        if (vagaEditandoId) {
             vagaSalva =
                 await apiRequest(
-                    `/vagas/${vagaEmEdicaoId}`,
+                    `/vagas/${vagaEditandoId}`,
                     {
                         method: "PUT",
-
-                        body: JSON.stringify(
-                            dados
-                        ),
+                        body:
+                            JSON.stringify(
+                                dados
+                            ),
                     }
                 );
 
-            await substituirRequisitosVaga(
+            await apagarRequisitos(
                 vagaSalva.id
             );
 
@@ -1570,55 +1625,52 @@ async function salvarVagaEmpresa(
                     "/vagas",
                     {
                         method: "POST",
-
-                        body: JSON.stringify({
-                            ...dados,
-                            status:
-                                "ativa",
-                        }),
+                        body:
+                            JSON.stringify({
+                                ...dados,
+                                status: "ativa",
+                            }),
                     }
                 );
-
-            await criarRequisitosFormulario(
-                vagaSalva.id
-            );
         }
 
-        fecharModalVaga();
-
-        await recarregarDadosEmpresa(
+        await salvarRequisitos(
             vagaSalva.id
         );
 
+        fecharModal();
+        await recarregarEmpresa();
+
+        vagaSelecionadaId =
+            vagaSalva.id;
+
+        mostrarVagasEmpresa();
+
+        const vaga =
+            vagas.find(
+                item =>
+                    item.id ===
+                    vagaSalva.id
+            );
+
+        if (vaga) {
+            mostrarDetalheEmpresa(vaga);
+        }
+
     } catch (erro) {
-        mostrarMensagemFormularioVaga(
-            erro.message
-        );
-
-    } finally {
-        botao.disabled =
-            false;
-
-        botao.textContent =
-            vagaEmEdicaoId
-                ? "Salvar alterações"
-                : "Publicar vaga";
+        document.getElementById(
+            "mensagem-formulario-vaga"
+        ).textContent =
+            erro.message;
     }
 }
 
 
-async function substituirRequisitosVaga(
-    vagaId
-) {
+async function apagarRequisitos(vagaId) {
     const antigos =
-        obterRequisitosVaga(
-            vagaId
-        );
+        buscarRequisitos(vagaId);
 
-    for (
-        const requisito
-        of antigos
-    ) {
+    for (const requisito of antigos) {
         await apiRequest(
             `/requisitos-vaga/${requisito.id}`,
             {
@@ -1626,36 +1678,31 @@ async function substituirRequisitosVaga(
             }
         );
     }
-
-    await criarRequisitosFormulario(
-        vagaId
-    );
 }
 
 
-async function criarRequisitosFormulario(
-    vagaId
-) {
+async function salvarRequisitos(vagaId) {
     for (
         const requisito
         of requisitosFormulario
     ) {
+        if (!requisito.habilidadeId) {
+            continue;
+        }
+
         await apiRequest(
             "/requisitos-vaga",
             {
                 method: "POST",
 
                 body: JSON.stringify({
-                    vagaId,
-
+                    vagaId: vagaId,
                     habilidadeId:
                         Number(
                             requisito.habilidadeId
                         ),
-
                     nivelExigido:
                         requisito.nivelExigido,
-
                     obrigatorio:
                         requisito.obrigatorio,
                 }),
@@ -1665,990 +1712,122 @@ async function criarRequisitosFormulario(
 }
 
 
-async function recarregarDadosEmpresa(
-    selecionarId = null
+async function mudarStatus(
+    id,
+    novoStatus
 ) {
-    const [
-        dadosVagas,
-        dadosRequisitos,
-        dadosEmpresas,
-    ] = await Promise.all([
-        apiRequest(
-            "/vagas"
-        ),
-        apiRequest(
-            "/requisitos-vaga"
-        ),
-        apiRequest(
-            "/empresas"
-        ),
-    ]);
+    try {
+        await apiRequest(
+            `/vagas/${id}`,
+            {
+                method: "PUT",
+                body:
+                    JSON.stringify({
+                        status:
+                            novoStatus,
+                    }),
+            }
+        );
 
-    vagas =
-        dadosVagas || [];
-
-    requisitos =
-        dadosRequisitos || [];
-
-    empresas =
-        dadosEmpresas || [];
-
-    empresaVagas =
-        empresas.find(
-            empresa =>
-                empresa.usuarioId ===
-                usuarioVagas.id
-        ) || null;
-
-    atualizarResumoEmpresa();
-
-    if (selecionarId) {
-        vagaSelecionadaId =
-            selecionarId;
-
-        renderizarVagasEmpresa();
+        await recarregarEmpresa();
 
         const vaga =
             vagas.find(
-                item =>
-                    item.id ===
-                    selecionarId &&
-                    item.empresaId ===
-                    empresaVagas.id
+                item => item.id === id
             );
 
         if (vaga) {
-            renderizarDetalheEmpresa(
-                vaga
-            );
+            vagaSelecionadaId = id;
+            mostrarVagasEmpresa();
+            mostrarDetalheEmpresa(vaga);
         }
 
+    } catch (erro) {
+        alert(erro.message);
+    }
+}
+
+
+async function excluirVaga(id) {
+    const confirmar =
+        window.confirm(
+            "Deseja excluir esta vaga?"
+        );
+
+    if (!confirmar) {
         return;
-    }
-
-    renderizarVagasEmpresa();
-}
-
-
-function mostrarMensagemFormularioVaga(
-    mensagem
-) {
-    const elemento =
-        document.getElementById(
-            "mensagem-formulario-vaga"
-        );
-
-    elemento.textContent =
-        mensagem;
-
-    elemento.className =
-        "mensagem-formulario erro";
-}
-
-
-function limparMensagemFormularioVaga() {
-    const elemento =
-        document.getElementById(
-            "mensagem-formulario-vaga"
-        );
-
-    elemento.textContent =
-        "";
-
-    elemento.className =
-        "mensagem-formulario";
-}
-
-
-/* ============================= */
-/* ESTUDANTE                     */
-/* ============================= */
-
-
-function iniciarExperienciaEstudante(
-    perfis,
-    perfisHabilidades
-) {
-    perfilProfissional =
-        perfis.find(
-            perfil =>
-                perfil.usuarioId ===
-                usuarioVagas.id
-        ) || null;
-
-    if (perfilProfissional) {
-        habilidadesPerfil =
-            perfisHabilidades.filter(
-                item =>
-                    item.perfilProfissionalId ===
-                    perfilProfissional.id
-            );
-    }
-
-    registrarEventosEstudante();
-
-    atualizarResumoEstudante();
-
-    aplicarFiltros();
-}
-
-
-function registrarEventosEstudante() {
-    [
-        "filtro-busca",
-        "filtro-modalidade",
-        "filtro-experiencia",
-        "filtro-localizacao",
-        "filtro-ordem",
-    ].forEach(id => {
-
-        const elemento =
-            document.getElementById(
-                id
-            );
-
-        elemento.addEventListener(
-            id.includes(
-                "filtro-busca"
-            ) ||
-            id.includes(
-                "localizacao"
-            )
-                ? "input"
-                : "change",
-
-            aplicarFiltros
-        );
-    });
-
-    document.getElementById(
-        "lista-vagas"
-    ).addEventListener(
-        "click",
-        evento => {
-
-            const cartao =
-                evento.target.closest(
-                    "[data-vaga-id]"
-                );
-
-            if (!cartao) {
-                return;
-            }
-
-            selecionarVagaEstudante(
-                Number(
-                    cartao.dataset.vagaId
-                )
-            );
-        }
-    );
-}
-
-
-function obterVagasAtivas() {
-    return vagas.filter(
-        vaga =>
-            vaga.status === "ativa"
-    );
-}
-
-
-function atualizarResumoEstudante() {
-    const vagasAtivas =
-        obterVagasAtivas();
-
-    const empresasComVagas =
-        new Set(
-            vagasAtivas.map(
-                vaga =>
-                    vaga.empresaId
-            )
-        );
-
-    const idsVagasAtivas =
-        new Set(
-            vagasAtivas.map(
-                vaga =>
-                    vaga.id
-            )
-        );
-
-    const habilidadesProcuradas =
-        new Set(
-            requisitos
-                .filter(
-                    requisito =>
-                        idsVagasAtivas.has(
-                            requisito.vagaId
-                        )
-                )
-                .map(
-                    requisito =>
-                        requisito.habilidadeId
-                )
-        );
-
-    document.getElementById(
-        "total-vagas"
-    ).textContent =
-        vagasAtivas.length;
-
-    document.getElementById(
-        "total-empresas"
-    ).textContent =
-        empresasComVagas.size;
-
-    document.getElementById(
-        "total-habilidades"
-    ).textContent =
-        habilidadesProcuradas.size;
-}
-
-
-
-
-    async function aplicarFiltros() {
-    const busca =
-        document.getElementById(
-            "filtro-busca"
-        ).value.trim();
-
-    const modalidade =
-        document.getElementById(
-            "filtro-modalidade"
-        ).value;
-
-    const experiencia =
-        document.getElementById(
-            "filtro-experiencia"
-        ).value;
-
-    const localizacao =
-        document.getElementById(
-            "filtro-localizacao"
-        ).value.trim();
-
-    const ordem =
-        document.getElementById(
-            "filtro-ordem"
-        ).value;
-
-    const parametros =
-        new URLSearchParams();
-
-    if (busca) {
-        parametros.set(
-            "texto",
-            busca
-        );
-    }
-
-    if (modalidade) {
-        parametros.set(
-            "modalidade",
-            modalidade
-        );
-    }
-
-    if (experiencia) {
-        parametros.set(
-            "nivel",
-            experiencia
-        );
-    }
-
-    if (localizacao) {
-        parametros.set(
-            "localizacao",
-            localizacao
-        );
     }
 
     try {
-        const consulta =
-            parametros.toString();
-
-        const resultado =
-            await apiRequest(
-                consulta
-                    ? `/vagas/busca-avancada?${consulta}`
-                    : "/vagas/busca-avancada"
-            );
-
-        const vagasFiltradas =
-            resultado || [];
-
-        ordenarVagas(
-            vagasFiltradas,
-            ordem
+        await apiRequest(
+            `/vagas/${id}`,
+            {
+                method: "DELETE",
+            }
         );
 
-        renderizarVagasEstudante(
-            vagasFiltradas
-        );
+        vagaSelecionadaId = null;
 
-    } catch (erro) {
-        console.error(
-            "Erro na busca avançada de vagas:",
-            erro
-        );
+        await recarregarEmpresa();
 
-        document.getElementById(
-            "lista-vagas"
-        ).innerHTML = `
-            <div class="estado-vazio">
-                Não foi possível realizar
-                a busca avançada de vagas.
-            </div>
-        `;
-
-        document.getElementById(
-            "quantidade-resultados"
-        ).textContent =
-            "0 resultado(s)";
-    }
-}
-
-
-function ordenarVagas(
-    lista,
-    ordem
-) {
-    if (ordem === "salario") {
-        lista.sort(
-            (a, b) =>
-                obterMaiorSalario(b) -
-                obterMaiorSalario(a)
-        );
-
-        return;
-    }
-
-    if (ordem === "titulo") {
-        lista.sort(
-            (a, b) =>
-                a.titulo.localeCompare(
-                    b.titulo,
-                    "pt-BR"
-                )
-        );
-
-        return;
-    }
-
-    lista.sort(
-        (a, b) =>
-            new Date(
-                b.dataPublicacao || 0
-            ) -
-            new Date(
-                a.dataPublicacao || 0
-            )
-    );
-}
-
-
-function obterMaiorSalario(vaga) {
-    return Number(
-        vaga.salarioMaximo ??
-        vaga.salarioMinimo ??
-        0
-    );
-}
-
-
-function renderizarVagasEstudante(
-    vagasFiltradas
-) {
-    const conteiner =
-        document.getElementById(
-            "lista-vagas"
-        );
-
-    document.getElementById(
-        "quantidade-resultados"
-    ).textContent =
-        `${vagasFiltradas.length} resultado(s)`;
-
-    if (!vagasFiltradas.length) {
-        conteiner.innerHTML = `
-            <div class="estado-vazio">
-                Nenhuma vaga corresponde aos filtros.
-            </div>
-        `;
-
-        return;
-    }
-
-    conteiner.innerHTML =
-        vagasFiltradas
-            .map(vaga => {
-
-                const empresa =
-                    obterEmpresa(
-                        vaga.empresaId
-                    );
-
-                const ativa =
-                    vaga.id ===
-                    vagaSelecionadaId;
-
-                return `
-                    <button
-                        class="cartao-vaga ${
-                            ativa
-                                ? "ativo"
-                                : ""
-                        }"
-                        data-vaga-id="${vaga.id}"
-                        type="button"
-                    >
-
-                        <div class="topo-cartao-vaga">
-
-                            <div>
-
-                                <h3>
-                                    ${escaparHtml(
-                                        vaga.titulo
-                                    )}
-                                </h3>
-
-                                <span class="nome-empresa-vaga">
-                                    ${escaparHtml(
-                                        empresa?.nome ||
-                                        "Empresa"
-                                    )}
-                                </span>
-
-                            </div>
-
-                            <span class="tag-vaga">
-                                Ativa
-                            </span>
-
-                        </div>
-
-                        <div class="informacoes-cartao-vaga">
-
-                            <span>
-                                ${formatarExperiencia(
-                                    vaga.nivelExperiencia
-                                )}
-                            </span>
-
-                            <span>
-                                ${formatarModalidade(
-                                    vaga.modalidade
-                                )}
-                            </span>
-
-                            <span>
-                                ${escaparHtml(
-                                    vaga.localizacao ||
-                                    "Localização não informada"
-                                )}
-                            </span>
-
-                        </div>
-
-                        <div class="rodape-cartao-vaga">
-
-                            <span class="salario-cartao">
-                                ${formatarFaixaSalarial(
-                                    vaga
-                                )}
-                            </span>
-
-                            <span class="data-cartao">
-                                ${formatarData(
-                                    vaga.dataPublicacao
-                                )}
-                            </span>
-
-                        </div>
-
-                    </button>
-                `;
-            })
-            .join("");
-}
-
-
-function selecionarVagaEstudante(id) {
-    vagaSelecionadaId =
-        id;
-
-    const vaga =
-        vagas.find(
-            item =>
-                item.id === id
-        );
-
-    if (!vaga) {
-        return;
-    }
-
-    aplicarFiltros();
-
-    renderizarDetalheEstudante(
-        vaga
-    );
-}
-
-
-function renderizarDetalheEstudante(
-    vaga
-) {
-    const conteiner =
         document.getElementById(
             "detalhe-vaga"
-        );
+        ).innerHTML = `
+            <div class="detalhe-vazio">
+                <h2>Vaga excluída</h2>
+            </div>
+        `;
 
-    const empresa =
-        obterEmpresa(
-            vaga.empresaId
-        );
-
-    const requisitosVaga =
-        obterRequisitosVaga(
-            vaga.id
-        );
-
-    const habilidadesUsuario =
-        new Set(
-            habilidadesPerfil.map(
-                item =>
-                    item.habilidadeId
-            )
-        );
-
-    const requisitosAtendidos =
-        requisitosVaga.filter(
-            requisito =>
-                habilidadesUsuario.has(
-                    requisito.habilidadeId
-                )
-        );
-
-    const possuiPerfil =
-        Boolean(
-            perfilProfissional
-        );
-
-    let compatibilidade =
-        null;
-
-    if (
-        possuiPerfil &&
-        requisitosVaga.length
-    ) {
-        compatibilidade =
-            Math.round(
-                (
-                    requisitosAtendidos.length /
-                    requisitosVaga.length
-                ) * 100
-            );
+    } catch (erro) {
+        alert(erro.message);
     }
-
-    const requisitosHtml =
-        criarHtmlRequisitosEstudante(
-            requisitosVaga,
-            habilidadesUsuario,
-            possuiPerfil
-        );
-
-    const siteEmpresa =
-        normalizarUrl(
-            empresa?.site
-        );
-
-    const beneficiosHtml =
-        vaga.beneficios
-            ? `
-                <section class="secao-detalhe">
-
-                    <h3>
-                        Benefícios
-                    </h3>
-
-                    <div class="bloco-beneficios-vaga">
-
-                        <p>
-                            ${escaparHtml(
-                                vaga.beneficios
-                            )}
-                        </p>
-
-                    </div>
-
-                </section>
-            `
-            : "";
-
-    conteiner.innerHTML = `
-        <div class="cabecalho-detalhe-vaga">
-
-            <span class="empresa-detalhe">
-                ${escaparHtml(
-                    empresa?.nome ||
-                    "Empresa"
-                )}
-            </span>
-
-            <h2>
-                ${escaparHtml(
-                    vaga.titulo
-                )}
-            </h2>
-
-            <div class="metadados-detalhe">
-
-                <span>
-                    ${formatarExperiencia(
-                        vaga.nivelExperiencia
-                    )}
-                </span>
-
-                <span>
-                    ${formatarModalidade(
-                        vaga.modalidade
-                    )}
-                </span>
-
-                <span>
-                    ${escaparHtml(
-                        vaga.localizacao ||
-                        "Localização não informada"
-                    )}
-                </span>
-
-                <span>
-                    Publicada em
-                    ${formatarData(
-                        vaga.dataPublicacao
-                    )}
-                </span>
-
-            </div>
-
-            <div class="salario-detalhe">
-                ${formatarFaixaSalarial(
-                    vaga
-                )}
-            </div>
-
-        </div>
-
-        ${criarHtmlCompatibilidade(
-            compatibilidade,
-            requisitosAtendidos.length,
-            requisitosVaga.length,
-            possuiPerfil
-        )}
-
-        <section class="secao-detalhe">
-
-            <h3>
-                Sobre a oportunidade
-            </h3>
-
-            <p>
-                ${escaparHtml(
-                    vaga.descricao ||
-                    "A empresa ainda não adicionou uma descrição detalhada para esta vaga."
-                )}
-            </p>
-
-        </section>
-
-        ${beneficiosHtml}
-
-        <section class="secao-detalhe">
-
-            <h3>
-                Requisitos
-            </h3>
-
-            <div class="lista-requisitos">
-                ${requisitosHtml}
-            </div>
-
-        </section>
-
-        <section class="secao-detalhe">
-
-            <h3>
-                Sobre a empresa
-            </h3>
-
-            <div class="bloco-empresa">
-
-                <strong>
-                    ${escaparHtml(
-                        empresa?.nome ||
-                        "Empresa"
-                    )}
-                </strong>
-
-                <span>
-                    ${escaparHtml(
-                        empresa?.setor ||
-                        "Setor não informado"
-                    )}
-                </span>
-
-                <p>
-                    ${escaparHtml(
-                        empresa?.descricao ||
-                        "A empresa ainda não adicionou uma descrição."
-                    )}
-                </p>
-
-            </div>
-
-        </section>
-
-        <div class="acoes-detalhe">
-
-            <button
-                class="botao-candidatura"
-                type="button"
-                disabled
-            >
-                Candidatura em breve
-            </button>
-
-            ${
-                siteEmpresa
-                    ? `
-                        <a
-                            class="link-empresa"
-                            href="${escaparHtml(
-                                siteEmpresa
-                            )}"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            Site da empresa
-                        </a>
-                    `
-                    : ""
-            }
-
-        </div>
-    `;
 }
 
 
-function criarHtmlCompatibilidade(
-    compatibilidade,
-    atendidos,
-    total,
-    possuiPerfil
-) {
-    if (!possuiPerfil) {
-        return `
-            <div class="compatibilidade-vaga">
+async function recarregarEmpresa() {
+    const dados =
+        await Promise.all([
+            apiRequest("/vagas"),
+            apiRequest("/requisitos-vaga"),
+        ]);
 
-                <div class="topo-compatibilidade">
+    vagas = dados[0] || [];
+    requisitos = dados[1] || [];
 
-                    <span>
-                        Compatibilidade
-                    </span>
-
-                    <strong>
-                        —
-                    </strong>
-
-                </div>
-
-                <p class="texto-compatibilidade">
-                    Complete seu perfil para comparar suas
-                    habilidades com esta oportunidade.
-                </p>
-
-            </div>
-        `;
-    }
-
-    if (!total) {
-        return `
-            <div class="compatibilidade-vaga">
-
-                <div class="topo-compatibilidade">
-
-                    <span>
-                        Compatibilidade
-                    </span>
-
-                    <strong>
-                        —
-                    </strong>
-
-                </div>
-
-                <p class="texto-compatibilidade">
-                    Esta vaga ainda não possui requisitos
-                    técnicos cadastrados.
-                </p>
-
-            </div>
-        `;
-    }
-
-    return `
-        <div class="compatibilidade-vaga">
-
-            <div class="topo-compatibilidade">
-
-                <span>
-                    Compatibilidade com seu perfil
-                </span>
-
-                <strong>
-                    ${compatibilidade}%
-                </strong>
-
-            </div>
-
-            <div class="barra-compatibilidade-vaga">
-
-                <span
-                    style="width: ${compatibilidade}%"
-                ></span>
-
-            </div>
-
-            <p class="texto-compatibilidade">
-                Você possui ${atendidos} de
-                ${total} requisito(s) desta oportunidade.
-            </p>
-
-        </div>
-    `;
+    atualizarResumoEmpresa();
+    mostrarVagasEmpresa();
 }
 
 
-function criarHtmlRequisitosEstudante(
-    requisitosVaga,
-    habilidadesUsuario,
-    possuiPerfil
-) {
-    if (!requisitosVaga.length) {
-        return `
-            <div class="estado-vazio">
-                Nenhum requisito técnico cadastrado.
-            </div>
-        `;
-    }
-
-    return requisitosVaga
-        .map(requisito => {
-
-            const habilidade =
-                obterHabilidade(
-                    requisito.habilidadeId
-                );
-
-            const atendido =
-                possuiPerfil &&
-                habilidadesUsuario.has(
-                    requisito.habilidadeId
-                );
-
-            return `
-                <div class="
-                    requisito-vaga
-                    ${
-                        atendido
-                            ? "requisito-atendido"
-                            : "requisito-pendente"
-                    }
-                ">
-
-                    <div class="requisito-identidade">
-
-                        <span class="estado-requisito">
-                            ${
-                                atendido
-                                    ? "✓"
-                                    : "+"
-                            }
-                        </span>
-
-                        <div>
-
-                            <strong>
-                                ${escaparHtml(
-                                    habilidade?.nome ||
-                                    "Habilidade"
-                                )}
-                            </strong>
-
-                            <small>
-                                Nível:
-                                ${formatarNivelHabilidade(
-                                    requisito.nivelExigido
-                                )}
-                            </small>
-
-                        </div>
-
-                    </div>
-
-                    <span class="tipo-requisito">
-                        ${
-                            requisito.obrigatorio
-                                ? "Obrigatório"
-                                : "Diferencial"
-                        }
-                    </span>
-
-                </div>
-            `;
-        })
-        .join("");
-}
+/* =========================================================
+   FUNÇÕES SIMPLES COMPARTILHADAS
+========================================================= */
 
 
-/* ============================= */
-/* FUNÇÕES COMPARTILHADAS        */
-/* ============================= */
-
-
-function obterEmpresa(empresaId) {
+function buscarEmpresa(id) {
     return empresas.find(
-        empresa =>
-            empresa.id ===
-            empresaId
-    ) || null;
-}
-
-
-function obterRequisitosVaga(vagaId) {
-    return requisitos.filter(
-        requisito =>
-            requisito.vagaId ===
-            vagaId
+        empresa => empresa.id === id
     );
 }
 
 
-function obterHabilidade(
-    habilidadeId
-) {
+function buscarHabilidade(id) {
     return habilidades.find(
         habilidade =>
-            habilidade.id ===
-            habilidadeId
-    ) || null;
+            habilidade.id === id
+    );
 }
 
 
-function obterTextoCampo(id) {
+function buscarRequisitos(vagaId) {
+    return requisitos.filter(
+        requisito =>
+            requisito.vagaId === vagaId
+    );
+}
+
+
+function valor(id) {
     return document
         .getElementById(id)
         .value
@@ -2656,72 +1835,122 @@ function obterTextoCampo(id) {
 }
 
 
-function obterNumeroCampo(id) {
-    const valor =
+function numero(id) {
+    const valorCampo =
         document.getElementById(
             id
         ).value;
 
-    if (valor === "") {
+    if (valorCampo === "") {
         return null;
     }
 
-    return Number(valor);
+    return Number(valorCampo);
 }
 
 
-function formatarFaixaSalarial(vaga) {
-    const possuiMinimo =
-        vaga.salarioMinimo !== null &&
-        vaga.salarioMinimo !== undefined &&
-        vaga.salarioMinimo !== "";
+function formatarExperiencia(valor) {
+    const nomes = {
+        iniciante: "Iniciante",
+        junior: "Júnior",
+        pleno: "Pleno",
+        senior: "Sênior",
+    };
 
-    const possuiMaximo =
-        vaga.salarioMaximo !== null &&
-        vaga.salarioMaximo !== undefined &&
-        vaga.salarioMaximo !== "";
+    return nomes[valor] || "Não informado";
+}
+
+
+function formatarModalidade(valor) {
+    const nomes = {
+        presencial: "Presencial",
+        hibrido: "Híbrido",
+        remoto: "Remoto",
+    };
+
+    return nomes[valor] || "Não informada";
+}
+
+
+function formatarStatus(valor) {
+    const nomes = {
+        ativa: "Ativa",
+        pausada: "Pausada",
+        encerrada: "Encerrada",
+    };
+
+    return nomes[valor] || valor;
+}
+
+
+function formatarNivel(valor) {
+    const nomes = {
+        basico: "Básico",
+        intermediario: "Intermediário",
+        avancado: "Avançado",
+    };
+
+    return nomes[valor] || valor;
+}
+
+
+function formatarData(data) {
+    if (!data) {
+        return "Sem data";
+    }
+
+    const partes =
+        data.split("-");
+
+    if (partes.length !== 3) {
+        return data;
+    }
+
+    return (
+        partes[2] +
+        "/" +
+        partes[1] +
+        "/" +
+        partes[0]
+    );
+}
+
+
+function formatarSalario(vaga) {
+    const minimo =
+        vaga.salarioMinimo;
+
+    const maximo =
+        vaga.salarioMaximo;
 
     if (
-        !possuiMinimo &&
-        !possuiMaximo
+        minimo === null &&
+        maximo === null
     ) {
         return "Salário a definir";
     }
 
-    const minimo =
-        Number(
-            vaga.salarioMinimo
-        );
-
-    const maximo =
-        Number(
-            vaga.salarioMaximo
-        );
-
     if (
-        possuiMinimo &&
-        possuiMaximo
+        minimo !== null &&
+        maximo !== null
     ) {
         return (
-            `${formatarMoeda(minimo)} - ` +
-            `${formatarMoeda(maximo)}`
+            formatarMoeda(minimo) +
+            " - " +
+            formatarMoeda(maximo)
         );
     }
 
-    if (possuiMinimo) {
+    if (minimo !== null) {
         return (
             "A partir de " +
-            formatarMoeda(
-                minimo
-            )
+            formatarMoeda(minimo)
         );
     }
 
     return (
         "Até " +
-        formatarMoeda(
-            maximo
-        )
+        formatarMoeda(maximo)
     );
 }
 
@@ -2738,160 +1967,13 @@ function formatarMoeda(valor) {
 }
 
 
-function formatarData(data) {
-    if (!data) {
-        return "Data não informada";
-    }
-
-    const partes =
-        data.split("-");
-
-    if (partes.length !== 3) {
-        return data;
-    }
-
-    return (
-        `${partes[2]}/` +
-        `${partes[1]}/` +
-        `${partes[0]}`
-    );
-}
-
-
-function formatarModalidade(valor) {
-    const valores = {
-        remoto:
-            "Remoto",
-        hibrido:
-            "Híbrido",
-        presencial:
-            "Presencial",
-    };
-
-    return (
-        valores[valor] ||
-        "Não informada"
-    );
-}
-
-
-function formatarExperiencia(valor) {
-    const valores = {
-        iniciante:
-            "Iniciante",
-        junior:
-            "Júnior",
-        pleno:
-            "Pleno",
-        senior:
-            "Sênior",
-    };
-
-    return (
-        valores[valor] ||
-        "Não informado"
-    );
-}
-
-
-function formatarNivelHabilidade(valor) {
-    const valores = {
-        basico:
-            "Básico",
-        intermediario:
-            "Intermediário",
-        avancado:
-            "Avançado",
-    };
-
-    return (
-        valores[valor] ||
-        valor ||
-        "Não informado"
-    );
-}
-
-
-function formatarStatusVaga(valor) {
-    const valores = {
-        ativa:
-            "Ativa",
-        pausada:
-            "Pausada",
-        encerrada:
-            "Encerrada",
-    };
-
-    return (
-        valores[valor] ||
-        "Status desconhecido"
-    );
-}
-
-
-function normalizarTexto(valor) {
+function escapar(texto) {
     return String(
-        valor ?? ""
+        texto || ""
     )
-        .normalize(
-            "NFD"
-        )
-        .replace(
-            /[\u0300-\u036f]/g,
-            ""
-        )
-        .toLowerCase()
-        .trim();
-}
-
-
-function normalizarUrl(valor) {
-    const url =
-        String(
-            valor ?? ""
-        ).trim();
-
-    if (!url) {
-        return null;
-    }
-
-    if (
-        url.startsWith(
-            "http://"
-        ) ||
-        url.startsWith(
-            "https://"
-        )
-    ) {
-        return url;
-    }
-
-    return `https://${url}`;
-}
-
-
-function escaparHtml(valor) {
-    return String(
-        valor ?? ""
-    )
-        .replaceAll(
-            "&",
-            "&amp;"
-        )
-        .replaceAll(
-            "<",
-            "&lt;"
-        )
-        .replaceAll(
-            ">",
-            "&gt;"
-        )
-        .replaceAll(
-            "\"",
-            "&quot;"
-        )
-        .replaceAll(
-            "'",
-            "&#039;"
-        );
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll("\"", "&quot;")
+        .replaceAll("'", "&#039;");
 }
