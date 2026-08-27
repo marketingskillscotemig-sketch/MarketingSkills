@@ -1,0 +1,940 @@
+.perfil-empresa-ativo {
+    background: #030817;
+}
+
+
+.perfil-empresa-ativo .pagina-perfil {
+    min-height: calc(100vh - 80px);
+    padding: 42px 0 80px;
+    background:
+        radial-gradient(
+            circle at 80% 8%,
+            rgba(103, 73, 255, 0.13),
+            transparent 28%
+        ),
+        radial-gradient(
+            circle at 18% 18%,
+            rgba(41, 121, 255, 0.09),
+            transparent 24%
+        ),
+        #030817;
+}
+
+
+.estado-carregando-empresa {
+    padding: 80px 24px;
+    color: #77839d;
+    text-align: center;
+}
+
+
+.estado-erro-empresa {
+    padding: 28px;
+    border: 1px solid #29334d;
+    border-radius: 18px;
+    background: #091020;
+    color: #ff8c9e;
+}
+
+
+/* HERO */
+
+
+.hero-perfil-empresa {
+    overflow: hidden;
+    border: 1px solid #1a2540;
+    border-radius: 24px;
+    background: #081020;
+}
+
+
+.banner-empresa {
+    position: relative;
+    height: 270px;
+    overflow: hidden;
+    background:
+        linear-gradient(
+            135deg,
+            #0c1d43,
+            #22164f
+        );
+}
+
+
+.banner-empresa img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+
+.banner-empresa-vazio {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 36px;
+    box-sizing: border-box;
+    background:
+        radial-gradient(
+            circle at 20% 40%,
+            rgba(71, 122, 255, 0.28),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 75% 30%,
+            rgba(150, 63, 255, 0.3),
+            transparent 34%
+        ),
+        linear-gradient(
+            135deg,
+            #07142c,
+            #160d34
+        );
+}
+
+
+.banner-empresa-vazio span {
+    color: rgba(255, 255, 255, 0.09);
+    font-size: clamp(2.4rem, 7vw, 6rem);
+    font-weight: 900;
+    letter-spacing: -0.06em;
+}
+
+
+.sombra-banner-empresa {
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(
+            180deg,
+            transparent 38%,
+            rgba(4, 9, 21, 0.9) 100%
+        );
+}
+
+
+.identidade-empresa {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 24px;
+    padding: 0 30px 30px;
+}
+
+
+.logo-empresa {
+    position: relative;
+    display: grid;
+    width: 120px;
+    height: 120px;
+    margin-top: -58px;
+    place-items: center;
+    overflow: hidden;
+    border: 5px solid #081020;
+    border-radius: 24px;
+    background:
+        linear-gradient(
+            135deg,
+            #315cff,
+            #8b3dff
+        );
+    color: #ffffff;
+    font-size: 2.7rem;
+    font-weight: 900;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
+}
+
+
+.logo-empresa img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+
+.dados-principais-empresa h1 {
+    margin: 4px 0 0;
+    color: #f7f9ff;
+    font-size: clamp(1.8rem, 4vw, 2.65rem);
+    letter-spacing: -0.035em;
+}
+
+
+.rotulo-empresa {
+    display: block;
+    color: #65b4ff;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+
+.metadados-empresa {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+}
+
+
+.metadados-empresa span {
+    padding: 7px 11px;
+    border: 1px solid #22304e;
+    border-radius: 999px;
+    background: #0b1428;
+    color: #9ba7c1;
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+
+
+.acoes-perfil-empresa {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+
+.botao-empresa-principal,
+.botao-empresa-secundario {
+    display: inline-flex;
+    min-height: 42px;
+    align-items: center;
+    justify-content: center;
+    padding: 0 17px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+
+.botao-empresa-principal {
+    border: 0;
+    background:
+        linear-gradient(
+            135deg,
+            #3976ff,
+            #883df4
+        );
+    color: #ffffff;
+}
+
+
+.botao-empresa-secundario {
+    border: 1px solid #2b3c61;
+    background: #0a1326;
+    color: #d9e4ff;
+}
+
+
+/* CONTEÚDO */
+
+
+.grade-perfil-empresa {
+    display: grid;
+    grid-template-columns:
+        minmax(0, 1.65fr)
+        minmax(290px, 0.75fr);
+    align-items: start;
+    gap: 22px;
+    margin-top: 22px;
+}
+
+
+.coluna-principal-empresa,
+.coluna-lateral-empresa {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+
+.cartao-empresa {
+    padding: 26px;
+    border: 1px solid #17243d;
+    border-radius: 20px;
+    background: #081020;
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.14);
+}
+
+
+.cabecalho-cartao-empresa {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 20px;
+}
+
+
+.cabecalho-cartao-empresa h2,
+.cartao-status-empresa h2 {
+    margin: 5px 0 0;
+    color: #f1f5ff;
+    font-size: 1.25rem;
+}
+
+
+.texto-apresentacao-empresa {
+    margin: 0;
+    color: #9aa7c0;
+    line-height: 1.8;
+    white-space: pre-line;
+}
+
+
+.lista-tags-empresa {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+}
+
+
+.tag-conteudo-empresa {
+    padding: 8px 12px;
+    border: 1px solid #263963;
+    border-radius: 999px;
+    background: #0c1730;
+    color: #a9c8ff;
+    font-size: 0.82rem;
+    font-weight: 800;
+}
+
+
+.estado-vazio-empresa {
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+    border: 1px dashed #263149;
+    border-radius: 13px;
+    color: #6f7c96;
+    font-size: 0.86rem;
+    text-align: center;
+}
+
+
+.contador-vagas-empresa {
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: #101c35;
+    color: #8ebaff;
+    font-size: 0.76rem;
+    font-weight: 800;
+}
+
+
+.lista-vagas-perfil-empresa {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+
+.vaga-perfil-empresa {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 18px;
+    padding: 17px 18px;
+    border: 1px solid #182742;
+    border-radius: 15px;
+    background: #0a1325;
+}
+
+
+.status-vaga-empresa {
+    display: inline-flex;
+    margin-bottom: 8px;
+    color: #54d6ac;
+    font-size: 0.7rem;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+
+.vaga-perfil-empresa h3 {
+    margin: 0;
+    color: #edf3ff;
+    font-size: 1rem;
+}
+
+
+.metadados-vaga-empresa {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-top: 9px;
+}
+
+
+.metadados-vaga-empresa span {
+    color: #78859f;
+    font-size: 0.76rem;
+}
+
+
+.link-vaga-empresa {
+    flex: 0 0 auto;
+    color: #7eb2ff;
+    font-size: 0.82rem;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+
+.lista-links-empresa {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.item-link-empresa {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 15px 0;
+    border-bottom: 1px solid #172139;
+    color: inherit;
+    text-decoration: none;
+}
+
+
+.item-link-empresa:last-child {
+    border-bottom: 0;
+}
+
+
+.item-link-empresa span {
+    color: #77849c;
+    font-size: 0.82rem;
+}
+
+
+.item-link-empresa strong {
+    color: #83b7ff;
+    font-size: 0.82rem;
+}
+
+
+.item-link-empresa.indisponivel strong {
+    color: #66728a;
+}
+
+
+.cartao-administrativo-empresa {
+    background:
+        linear-gradient(
+            145deg,
+            #0a1224,
+            #0c1020
+        );
+}
+
+
+.tag-privado-empresa {
+    display: inline-flex;
+    padding: 5px 9px;
+    border: 1px solid #4c385e;
+    border-radius: 999px;
+    background: #1b1125;
+    color: #c595ed;
+    font-size: 0.67rem;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+
+.aviso-privacidade-empresa {
+    margin: -7px 0 16px;
+    color: #727e95;
+    font-size: 0.8rem;
+    line-height: 1.55;
+}
+
+
+.lista-dados-legais {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.lista-dados-legais > div {
+    padding: 13px 0;
+    border-bottom: 1px solid #172139;
+}
+
+
+.lista-dados-legais > div:last-child {
+    border-bottom: 0;
+}
+
+
+.lista-dados-legais span {
+    display: block;
+    color: #6f7b94;
+    font-size: 0.76rem;
+}
+
+
+.lista-dados-legais strong {
+    display: block;
+    margin-top: 5px;
+    color: #dce5f8;
+    font-size: 0.86rem;
+}
+
+
+.cartao-status-empresa p {
+    margin: 14px 0 0;
+    color: #748097;
+    font-size: 0.84rem;
+    line-height: 1.65;
+}
+
+
+.indicador-status-empresa {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 18px;
+    color: #81d8bc;
+    font-size: 0.82rem;
+    font-weight: 800;
+}
+
+
+.indicador-status-empresa span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #3dd3a3;
+    box-shadow:
+        0 0 0 5px rgba(61, 211, 163, 0.09);
+}
+
+
+/* MODAL */
+
+
+.modal-perfil-empresa {
+    width: min(94vw, 780px);
+    max-height: 92vh;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid #263552;
+    border-radius: 22px;
+    background: #080f1f;
+    color: #ffffff;
+}
+
+
+.modal-perfil-empresa::backdrop {
+    background: rgba(2, 6, 16, 0.78);
+    backdrop-filter: blur(5px);
+}
+
+
+.formulario-perfil-empresa {
+    max-height: 92vh;
+    overflow-y: auto;
+}
+
+
+.cabecalho-modal-empresa {
+    position: sticky;
+    top: 0;
+    z-index: 4;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 25px 28px;
+    border-bottom: 1px solid #1c2842;
+    background: rgba(8, 15, 31, 0.97);
+}
+
+
+.cabecalho-modal-empresa h2 {
+    margin: 5px 0 0;
+    font-size: 1.4rem;
+}
+
+
+.cabecalho-modal-empresa button {
+    display: grid;
+    width: 36px;
+    height: 36px;
+    place-items: center;
+    border: 1px solid #273653;
+    border-radius: 10px;
+    background: #0c1528;
+    color: #93a0b9;
+    cursor: pointer;
+    font-size: 1.3rem;
+}
+
+
+.secao-formulario-empresa {
+    padding: 26px 28px;
+    border-bottom: 1px solid #172139;
+}
+
+
+.numero-secao-empresa {
+    display: block;
+    margin-bottom: 7px;
+    color: #61a9ff;
+    font-size: 0.69rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+}
+
+
+.secao-formulario-empresa h3 {
+    margin: 0 0 18px;
+    color: #f0f4ff;
+    font-size: 1.05rem;
+}
+
+
+.grade-formulario-empresa {
+    display: grid;
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+    gap: 15px;
+}
+
+
+.campo-empresa {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    margin-top: 14px;
+}
+
+
+.grade-formulario-empresa .campo-empresa {
+    margin-top: 0;
+}
+
+
+.campo-empresa > span {
+    color: #aab5ca;
+    font-size: 0.78rem;
+    font-weight: 800;
+}
+
+
+.campo-empresa input,
+.campo-empresa select,
+.campo-empresa textarea {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #24324e;
+    border-radius: 11px;
+    outline: none;
+    background: #070d1a;
+    color: #f3f6ff;
+    font: inherit;
+}
+
+
+.campo-empresa input,
+.campo-empresa select {
+    min-height: 44px;
+    padding: 0 12px;
+}
+
+
+.campo-empresa textarea {
+    min-height: 100px;
+    padding: 12px;
+    resize: vertical;
+    line-height: 1.55;
+}
+
+
+.campo-empresa input:focus,
+.campo-empresa select:focus,
+.campo-empresa textarea:focus {
+    border-color: #4c83ff;
+    box-shadow:
+        0 0 0 3px rgba(76, 131, 255, 0.1);
+}
+
+
+.campo-empresa input:disabled {
+    background: #0d1220;
+    color: #59647a;
+}
+
+
+.campo-empresa small {
+    color: #657189;
+    font-size: 0.72rem;
+}
+
+
+.campo-largo-empresa {
+    grid-column: 1 / -1;
+}
+
+
+.campo-checkbox-empresa {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    padding: 14px;
+    border: 1px solid #22304b;
+    border-radius: 12px;
+    background: #0a1223;
+    cursor: pointer;
+}
+
+
+.campo-checkbox-empresa input {
+    width: 17px;
+    height: 17px;
+    margin-top: 2px;
+    accent-color: #557dff;
+}
+
+
+.campo-checkbox-empresa strong,
+.campo-checkbox-empresa span {
+    display: block;
+}
+
+
+.campo-checkbox-empresa strong {
+    color: #dce4f5;
+    font-size: 0.82rem;
+}
+
+
+.campo-checkbox-empresa span {
+    margin-top: 4px;
+    color: #6e7b93;
+    font-size: 0.74rem;
+    line-height: 1.45;
+}
+
+
+.secao-administrativa-formulario {
+    background: rgba(92, 55, 115, 0.05);
+}
+
+
+.cabecalho-secao-administrativa {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 14px;
+}
+
+
+.secao-administrativa-formulario > p {
+    margin: -8px 0 17px;
+    color: #747e94;
+    font-size: 0.78rem;
+}
+
+
+.mensagem-formulario-empresa {
+    margin: 0 28px;
+}
+
+
+.mensagem-formulario-empresa.erro {
+    margin-top: 20px;
+    padding: 11px 13px;
+    border: 1px solid #5d2938;
+    border-radius: 10px;
+    background: #25101a;
+    color: #ff9caf;
+    font-size: 0.82rem;
+}
+
+
+.acoes-modal-empresa {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 22px 28px 28px;
+}
+
+
+.mensagem-perfil-empresa {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    z-index: 1000;
+    max-width: 380px;
+    padding: 13px 18px;
+    border-radius: 12px;
+    background: #111b2e;
+    color: #ffffff;
+    box-shadow: 0 16px 45px rgba(0, 0, 0, 0.35);
+    font-size: 0.86rem;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(12px);
+    transition:
+        opacity 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.mensagem-perfil-empresa.visivel {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+
+.mensagem-perfil-empresa.sucesso {
+    background: #123f36;
+}
+
+
+.mensagem-perfil-empresa.erro {
+    background: #572434;
+}
+
+
+/* RESPONSIVIDADE */
+
+
+@media (max-width: 980px) {
+    .grade-perfil-empresa {
+        grid-template-columns: 1fr;
+    }
+
+
+    .identidade-empresa {
+        grid-template-columns:
+            auto minmax(0, 1fr);
+    }
+
+
+    .acoes-perfil-empresa {
+        grid-column: 1 / -1;
+        justify-content: flex-start;
+    }
+}
+
+
+@media (max-width: 700px) {
+    .perfil-empresa-ativo .pagina-perfil {
+        padding-top: 24px;
+    }
+
+
+    .banner-empresa {
+        height: 190px;
+    }
+
+
+    .identidade-empresa {
+        display: flex;
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 0 20px 22px;
+    }
+
+
+    .logo-empresa {
+        width: 96px;
+        height: 96px;
+        margin-top: -46px;
+        border-radius: 20px;
+    }
+
+
+    .acoes-perfil-empresa {
+        width: 100%;
+    }
+
+
+    .acoes-perfil-empresa a,
+    .acoes-perfil-empresa button {
+        flex: 1;
+    }
+
+
+    .cartao-empresa {
+        padding: 21px;
+    }
+
+
+    .grade-formulario-empresa {
+        grid-template-columns: 1fr;
+    }
+
+
+    .campo-largo-empresa {
+        grid-column: auto;
+    }
+
+
+    .vaga-perfil-empresa {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+
+    .cabecalho-modal-empresa,
+    .secao-formulario-empresa {
+        padding-right: 20px;
+        padding-left: 20px;
+    }
+
+
+    .acoes-modal-empresa {
+        padding-right: 20px;
+        padding-left: 20px;
+    }
+
+
+    .mensagem-formulario-empresa {
+        margin-right: 20px;
+        margin-left: 20px;
+    }
+}
+
+
+@media (max-width: 480px) {
+    .acoes-perfil-empresa {
+        flex-direction: column;
+    }
+
+
+    .acoes-perfil-empresa a,
+    .acoes-perfil-empresa button {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+
+    .cabecalho-cartao-empresa {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+
+    .acoes-modal-empresa {
+        flex-direction: column-reverse;
+    }
+
+
+    .acoes-modal-empresa button {
+        width: 100%;
+    }
+}

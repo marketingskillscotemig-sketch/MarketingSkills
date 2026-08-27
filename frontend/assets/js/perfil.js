@@ -177,15 +177,18 @@ async function carregarDadosPerfil() {
 
         usuarioPaginaPerfil = sessao.usuario;
 
-        if (
-            usuarioPaginaPerfil.tipoConta !==
-            "estudante"
-        ) {
-            window.location.href =
-                "../index.html";
+       if (
+    usuarioPaginaPerfil.tipoConta ===
+    "empresa"
+) {
+    mostrarCarregamento(false);
 
-            return;
-        }
+    await iniciarPerfilEmpresa(
+        usuarioPaginaPerfil
+    );
+
+    return;
+}
 
         const [
             perfis,
