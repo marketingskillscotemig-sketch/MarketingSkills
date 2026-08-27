@@ -1,7 +1,10 @@
-from flask import jsonify
+from flask import jsonify, request
 
 from services.talento.listar_talentos_service import (
     ListarTalentosService,
+)
+from services.talento.ranking_talentos_service import (
+    RankingTalentosService,
 )
 
 
@@ -32,3 +35,26 @@ class TalentoController:
                 for talento in talentos
             ]
         ), 200
+
+    @staticmethod
+    def ranking_por_vaga():
+        try:
+            resultado = (
+                RankingTalentosService
+                .executar(
+                    request.args.get(
+                        "vagaId"
+                    )
+                )
+            )
+
+            return jsonify(
+                resultado
+            ), 200
+
+        except ValueError as erro:
+            return jsonify(
+                {
+                    "erro": str(erro),
+                }
+            ), 400

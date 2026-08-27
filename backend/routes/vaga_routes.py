@@ -20,14 +20,26 @@ vaga_bp.get("")(
     VagaController.listar
 )
 
-vaga_bp.get("/<int:vaga_id>")(
+vaga_bp.get(
+    "/busca-avancada"
+)(
+    VagaController.buscar_avancado
+)
+
+vaga_bp.get(
+    "/<int:vaga_id>"
+)(
     VagaController.buscar_por_id
 )
 
-vaga_bp.put("/<int:vaga_id>")(
+vaga_bp.put(
+    "/<int:vaga_id>"
+)(
     VagaController.atualizar
 )
 
-vaga_bp.delete("/<int:vaga_id>")(
+vaga_bp.delete(
+    "/<int:vaga_id>"
+)(
     VagaController.deletar
 )

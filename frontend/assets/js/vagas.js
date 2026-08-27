@@ -1906,13 +1906,13 @@ function atualizarResumoEstudante() {
 }
 
 
-function aplicarFiltros() {
+
+
+    async function aplicarFiltros() {
     const busca =
-        normalizarTexto(
-            document.getElementById(
-                "filtro-busca"
-            ).value
-        );
+        document.getElementById(
+            "filtro-busca"
+        ).value.trim();
 
     const modalidade =
         document.getElementById(
@@ -1925,89 +1925,89 @@ function aplicarFiltros() {
         ).value;
 
     const localizacao =
-        normalizarTexto(
-            document.getElementById(
-                "filtro-localizacao"
-            ).value
-        );
+        document.getElementById(
+            "filtro-localizacao"
+        ).value.trim();
 
     const ordem =
         document.getElementById(
             "filtro-ordem"
         ).value;
 
-    let resultado =
-        obterVagasAtivas()
-            .filter(vaga => {
+    const parametros =
+        new URLSearchParams();
 
-                const empresa =
-                    obterEmpresa(
-                        vaga.empresaId
-                    );
+    if (busca) {
+        parametros.set(
+            "texto",
+            busca
+        );
+    }
 
-                const nomesHabilidades =
-                    obterRequisitosVaga(
-                        vaga.id
-                    )
-                        .map(
-                            requisito =>
-                                obterHabilidade(
-                                    requisito.habilidadeId
-                                )?.nome || ""
-                        )
-                        .join(" ");
+    if (modalidade) {
+        parametros.set(
+            "modalidade",
+            modalidade
+        );
+    }
 
-                const textoPesquisa =
-                    normalizarTexto(
-                        [
-                            vaga.titulo,
-                            vaga.localizacao,
-                            empresa?.nome,
-                            empresa?.setor,
-                            nomesHabilidades,
-                        ].join(" ")
-                    );
+    if (experiencia) {
+        parametros.set(
+            "nivel",
+            experiencia
+        );
+    }
 
-                const atendeBusca =
-                    !busca ||
-                    textoPesquisa.includes(
-                        busca
-                    );
+    if (localizacao) {
+        parametros.set(
+            "localizacao",
+            localizacao
+        );
+    }
 
-                const atendeModalidade =
-                    !modalidade ||
-                    vaga.modalidade ===
-                    modalidade;
+    try {
+        const consulta =
+            parametros.toString();
 
-                const atendeExperiencia =
-                    !experiencia ||
-                    vaga.nivelExperiencia ===
-                    experiencia;
+        const resultado =
+            await apiRequest(
+                consulta
+                    ? `/vagas/busca-avancada?${consulta}`
+                    : "/vagas/busca-avancada"
+            );
 
-                const atendeLocalizacao =
-                    !localizacao ||
-                    normalizarTexto(
-                        vaga.localizacao || ""
-                    ).includes(
-                        localizacao
-                    );
+        const vagasFiltradas =
+            resultado || [];
 
-                return (
-                    atendeBusca &&
-                    atendeModalidade &&
-                    atendeExperiencia &&
-                    atendeLocalizacao
-                );
-            });
+        ordenarVagas(
+            vagasFiltradas,
+            ordem
+        );
 
-    ordenarVagas(
-        resultado,
-        ordem
-    );
+        renderizarVagasEstudante(
+            vagasFiltradas
+        );
 
-    renderizarVagasEstudante(
-        resultado
-    );
+    } catch (erro) {
+        console.error(
+            "Erro na busca avançada de vagas:",
+            erro
+        );
+
+        document.getElementById(
+            "lista-vagas"
+        ).innerHTML = `
+            <div class="estado-vazio">
+                Não foi possível realizar
+                a busca avançada de vagas.
+            </div>
+        `;
+
+        document.getElementById(
+            "quantidade-resultados"
+        ).textContent =
+            "0 resultado(s)";
+    }
 }
 
 

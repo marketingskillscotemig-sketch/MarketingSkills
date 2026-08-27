@@ -6,6 +6,9 @@ from services.vaga.atualizar_vaga_service import (
 from services.vaga.buscar_vaga_service import (
     BuscarVagaService,
 )
+from services.vaga.buscar_vagas_avancado_service import (
+    BuscarVagasAvancadoService,
+)
 from services.vaga.criar_vaga_service import (
     CriarVagaService,
 )
@@ -21,7 +24,9 @@ class VagaController:
     @staticmethod
     def criar():
         try:
-            dados = request.get_json(silent=True)
+            dados = request.get_json(
+                silent=True
+            )
 
             vaga = CriarVagaService.executar(
                 dados
@@ -43,7 +48,9 @@ class VagaController:
 
     @staticmethod
     def listar():
-        vagas = ListarVagasService.executar()
+        vagas = (
+            ListarVagasService.executar()
+        )
 
         return jsonify(
             [
@@ -51,6 +58,42 @@ class VagaController:
                 for vaga in vagas
             ]
         ), 200
+
+    @staticmethod
+    def buscar_avancado():
+        try:
+            resultado = (
+                BuscarVagasAvancadoService
+                .executar(
+                    texto=request.args.get(
+                        "texto"
+                    ),
+                    nivel=request.args.get(
+                        "nivel"
+                    ),
+                    modalidade=request.args.get(
+                        "modalidade"
+                    ),
+                    localizacao=request.args.get(
+                        "localizacao"
+                    ),
+                    habilidade_id=
+                        request.args.get(
+                            "habilidadeId"
+                        ),
+                )
+            )
+
+            return jsonify(
+                resultado
+            ), 200
+
+        except ValueError as erro:
+            return jsonify(
+                {
+                    "erro": str(erro),
+                }
+            ), 400
 
     @staticmethod
     def buscar_por_id(vaga_id):
@@ -71,7 +114,9 @@ class VagaController:
     @staticmethod
     def atualizar(vaga_id):
         try:
-            dados = request.get_json(silent=True)
+            dados = request.get_json(
+                silent=True
+            )
 
             vaga = AtualizarVagaService.executar(
                 vaga_id,

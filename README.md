@@ -1,12 +1,12 @@
 # Market Skills
 
-O **Market Skills** é uma plataforma web voltada para estudantes e profissionais que desejam compreender melhor as exigências do mercado de tecnologia, organizar suas habilidades, acompanhar oportunidades e planejar sua evolução profissional.
+O **Market Skills** é uma plataforma web voltada para estudantes, profissionais e empresas, com o objetivo de centralizar informações sobre habilidades, oportunidades de trabalho, desenvolvimento profissional e necessidades do mercado de tecnologia.
 
 O projeto está sendo desenvolvido na disciplina de **Projeto de Software**.
 
 ---
 
-## Problema
+# Problema
 
 Estudantes e profissionais de desenvolvimento encontram informações dispersas sobre:
 
@@ -17,15 +17,17 @@ Estudantes e profissionais de desenvolvimento encontram informações dispersas 
 - tendências do mercado;
 - planejamento de estudos.
 
-Essa falta de organização dificulta a identificação das habilidades mais cobradas e a definição dos próximos passos profissionais.
+Além disso, empresas precisam encontrar profissionais com habilidades compatíveis com suas oportunidades.
+
+Essa falta de centralização dificulta tanto o desenvolvimento profissional quanto o processo de recrutamento.
 
 ---
 
-## Proposta
+# Proposta
 
 O Market Skills centraliza informações relacionadas ao mercado de trabalho e ao desenvolvimento profissional.
 
-A plataforma permite trabalhar com:
+A plataforma trabalha com:
 
 - usuários;
 - perfis profissionais;
@@ -39,6 +41,15 @@ A plataforma permite trabalhar com:
 - alertas de vagas;
 - notificações;
 - tendências de mercado.
+
+O sistema também possui uma experiência específica para empresas, permitindo:
+
+- criação e gerenciamento de vagas;
+- definição de requisitos obrigatórios e diferenciais;
+- busca de talentos;
+- análise de compatibilidade entre profissionais e vagas;
+- consulta ao perfil profissional e currículo;
+- gerenciamento do perfil empresarial.
 
 ---
 
@@ -58,10 +69,11 @@ A plataforma permite trabalhar com:
 - Flask-Migrate
 - Flask-Cors
 - Flask-WTF
+- SQLAlchemy
 - PyMySQL
 - python-dotenv
 
-## Banco de dados
+## Banco de Dados
 
 - MySQL
 
@@ -78,10 +90,13 @@ A plataforma permite trabalhar com:
 
 # Arquitetura
 
-O backend foi organizado separando as responsabilidades da aplicação.
+O backend foi organizado com separação de responsabilidades.
 
 ```text
 Cliente / Frontend
+        |
+        v
+     Routes
         |
         v
    Controller
@@ -90,7 +105,7 @@ Cliente / Frontend
      Service
         |
         v
-      Model
+   Repository
         |
         v
-      MySQLgit status --short
+Stored Procedure / MySQL

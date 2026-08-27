@@ -22,3 +22,14 @@ talento_bp.get("")(
         TalentoController.listar
     )
 )
+
+
+talento_bp.get(
+    "/ranking"
+)(
+    exigir_tipo_conta(
+        "empresa"
+    )(
+        TalentoController.ranking_por_vaga
+    )
+)

@@ -13,6 +13,7 @@ let projetosTalentos = [];
 
 let talentosMontados = [];
 let vagaComparacaoTalentos = null;
+let rankingBancoTalentos = [];
 
 let temporizadorMensagemTalentos = null;
 
@@ -450,12 +451,15 @@ function registrarEventosTalentos() {
 }
 
 
-function alterarComparacaoTalentos() {
+async function alterarComparacaoTalentos() {
+    const select =
+        document.getElementById(
+            "comparar-vaga-talentos"
+        );
+
     const vagaId =
         Number(
-            document.getElementById(
-                "comparar-vaga-talentos"
-            ).value
+            select.value
         );
 
     vagaComparacaoTalentos =
@@ -467,9 +471,51 @@ function alterarComparacaoTalentos() {
             ) || null
             : null;
 
-    calcularMatchesTalentos();
+    if (!vagaComparacaoTalentos) {
+        rankingBancoTalentos = [];
 
-    aplicarFiltrosTalentos();
+        calcularMatchesTalentos();
+
+        aplicarFiltrosTalentos();
+
+        return;
+    }
+
+    try {
+        select.disabled = true;
+
+        rankingBancoTalentos =
+            await apiRequest(
+                `/talentos/ranking?vagaId=${vagaComparacaoTalentos.id}`
+            );
+
+        rankingBancoTalentos =
+            rankingBancoTalentos || [];
+
+        calcularMatchesTalentos();
+
+        aplicarFiltrosTalentos();
+
+    } catch (erro) {
+        rankingBancoTalentos = [];
+
+        vagaComparacaoTalentos =
+            null;
+
+        select.value = "";
+
+        calcularMatchesTalentos();
+
+        aplicarFiltrosTalentos();
+
+        mostrarMensagemTalentos(
+            erro.message ||
+            "Não foi possível calcular o ranking de talentos."
+        );
+
+    } finally {
+        select.disabled = false;
+    }
 }
 
 
@@ -493,11 +539,49 @@ function calcularMatchesTalentos() {
 
     talentosMontados.forEach(
         talento => {
-            talento.match =
+            const detalhamento =
                 calcularMatchTalento(
                     talento,
                     requisitos
                 );
+
+            const rankingBanco =
+                rankingBancoTalentos.find(
+                    item =>
+                        Number(
+                            item.perfilId
+                        ) ===
+                        talento.perfil.id
+                );
+
+            detalhamento.percentual =
+                rankingBanco
+                    ? Number(
+                        rankingBanco
+                            .percentualMatch
+                    )
+                    : 0;
+
+            detalhamento
+                .requisitosTotaisBanco =
+                rankingBanco
+                    ? Number(
+                        rankingBanco
+                            .requisitosTotais
+                    )
+                    : 0;
+
+            detalhamento
+                .requisitosAtendidosBanco =
+                rankingBanco
+                    ? Number(
+                        rankingBanco
+                            .requisitosAtendidos
+                    )
+                    : 0;
+
+            talento.match =
+                detalhamento;
         }
     );
 }
