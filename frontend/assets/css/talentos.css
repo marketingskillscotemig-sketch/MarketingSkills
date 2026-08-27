@@ -514,6 +514,11 @@
 }
 
 
+#conteudo-painel-talento {
+    height: 100%;
+}
+
+
 .conteudo-painel-talento {
     height: 100%;
     overflow-y: auto;
