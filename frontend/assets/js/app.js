@@ -148,7 +148,7 @@ function atualizarNavegacaoEmpresa() {
             Minhas Vagas
         </a>
 
-        <a href="./pages/perfil.html">
+        <a href="./pages/perfil.html?v=20260826">
             Perfil
         </a>
     `;
@@ -661,7 +661,7 @@ function atualizarRodapeEmpresa() {
             Minhas vagas
         </a>
 
-        <a href="./pages/perfil.html">
+        <a href="./pages/perfil.html?v=20260826">
             Perfil
         </a>
     `;

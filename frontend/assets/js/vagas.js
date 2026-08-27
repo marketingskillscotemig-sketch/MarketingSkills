@@ -164,7 +164,7 @@ function configurarNavegacaoEmpresa() {
             Minhas Vagas
         </a>
 
-        <a href="./perfil.html">
+        <a href="./perfil.html?v=20260826">
             Perfil
         </a>
     `;
