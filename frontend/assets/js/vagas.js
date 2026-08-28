@@ -19,31 +19,25 @@ document.addEventListener("DOMContentLoaded", iniciarPagina);
 
 async function iniciarPagina() {
     try {
-        const dados = await Promise.all([
-            apiRequest("/autenticacao/sessao"),
-            apiRequest("/vagas"),
-            apiRequest("/empresas"),
-            apiRequest("/requisitos-vaga"),
-            apiRequest("/habilidades"),
-            apiRequest("/perfis-profissionais"),
-            apiRequest("/perfil-habilidades"),
-        ]);
-
-        const sessao = dados[0];
+        const sessao = await apiRequest("/autenticacao/sessao");
 
         if (!sessao.autenticado) {
             window.location.href = "./login.html";
             return;
         }
 
-        usuario = sessao.usuario;
-        vagas = dados[1] || [];
-        empresas = dados[2] || [];
-        requisitos = dados[3] || [];
-        habilidades = dados[4] || [];
+        const vagasCarregadas = await apiRequest("/vagas");
+        const empresasCarregadas = await apiRequest("/empresas");
+        const requisitosCarregados = await apiRequest("/requisitos-vaga");
+        const habilidadesCarregadas = await apiRequest("/habilidades");
+        const perfis = await apiRequest("/perfis-profissionais");
+        const perfisHabilidades = await apiRequest("/perfil-habilidades");
 
-        const perfis = dados[5] || [];
-        const perfisHabilidades = dados[6] || [];
+        usuario = sessao.usuario;
+        vagas = vagasCarregadas || [];
+        empresas = empresasCarregadas || [];
+        requisitos = requisitosCarregados || [];
+        habilidades = habilidadesCarregadas || [];
 
         if (usuario.tipoConta === "empresa") {
             iniciarEmpresa();
@@ -578,50 +572,27 @@ function mostrarDetalheEstudante(vaga) {
 
 
 function atualizarResumoEstudante() {
-    const ativas =
-        vagas.filter(
-            vaga => vaga.status === "ativa"
-        );
+    const ativas = vagas.filter(vaga => vaga.status === "ativa");
 
-    const idsEmpresas =
-        new Set(
-            ativas.map(
-                vaga => vaga.empresaId
-            )
-        );
+    const idsEmpresas = [];
+    const idsVagas = [];
+    for (const vaga of ativas) {
+        if (!idsEmpresas.includes(vaga.empresaId)) {
+            idsEmpresas.push(vaga.empresaId);
+        }
+        idsVagas.push(vaga.id);
+    }
 
-    const idsVagas =
-        ativas.map(
-            vaga => vaga.id
-        );
+    const idsHabilidades = [];
+    for (const requisito of requisitos) {
+        if (idsVagas.includes(requisito.vagaId) && !idsHabilidades.includes(requisito.habilidadeId)) {
+            idsHabilidades.push(requisito.habilidadeId);
+        }
+    }
 
-    const idsHabilidades =
-        requisitos
-            .filter(
-                requisito =>
-                    idsVagas.includes(
-                        requisito.vagaId
-                    )
-            )
-            .map(
-                requisito =>
-                    requisito.habilidadeId
-            );
-
-    document.getElementById(
-        "total-vagas"
-    ).textContent =
-        ativas.length;
-
-    document.getElementById(
-        "total-empresas"
-    ).textContent =
-        idsEmpresas.size;
-
-    document.getElementById(
-        "total-habilidades"
-    ).textContent =
-        new Set(idsHabilidades).size;
+    document.getElementById("total-vagas").textContent = ativas.length;
+    document.getElementById("total-empresas").textContent = idsEmpresas.length;
+    document.getElementById("total-habilidades").textContent = idsHabilidades.length;
 }
 
 
@@ -1245,15 +1216,17 @@ function abrirModal(vaga = null) {
         ).value =
             vaga.localizacao || "";
 
-        document.getElementById(
-            "vaga-salario-minimo"
-        ).value =
-            vaga.salarioMinimo ?? "";
+        let salarioMinimoCampo = vaga.salarioMinimo;
+        if (salarioMinimoCampo === null || salarioMinimoCampo === undefined) {
+            salarioMinimoCampo = "";
+        }
+        document.getElementById("vaga-salario-minimo").value = salarioMinimoCampo;
 
-        document.getElementById(
-            "vaga-salario-maximo"
-        ).value =
-            vaga.salarioMaximo ?? "";
+        let salarioMaximoCampo = vaga.salarioMaximo;
+        if (salarioMaximoCampo === null || salarioMaximoCampo === undefined) {
+            salarioMaximoCampo = "";
+        }
+        document.getElementById("vaga-salario-maximo").value = salarioMaximoCampo;
 
         const semSalario =
             vaga.salarioMinimo === null &&
@@ -1620,16 +1593,17 @@ async function salvarVaga(evento) {
             );
 
         } else {
+            const dadosParaCriar = Object.assign({}, dados, { status: "ativa" });
+
             vagaSalva =
                 await apiRequest(
                     "/vagas",
                     {
                         method: "POST",
                         body:
-                            JSON.stringify({
-                                ...dados,
-                                status: "ativa",
-                            }),
+                            JSON.stringify(
+                                dadosParaCriar
+                            ),
                     }
                 );
         }
@@ -1785,14 +1759,11 @@ async function excluirVaga(id) {
 
 
 async function recarregarEmpresa() {
-    const dados =
-        await Promise.all([
-            apiRequest("/vagas"),
-            apiRequest("/requisitos-vaga"),
-        ]);
+    const vagasCarregadas = await apiRequest("/vagas");
+    const requisitosCarregados = await apiRequest("/requisitos-vaga");
 
-    vagas = dados[0] || [];
-    requisitos = dados[1] || [];
+    vagas = vagasCarregadas || [];
+    requisitos = requisitosCarregados || [];
 
     atualizarResumoEmpresa();
     mostrarVagasEmpresa();

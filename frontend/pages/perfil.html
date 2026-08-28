@@ -524,6 +524,262 @@
 
         </div>
 
+
+        <!-- ===================================================
+             Perfil da empresa (conta empresa)
+             Estrutura estática preenchida por perfil-empresa.js.
+             Fica oculta para contas de estudante.
+             =================================================== -->
+
+        <div class="conteudo-centralizado">
+
+            <div
+                id="carregando-perfil-empresa"
+                class="estado-carregando-empresa oculto"
+            >
+                Carregando perfil da empresa...
+            </div>
+
+            <div
+                id="conteudo-perfil-empresa"
+                class="oculto"
+            >
+
+                <section class="hero-perfil-empresa">
+
+                    <div class="banner-empresa">
+
+                        <img
+                            id="banner-empresa-imagem"
+                            class="oculto"
+                            alt="Banner da empresa"
+                        >
+
+                        <div
+                            id="banner-empresa-vazio"
+                            class="banner-empresa-vazio"
+                        >
+                            <span>Market Skills</span>
+                        </div>
+
+                        <div class="sombra-banner-empresa"></div>
+
+                    </div>
+
+
+                    <div class="identidade-empresa">
+
+                        <div class="logo-empresa">
+
+                            <img
+                                id="logo-empresa-imagem"
+                                class="oculto"
+                                alt="Logo da empresa"
+                            >
+
+                            <span id="logo-empresa-inicial"></span>
+
+                        </div>
+
+
+                        <div class="dados-principais-empresa">
+
+                            <span class="rotulo-empresa">
+                                Perfil corporativo
+                            </span>
+
+                            <h1 id="nome-empresa">
+                                Empresa
+                            </h1>
+
+                            <div class="metadados-empresa">
+                                <span id="setor-empresa">Setor não informado</span>
+                                <span id="porte-empresa">Porte não informado</span>
+                                <span id="localizacao-empresa">Localização não informada</span>
+                            </div>
+
+                        </div>
+
+
+                        <div class="acoes-perfil-empresa">
+
+                            <a
+                                href="#vagas-abertas-empresa"
+                                class="botao-empresa-secundario"
+                            >
+                                Ver vagas abertas
+                            </a>
+
+                            <button
+                                id="botao-editar-perfil-empresa"
+                                class="botao-empresa-principal"
+                                type="button"
+                            >
+                                Editar perfil
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <div class="grade-perfil-empresa">
+
+                    <div class="coluna-principal-empresa">
+
+                        <section class="cartao-empresa">
+
+                            <div class="cabecalho-cartao-empresa">
+                                <div>
+                                    <span class="rotulo-empresa">Apresentação e cultura</span>
+                                    <h2>Sobre a empresa</h2>
+                                </div>
+                            </div>
+
+                            <p
+                                id="texto-apresentacao-empresa"
+                                class="texto-apresentacao-empresa"
+                            ></p>
+
+                        </section>
+
+
+                        <section class="cartao-empresa">
+
+                            <div class="cabecalho-cartao-empresa">
+                                <div>
+                                    <span class="rotulo-empresa">Tecnologia</span>
+                                    <h2>Stack tecnológico</h2>
+                                </div>
+                            </div>
+
+                            <div
+                                id="lista-stack-empresa"
+                                class="lista-tags-empresa"
+                            ></div>
+
+                        </section>
+
+
+                        <section class="cartao-empresa">
+
+                            <div class="cabecalho-cartao-empresa">
+                                <div>
+                                    <span class="rotulo-empresa">Atrativos</span>
+                                    <h2>Benefícios oferecidos</h2>
+                                </div>
+                            </div>
+
+                            <div
+                                id="lista-beneficios-empresa"
+                                class="lista-tags-empresa"
+                            ></div>
+
+                        </section>
+
+
+                        <section
+                            id="vagas-abertas-empresa"
+                            class="cartao-empresa"
+                        >
+
+                            <div class="cabecalho-cartao-empresa">
+                                <div>
+                                    <span class="rotulo-empresa">Oportunidades</span>
+                                    <h2>Vagas abertas</h2>
+                                </div>
+
+                                <span
+                                    id="contador-vagas-empresa"
+                                    class="contador-vagas-empresa"
+                                ></span>
+                            </div>
+
+                            <div
+                                id="lista-vagas-empresa"
+                                class="lista-vagas-perfil-empresa"
+                            ></div>
+
+                        </section>
+
+                    </div>
+
+
+                    <aside class="coluna-lateral-empresa">
+
+                        <section class="cartao-empresa">
+
+                            <div class="cabecalho-cartao-empresa">
+                                <div>
+                                    <span class="rotulo-empresa">Presença digital</span>
+                                    <h2>Canais oficiais</h2>
+                                </div>
+                            </div>
+
+                            <div
+                                id="lista-links-empresa"
+                                class="lista-links-empresa"
+                            ></div>
+
+                        </section>
+
+
+                        <section class="cartao-empresa cartao-administrativo-empresa">
+
+                            <div class="cabecalho-cartao-empresa">
+                                <div>
+                                    <span class="rotulo-empresa">Área administrativa</span>
+                                    <h2>Dados legais</h2>
+                                </div>
+
+                                <span class="tag-privado-empresa">Privado</span>
+                            </div>
+
+                            <p class="aviso-privacidade-empresa">
+                                Estes dados são exibidos apenas para
+                                a própria conta da empresa.
+                            </p>
+
+                            <div class="lista-dados-legais">
+                                <div>
+                                    <span>Razão Social</span>
+                                    <strong id="razao-social-empresa">Não informada</strong>
+                                </div>
+                                <div>
+                                    <span>CNPJ</span>
+                                    <strong id="cnpj-empresa">Não informado</strong>
+                                </div>
+                            </div>
+
+                        </section>
+
+
+                        <section class="cartao-empresa cartao-status-empresa">
+                            <span class="rotulo-empresa">Perfil</span>
+                            <h2>Presença no Market Skills</h2>
+
+                            <div class="indicador-status-empresa">
+                                <span></span>
+                                Perfil empresarial ativo
+                            </div>
+
+                            <p>
+                                Mantenha as informações institucionais
+                                atualizadas para fortalecer a apresentação
+                                da empresa aos profissionais.
+                            </p>
+                        </section>
+
+                    </aside>
+
+                </div>
+
+            </div>
+
+        </div>
+
     </main>
 
 
@@ -1322,6 +1578,233 @@
     </dialog>
 
 
+    <!-- PERFIL DA EMPRESA -->
+
+    <dialog
+        id="modal-perfil-empresa"
+        class="modal-perfil-empresa"
+    >
+
+        <form
+            id="formulario-perfil-empresa"
+            class="formulario-perfil-empresa"
+        >
+
+            <div class="cabecalho-modal-empresa">
+
+                <div>
+                    <span class="rotulo-empresa">Perfil corporativo</span>
+                    <h2>Editar perfil da empresa</h2>
+                </div>
+
+                <button
+                    id="botao-fechar-perfil-empresa"
+                    type="button"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <section class="secao-formulario-empresa">
+
+                <span class="numero-secao-empresa">01</span>
+                <h3>Identidade da empresa</h3>
+
+                <div class="grade-formulario-empresa">
+
+                    <label class="campo-empresa">
+                        <span>Nome Fantasia</span>
+                        <input id="empresa-nome" type="text" maxlength="150" required>
+                    </label>
+
+                    <label class="campo-empresa">
+                        <span>Setor de atuação</span>
+                        <input id="empresa-setor" type="text" maxlength="120" placeholder="Ex.: Tecnologia">
+                    </label>
+
+                    <label class="campo-empresa">
+                        <span>Porte da equipe</span>
+                        <select id="empresa-porte">
+                            <option value="">Não informado</option>
+                            <option value="1 a 10 pessoas">1 a 10 pessoas</option>
+                            <option value="11 a 50 pessoas">11 a 50 pessoas</option>
+                            <option value="51 a 200 pessoas">51 a 200 pessoas</option>
+                            <option value="201 a 500 pessoas">201 a 500 pessoas</option>
+                            <option value="Mais de 500 pessoas">Mais de 500 pessoas</option>
+                        </select>
+                    </label>
+
+                    <label class="campo-empresa">
+                        <span>Localização principal</span>
+                        <input id="empresa-localizacao" type="text" maxlength="150" placeholder="Ex.: Belo Horizonte - MG">
+                    </label>
+
+                    <label class="campo-checkbox-empresa campo-largo-empresa">
+                        <input id="empresa-remoto" type="checkbox">
+                        <div>
+                            <strong>Empresa 100% remota</strong>
+                            <span>
+                                Use esta opção quando a equipe não possuir
+                                uma localização principal de trabalho.
+                            </span>
+                        </div>
+                    </label>
+
+                    <label class="campo-empresa campo-largo-empresa">
+                        <span>Logo da empresa</span>
+                        <input id="empresa-logo-arquivo" type="file" accept="image/png,image/jpeg,.png,.jpg,.jpeg">
+                        <small>PNG ou JPEG de até 3 MB.</small>
+                    </label>
+
+                    <label class="campo-empresa campo-largo-empresa">
+                        <span>Imagem de capa</span>
+                        <input id="empresa-banner-arquivo" type="file" accept="image/png,image/jpeg,.png,.jpg,.jpeg">
+                        <small>PNG ou JPEG de até 5 MB.</small>
+                    </label>
+
+                </div>
+
+            </section>
+
+
+            <section class="secao-formulario-empresa">
+
+                <span class="numero-secao-empresa">02</span>
+                <h3>Apresentação e cultura</h3>
+
+                <label class="campo-empresa">
+                    <span>História, missão, valores e cultura</span>
+                    <textarea
+                        id="empresa-descricao"
+                        rows="7"
+                        placeholder="Apresente a empresa, sua história, propósito, valores e como é fazer parte da equipe."
+                    ></textarea>
+                </label>
+
+            </section>
+
+
+            <section class="secao-formulario-empresa">
+
+                <span class="numero-secao-empresa">03</span>
+                <h3>Presença digital</h3>
+
+                <div class="grade-formulario-empresa">
+
+                    <label class="campo-empresa">
+                        <span>Site oficial</span>
+                        <input id="empresa-site" type="text" maxlength="255" placeholder="https://...">
+                    </label>
+
+                    <label class="campo-empresa">
+                        <span>LinkedIn corporativo</span>
+                        <input id="empresa-linkedin" type="text" maxlength="255" placeholder="https://linkedin.com/company/...">
+                    </label>
+
+                </div>
+
+            </section>
+
+
+            <section class="secao-formulario-empresa">
+
+                <span class="numero-secao-empresa">04</span>
+                <h3>Tecnologia e benefícios</h3>
+
+                <label class="campo-empresa">
+                    <span>Stack tecnológico</span>
+                    <textarea
+                        id="empresa-stack"
+                        rows="4"
+                        placeholder="Ex.: Python, Flask, JavaScript, MySQL, Docker"
+                    ></textarea>
+                    <small>Separe os itens por vírgula.</small>
+                </label>
+
+                <label class="campo-empresa">
+                    <span>Benefícios oferecidos</span>
+                    <textarea
+                        id="empresa-beneficios"
+                        rows="4"
+                        placeholder="Ex.: Plano de saúde, vale-alimentação, horário flexível"
+                    ></textarea>
+                    <small>Separe os benefícios por vírgula.</small>
+                </label>
+
+            </section>
+
+
+            <section class="secao-formulario-empresa secao-administrativa-formulario">
+
+                <div class="cabecalho-secao-administrativa">
+                    <div>
+                        <span class="numero-secao-empresa">05</span>
+                        <h3>Dados administrativos</h3>
+                    </div>
+                    <span class="tag-privado-empresa">Privado</span>
+                </div>
+
+                <p>
+                    Estes dados não fazem parte da vitrine
+                    pública da empresa.
+                </p>
+
+                <div class="grade-formulario-empresa">
+
+                    <label class="campo-empresa">
+                        <span>Razão Social</span>
+                        <input id="empresa-razao-social" type="text" maxlength="180">
+                    </label>
+
+                    <label class="campo-empresa">
+                        <span>CNPJ</span>
+                        <input id="empresa-cnpj" type="text" maxlength="18" placeholder="00.000.000/0000-00">
+                    </label>
+
+                </div>
+
+            </section>
+
+
+            <div
+                id="mensagem-formulario-empresa"
+                class="mensagem-formulario-empresa"
+            ></div>
+
+
+            <div class="acoes-modal-empresa">
+
+                <button
+                    id="botao-cancelar-perfil-empresa"
+                    class="botao-empresa-secundario"
+                    type="button"
+                >
+                    Cancelar
+                </button>
+
+                <button
+                    id="botao-salvar-perfil-empresa"
+                    class="botao-empresa-principal"
+                    type="submit"
+                >
+                    Salvar alterações
+                </button>
+
+            </div>
+
+        </form>
+
+    </dialog>
+
+
+    <div
+        id="mensagem-perfil-empresa"
+        class="mensagem-perfil-empresa"
+    ></div>
+
+
     <div
         id="mensagem-sistema"
         class="mensagem-sistema"
@@ -1330,9 +1813,8 @@
 
     <script src="../assets/js/api.js"></script>
     <script src="../assets/js/sessao.js"></script>
-    <script src="../assets/js/perfil-empresa.js?v=2"></script>
-    <script src="../assets/js/perfil.js?v=20260826"></script>"></script>
-    <script src="../assets/js/perfil.js"></script>
+    <script src="../assets/js/perfil-empresa.js?v=3"></script>
+    <script src="../assets/js/perfil.js?v=20260828"></script>
 </body>
 
 </html>
