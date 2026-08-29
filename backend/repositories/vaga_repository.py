@@ -1,6 +1,7 @@
 from sqlalchemy import text
 
 from extensions import db
+from models.requisito_vaga import RequisitoVaga
 
 
 class VagaRepository:
@@ -41,3 +42,15 @@ class VagaRepository:
             dict(linha)
             for linha in resultado.mappings().all()
         ]
+
+    @staticmethod
+    def buscar_requisito_por_vaga_e_habilidade(
+        vaga_id,
+        habilidade_id,
+    ):
+        return db.session.execute(
+            db.select(RequisitoVaga).where(
+                RequisitoVaga.vaga_id == vaga_id,
+                RequisitoVaga.habilidade_id == habilidade_id,
+            )
+        ).scalar_one_or_none()

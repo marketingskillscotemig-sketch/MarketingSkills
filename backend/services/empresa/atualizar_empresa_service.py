@@ -1,6 +1,9 @@
 import re
 
 from models.empresa import Empresa
+from repositories.conta_repository import (
+    ContaRepository,
+)
 
 
 class AtualizarEmpresaService:
@@ -58,7 +61,7 @@ class AtualizarEmpresaService:
                     )
 
                 empresa_existente = (
-                    Empresa.buscar_por_cnpj(
+                    ContaRepository.buscar_empresa_por_cnpj(
                         cnpj
                     )
                 )

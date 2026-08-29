@@ -4,6 +4,9 @@ from models.enums import (
 )
 from models.perfil_profissional import PerfilProfissional
 from models.usuario import Usuario
+from repositories.perfil_repository import (
+    PerfilRepository,
+)
 
 
 class CriarPerfilProfissionalService:
@@ -31,7 +34,7 @@ class CriarPerfilProfissionalService:
             )
 
         perfil_existente = (
-            PerfilProfissional.buscar_por_usuario_id(
+            PerfilRepository.buscar_perfil_por_usuario_id(
                 usuario_id
             )
         )

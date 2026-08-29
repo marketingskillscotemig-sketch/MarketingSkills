@@ -1,5 +1,8 @@
 from models.enums import CategoriaHabilidade
 from models.habilidade import Habilidade
+from repositories.perfil_repository import (
+    PerfilRepository,
+)
 
 
 class CriarHabilidadeService:
@@ -32,7 +35,7 @@ class CriarHabilidadeService:
                 "Categoria de habilidade inválida."
             ) from erro
 
-        habilidade_existente = Habilidade.buscar_por_nome(nome)
+        habilidade_existente = PerfilRepository.buscar_habilidade_por_nome(nome)
 
         if habilidade_existente:
             raise ValueError(

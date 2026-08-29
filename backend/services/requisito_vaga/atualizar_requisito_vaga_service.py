@@ -1,6 +1,9 @@
 from models.enums import NivelHabilidade
 from models.habilidade import Habilidade
 from models.requisito_vaga import RequisitoVaga
+from repositories.vaga_repository import (
+    VagaRepository,
+)
 
 
 class AtualizarRequisitoVagaService:
@@ -58,7 +61,7 @@ class AtualizarRequisitoVagaService:
                 )
 
             requisito_existente = (
-                RequisitoVaga.buscar_por_vaga_e_habilidade(
+                VagaRepository.buscar_requisito_por_vaga_e_habilidade(
                     requisito.vaga_id,
                     habilidade_id,
                 )

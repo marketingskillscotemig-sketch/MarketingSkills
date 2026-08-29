@@ -2,6 +2,9 @@ from models.enums import NivelHabilidade
 from models.habilidade import Habilidade
 from models.requisito_vaga import RequisitoVaga
 from models.vaga import Vaga
+from repositories.vaga_repository import (
+    VagaRepository,
+)
 
 
 class CriarRequisitoVagaService:
@@ -51,7 +54,7 @@ class CriarRequisitoVagaService:
             )
 
         requisito_existente = (
-            RequisitoVaga.buscar_por_vaga_e_habilidade(
+            VagaRepository.buscar_requisito_por_vaga_e_habilidade(
                 vaga_id,
                 habilidade_id,
             )

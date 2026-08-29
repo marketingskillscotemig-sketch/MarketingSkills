@@ -85,14 +85,6 @@ class Habilidade(db.Model):
     def buscar_por_id(id):
         return db.session.get(Habilidade, id)
 
-    @staticmethod
-    def buscar_por_nome(nome):
-        return db.session.execute(
-            db.select(Habilidade).where(
-                Habilidade.nome == nome
-            )
-        ).scalar_one_or_none()
-
     def to_dict(self):
         return {
             "id": self.id,

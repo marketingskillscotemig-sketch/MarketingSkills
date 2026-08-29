@@ -6,6 +6,9 @@ from extensions import db
 from models.empresa import Empresa
 from models.enums import TipoConta
 from models.usuario import Usuario
+from repositories.conta_repository import (
+    ContaRepository,
+)
 
 
 class CriarUsuarioService:
@@ -76,7 +79,7 @@ class CriarUsuarioService:
             )
 
         usuario_existente = (
-            Usuario.buscar_por_email(
+            ContaRepository.buscar_usuario_por_email(
                 email
             )
         )
@@ -172,7 +175,7 @@ class CriarUsuarioService:
                 )
 
             empresa_existente = (
-                Empresa.buscar_por_cnpj(
+                ContaRepository.buscar_empresa_por_cnpj(
                     cnpj
                 )
             )

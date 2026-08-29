@@ -1,7 +1,9 @@
 from werkzeug.security import check_password_hash
 
 from models.enums import StatusUsuario
-from models.usuario import Usuario
+from repositories.conta_repository import (
+    ContaRepository,
+)
 
 
 class AutenticarUsuarioService:
@@ -27,7 +29,7 @@ class AutenticarUsuarioService:
 
         email = email.strip().lower()
 
-        usuario = Usuario.buscar_por_email(
+        usuario = ContaRepository.buscar_usuario_por_email(
             email
         )
 

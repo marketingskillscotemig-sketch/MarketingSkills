@@ -1,5 +1,8 @@
 from models.enums import CategoriaHabilidade
 from models.habilidade import Habilidade
+from repositories.perfil_repository import (
+    PerfilRepository,
+)
 
 
 class AtualizarHabilidadeService:
@@ -31,7 +34,7 @@ class AtualizarHabilidadeService:
                     "O nome não pode ser vazio."
                 )
 
-            existente = Habilidade.buscar_por_nome(nome)
+            existente = PerfilRepository.buscar_habilidade_por_nome(nome)
 
             if (
                 existente is not None

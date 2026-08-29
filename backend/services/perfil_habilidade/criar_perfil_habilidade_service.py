@@ -2,6 +2,9 @@ from models.enums import NivelHabilidade
 from models.habilidade import Habilidade
 from models.perfil_habilidade import PerfilHabilidade
 from models.perfil_profissional import PerfilProfissional
+from repositories.perfil_repository import (
+    PerfilRepository,
+)
 
 
 class CriarPerfilHabilidadeService:
@@ -58,7 +61,7 @@ class CriarPerfilHabilidadeService:
             )
 
         existente = (
-            PerfilHabilidade.buscar_por_perfil_e_habilidade(
+            PerfilRepository.buscar_perfil_habilidade(
                 perfil_profissional_id,
                 habilidade_id,
             )

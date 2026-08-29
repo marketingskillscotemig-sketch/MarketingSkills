@@ -2,6 +2,9 @@ from datetime import date
 
 from models.enums import StatusEtapa
 from models.etapa_estudo import EtapaEstudo
+from repositories.estudo_repository import (
+    EstudoRepository,
+)
 
 
 class AtualizarEtapaEstudoService:
@@ -98,7 +101,7 @@ class AtualizarEtapaEstudoService:
                 )
 
             etapa_mesma_ordem = (
-                EtapaEstudo.buscar_por_plano_e_ordem(
+                EstudoRepository.buscar_etapa_por_plano_e_ordem(
                     etapa.plano_estudo_id,
                     ordem,
                 )

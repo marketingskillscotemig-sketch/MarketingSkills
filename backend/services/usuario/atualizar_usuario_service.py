@@ -5,6 +5,9 @@ from models.enums import (
     TipoConta,
 )
 from models.usuario import Usuario
+from repositories.conta_repository import (
+    ContaRepository,
+)
 
 
 class AtualizarUsuarioService:
@@ -53,7 +56,7 @@ class AtualizarUsuarioService:
                 )
 
             usuario_com_email = (
-                Usuario.buscar_por_email(
+                ContaRepository.buscar_usuario_por_email(
                     email
                 )
             )

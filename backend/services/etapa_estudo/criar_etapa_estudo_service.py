@@ -3,6 +3,9 @@ from datetime import date
 from models.enums import StatusEtapa
 from models.etapa_estudo import EtapaEstudo
 from models.plano_estudo import PlanoEstudo
+from repositories.estudo_repository import (
+    EstudoRepository,
+)
 
 
 class CriarEtapaEstudoService:
@@ -74,7 +77,7 @@ class CriarEtapaEstudoService:
             )
 
         etapa_existente = (
-            EtapaEstudo.buscar_por_plano_e_ordem(
+            EstudoRepository.buscar_etapa_por_plano_e_ordem(
                 plano_estudo_id,
                 ordem,
             )

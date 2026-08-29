@@ -134,14 +134,6 @@ class Usuario(db.Model):
             id,
         )
 
-    @staticmethod
-    def buscar_por_email(email):
-        return db.session.execute(
-            db.select(Usuario).where(
-                Usuario.email == email
-            )
-        ).scalar_one_or_none()
-
     def to_dict(self):
         return {
             "id": self.id,

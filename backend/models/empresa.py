@@ -192,25 +192,6 @@ class Empresa(db.Model):
             id,
         )
 
-    @staticmethod
-    def buscar_por_usuario_id(
-        usuario_id
-    ):
-        return db.session.execute(
-            db.select(Empresa).where(
-                Empresa.usuario_id ==
-                usuario_id
-            )
-        ).scalar_one_or_none()
-
-    @staticmethod
-    def buscar_por_cnpj(cnpj):
-        return db.session.execute(
-            db.select(Empresa).where(
-                Empresa.cnpj == cnpj
-            )
-        ).scalar_one_or_none()
-
     def to_dict(
         self,
         incluir_dados_administrativos=False,
