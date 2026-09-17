@@ -1,8 +1,10 @@
-import re
-
 from models.empresa import Empresa
 from repositories.conta_repository import (
     ContaRepository,
+)
+from utils.validador_cnpj import (
+    cnpj_valido,
+    normalizar_cnpj,
 )
 
 
@@ -106,15 +108,13 @@ class CriarEmpresaService:
         )
 
         if cnpj:
-            cnpj = re.sub(
-                r"\D",
-                "",
-                cnpj,
+            cnpj = normalizar_cnpj(
+                cnpj
             )
 
-            if len(cnpj) != 14:
+            if not cnpj_valido(cnpj):
                 raise ValueError(
-                    "O CNPJ deve possuir 14 dígitos."
+                    "Informe um CNPJ válido."
                 )
 
             empresa_existente = (

@@ -30,6 +30,27 @@ class AtualizarUsuarioService:
                 "Informe ao menos um campo para atualização."
             )
 
+        campos_protegidos = {
+            "status",
+            "tipoConta",
+        }
+
+        campos_recebidos = set(
+            dados.keys()
+        )
+
+        campos_bloqueados = (
+            campos_recebidos
+            & campos_protegidos
+        )
+
+        if campos_bloqueados:
+            raise PermissionError(
+                "Você não possui permissão "
+                "para alterar o status ou "
+                "o tipo da própria conta."
+            )
+
         nome = dados.get("nome")
         email = dados.get("email")
         senha = dados.get("senha")

@@ -96,31 +96,6 @@ class UsuarioController:
                     "para atualização."
                 )
 
-            campos_protegidos = {
-                "status",
-                "tipoConta",
-            }
-
-            campos_recebidos = set(
-                dados.keys()
-            )
-
-            campos_bloqueados = (
-                campos_recebidos
-                & campos_protegidos
-            )
-
-            if campos_bloqueados:
-                return jsonify(
-                    {
-                        "erro": (
-                            "Você não possui permissão "
-                            "para alterar o status ou "
-                            "o tipo da própria conta."
-                        ),
-                    }
-                ), 403
-
             usuario = (
                 AtualizarUsuarioService.executar(
                     usuario_id,
@@ -138,6 +113,13 @@ class UsuarioController:
                     "erro": str(erro),
                 }
             ), 404
+
+        except PermissionError as erro:
+            return jsonify(
+                {
+                    "erro": str(erro),
+                }
+            ), 403
 
         except ValueError as erro:
             return jsonify(

@@ -1,5 +1,3 @@
-import re
-
 from werkzeug.security import generate_password_hash
 
 from extensions import db
@@ -8,6 +6,10 @@ from models.enums import TipoConta
 from models.usuario import Usuario
 from repositories.conta_repository import (
     ContaRepository,
+)
+from utils.validador_cnpj import (
+    cnpj_valido,
+    normalizar_cnpj,
 )
 
 
@@ -133,11 +135,8 @@ class CriarUsuarioService:
                 razao_social.strip()
             )
 
-            cnpj = (
-                CriarUsuarioService
-                .normalizar_cnpj(
-                    cnpj
-                )
+            cnpj = normalizar_cnpj(
+                cnpj
             )
 
             if len(nome_empresa) < 2:
@@ -164,11 +163,8 @@ class CriarUsuarioService:
                     "no máximo 180 caracteres."
                 )
 
-            if not (
-                CriarUsuarioService
-                .cnpj_valido(
-                    cnpj
-                )
+            if not cnpj_valido(
+                cnpj
             ):
                 raise ValueError(
                     "Informe um CNPJ válido."
@@ -224,83 +220,3 @@ class CriarUsuarioService:
         except Exception:
             db.session.rollback()
             raise
-
-    @staticmethod
-    def normalizar_cnpj(
-        cnpj
-    ):
-        return re.sub(
-            r"\D",
-            "",
-            str(cnpj),
-        )
-
-    @staticmethod
-    def cnpj_valido(
-        cnpj
-    ):
-        if not cnpj:
-            return False
-
-        if len(cnpj) != 14:
-            return False
-
-        if not cnpj.isdigit():
-            return False
-
-        if cnpj == cnpj[0] * 14:
-            return False
-
-        primeiro_digito = (
-            CriarUsuarioService
-            .calcular_digito_cnpj(
-                cnpj[:12],
-                [
-                    5, 4, 3, 2,
-                    9, 8, 7, 6,
-                    5, 4, 3, 2,
-                ],
-            )
-        )
-
-        segundo_digito = (
-            CriarUsuarioService
-            .calcular_digito_cnpj(
-                cnpj[:12] +
-                str(
-                    primeiro_digito
-                ),
-                [
-                    6, 5, 4, 3, 2,
-                    9, 8, 7, 6,
-                    5, 4, 3, 2,
-                ],
-            )
-        )
-
-        return (
-            cnpj[-2:] ==
-            f"{primeiro_digito}"
-            f"{segundo_digito}"
-        )
-
-    @staticmethod
-    def calcular_digito_cnpj(
-        numeros,
-        pesos,
-    ):
-        soma = sum(
-            int(numero) * peso
-            for numero, peso
-            in zip(
-                numeros,
-                pesos,
-            )
-        )
-
-        resto = soma % 11
-
-        if resto < 2:
-            return 0
-
-        return 11 - resto
