@@ -1,4 +1,4 @@
-from flask import jsonify, request
+from flask import g, jsonify, request
 
 from services.perfil_habilidade.atualizar_perfil_habilidade_service import (
     AtualizarPerfilHabilidadeService,
@@ -25,7 +25,8 @@ class PerfilHabilidadeController:
 
             perfil_habilidade = (
                 CriarPerfilHabilidadeService.executar(
-                    dados
+                    g.usuario_autenticado,
+                    dados,
                 )
             )
 
@@ -46,7 +47,9 @@ class PerfilHabilidadeController:
     @staticmethod
     def listar():
         registros = (
-            ListarPerfilHabilidadesService.executar()
+            ListarPerfilHabilidadesService.executar(
+                g.usuario_autenticado
+            )
         )
 
         return jsonify(
@@ -61,13 +64,19 @@ class PerfilHabilidadeController:
         try:
             registro = (
                 BuscarPerfilHabilidadeService.executar(
-                    perfil_habilidade_id
+                    g.usuario_autenticado,
+                    perfil_habilidade_id,
                 )
             )
 
             return jsonify(
                 registro.to_dict()
             ), 200
+
+        except PermissionError as erro:
+            return jsonify(
+                {"erro": str(erro)}
+            ), 403
 
         except LookupError as erro:
             return jsonify(
@@ -81,6 +90,7 @@ class PerfilHabilidadeController:
 
             registro = (
                 AtualizarPerfilHabilidadeService.executar(
+                    g.usuario_autenticado,
                     perfil_habilidade_id,
                     dados,
                 )
@@ -89,6 +99,11 @@ class PerfilHabilidadeController:
             return jsonify(
                 registro.to_dict()
             ), 200
+
+        except PermissionError as erro:
+            return jsonify(
+                {"erro": str(erro)}
+            ), 403
 
         except LookupError as erro:
             return jsonify(
@@ -104,10 +119,16 @@ class PerfilHabilidadeController:
     def deletar(perfil_habilidade_id):
         try:
             DeletarPerfilHabilidadeService.executar(
-                perfil_habilidade_id
+                g.usuario_autenticado,
+                perfil_habilidade_id,
             )
 
             return "", 204
+
+        except PermissionError as erro:
+            return jsonify(
+                {"erro": str(erro)}
+            ), 403
 
         except LookupError as erro:
             return jsonify(

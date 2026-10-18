@@ -1,7 +1,6 @@
 from models.enums import NivelHabilidade
 from models.habilidade import Habilidade
 from models.perfil_habilidade import PerfilHabilidade
-from models.perfil_profissional import PerfilProfissional
 from repositories.perfil_repository import (
     PerfilRepository,
 )
@@ -9,15 +8,11 @@ from repositories.perfil_repository import (
 
 class CriarPerfilHabilidadeService:
     @staticmethod
-    def executar(dados):
+    def executar(usuario, dados):
         if not dados:
             raise ValueError(
                 "Os dados da habilidade do perfil são obrigatórios."
             )
-
-        perfil_profissional_id = dados.get(
-            "perfilProfissionalId"
-        )
 
         habilidade_id = dados.get(
             "habilidadeId"
@@ -26,11 +21,6 @@ class CriarPerfilHabilidadeService:
         nivel_dominio = dados.get(
             "nivelDominio"
         )
-
-        if perfil_profissional_id is None:
-            raise ValueError(
-                "O perfil profissional é obrigatório."
-            )
 
         if habilidade_id is None:
             raise ValueError(
@@ -42,14 +32,17 @@ class CriarPerfilHabilidadeService:
                 "O nível de domínio é obrigatório."
             )
 
-        perfil = PerfilProfissional.buscar_por_id(
-            perfil_profissional_id
-        )
+        # O perfil vem sempre da sessão autenticada.
+        # Qualquer "perfilProfissionalId" enviado no
+        # JSON é ignorado.
+        perfil = usuario.perfil_profissional
 
         if perfil is None:
             raise LookupError(
                 "Perfil profissional não encontrado."
             )
+
+        perfil_profissional_id = perfil.id
 
         habilidade = Habilidade.buscar_por_id(
             habilidade_id

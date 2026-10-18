@@ -3,7 +3,7 @@ from models.perfil_habilidade import PerfilHabilidade
 
 class DeletarPerfilHabilidadeService:
     @staticmethod
-    def executar(perfil_habilidade_id):
+    def executar(usuario, perfil_habilidade_id):
         perfil_habilidade = (
             PerfilHabilidade.buscar_por_id(
                 perfil_habilidade_id
@@ -13,6 +13,14 @@ class DeletarPerfilHabilidadeService:
         if perfil_habilidade is None:
             raise LookupError(
                 "Habilidade do perfil não encontrada."
+            )
+
+        if not perfil_habilidade.pertence_ao_usuario(
+            usuario.id
+        ):
+            raise PermissionError(
+                "Você não possui permissão para "
+                "acessar esta habilidade do perfil."
             )
 
         perfil_habilidade.deletar()

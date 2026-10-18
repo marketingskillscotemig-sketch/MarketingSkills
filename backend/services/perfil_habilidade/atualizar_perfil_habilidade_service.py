@@ -4,7 +4,7 @@ from models.perfil_habilidade import PerfilHabilidade
 
 class AtualizarPerfilHabilidadeService:
     @staticmethod
-    def executar(perfil_habilidade_id, dados):
+    def executar(usuario, perfil_habilidade_id, dados):
         perfil_habilidade = (
             PerfilHabilidade.buscar_por_id(
                 perfil_habilidade_id
@@ -14,6 +14,14 @@ class AtualizarPerfilHabilidadeService:
         if perfil_habilidade is None:
             raise LookupError(
                 "Habilidade do perfil não encontrada."
+            )
+
+        if not perfil_habilidade.pertence_ao_usuario(
+            usuario.id
+        ):
+            raise PermissionError(
+                "Você não possui permissão para "
+                "acessar esta habilidade do perfil."
             )
 
         if not dados:
