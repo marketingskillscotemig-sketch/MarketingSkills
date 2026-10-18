@@ -1,34 +1,30 @@
-from models.perfil_profissional import PerfilProfissional
 from models.projeto import Projeto
 
 
 class CriarProjetoService:
     @staticmethod
-    def executar(dados):
+    def executar(usuario, dados):
         if not dados:
             raise ValueError(
                 "Os dados do projeto são obrigatórios."
             )
 
-        perfil_id = dados.get("perfilProfissionalId")
         nome = dados.get("nome")
         descricao = dados.get("descricao")
         tecnologias = dados.get("tecnologias")
         link = dados.get("link")
 
-        if perfil_id is None:
-            raise ValueError(
-                "O perfil profissional é obrigatório."
-            )
-
-        perfil = PerfilProfissional.buscar_por_id(
-            perfil_id
-        )
+        # O perfil vem sempre da sessão autenticada.
+        # Qualquer "perfilProfissionalId" enviado no
+        # JSON é ignorado.
+        perfil = usuario.perfil_profissional
 
         if perfil is None:
             raise LookupError(
                 "Perfil profissional não encontrado."
             )
+
+        perfil_id = perfil.id
 
         if (
             not isinstance(nome, str)
@@ -92,6 +88,16 @@ class CriarProjetoService:
                 raise ValueError(
                     "O link não pode possuir "
                     "mais de 500 caracteres."
+                )
+
+            # Somente http:// ou https:// (bloqueia
+            # javascript:, data:, ftp: etc.).
+            if link and not link.lower().startswith(
+                ("http://", "https://")
+            ):
+                raise ValueError(
+                    "O link deve começar com "
+                    "http:// ou https://."
                 )
 
         projeto = Projeto(

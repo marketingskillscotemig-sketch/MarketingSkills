@@ -1,4 +1,4 @@
-from flask import jsonify, request
+from flask import g, jsonify, request
 
 from services.projeto.atualizar_projeto_service import (
     AtualizarProjetoService,
@@ -26,7 +26,8 @@ class ProjetoController:
             )
 
             projeto = CriarProjetoService.executar(
-                dados
+                g.usuario_autenticado,
+                dados,
             )
 
             return jsonify(
@@ -46,7 +47,9 @@ class ProjetoController:
     @staticmethod
     def listar():
         projetos = (
-            ListarProjetosService.executar()
+            ListarProjetosService.executar(
+                g.usuario_autenticado
+            )
         )
 
         return jsonify(
@@ -61,13 +64,19 @@ class ProjetoController:
         try:
             projeto = (
                 BuscarProjetoService.executar(
-                    projeto_id
+                    g.usuario_autenticado,
+                    projeto_id,
                 )
             )
 
             return jsonify(
                 projeto.to_dict()
             ), 200
+
+        except PermissionError as erro:
+            return jsonify(
+                {"erro": str(erro)}
+            ), 403
 
         except LookupError as erro:
             return jsonify(
@@ -83,6 +92,7 @@ class ProjetoController:
 
             projeto = (
                 AtualizarProjetoService.executar(
+                    g.usuario_autenticado,
                     projeto_id,
                     dados,
                 )
@@ -91,6 +101,11 @@ class ProjetoController:
             return jsonify(
                 projeto.to_dict()
             ), 200
+
+        except PermissionError as erro:
+            return jsonify(
+                {"erro": str(erro)}
+            ), 403
 
         except LookupError as erro:
             return jsonify(
@@ -106,10 +121,16 @@ class ProjetoController:
     def deletar(projeto_id):
         try:
             DeletarProjetoService.executar(
-                projeto_id
+                g.usuario_autenticado,
+                projeto_id,
             )
 
             return "", 204
+
+        except PermissionError as erro:
+            return jsonify(
+                {"erro": str(erro)}
+            ), 403
 
         except LookupError as erro:
             return jsonify(

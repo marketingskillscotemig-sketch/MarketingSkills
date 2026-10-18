@@ -1,10 +1,9 @@
-from models.perfil_profissional import PerfilProfissional
 from models.projeto import Projeto
 
 
 class AtualizarProjetoService:
     @staticmethod
-    def executar(projeto_id, dados):
+    def executar(usuario, projeto_id, dados):
         if not dados:
             raise ValueError(
                 "Os dados para atualização são obrigatórios."
@@ -19,28 +18,16 @@ class AtualizarProjetoService:
                 "Projeto não encontrado."
             )
 
-        if "perfilProfissionalId" in dados:
-            perfil_id = dados.get(
-                "perfilProfissionalId"
+        if not projeto.pertence_ao_usuario(
+            usuario.id
+        ):
+            raise PermissionError(
+                "Você não possui permissão para "
+                "acessar este projeto."
             )
 
-            if perfil_id is None:
-                raise ValueError(
-                    "O perfil profissional é obrigatório."
-                )
-
-            perfil = PerfilProfissional.buscar_por_id(
-                perfil_id
-            )
-
-            if perfil is None:
-                raise LookupError(
-                    "Perfil profissional não encontrado."
-                )
-
-            projeto.perfil_profissional_id = (
-                perfil_id
-            )
+        # "perfilProfissionalId" enviado pelo cliente é
+        # ignorado: o dono do projeto não pode mudar.
 
         if "nome" in dados:
             nome = dados.get("nome")
@@ -138,6 +125,16 @@ class AtualizarProjetoService:
                     raise ValueError(
                         "O link não pode possuir "
                         "mais de 500 caracteres."
+                    )
+
+                # Somente http:// ou https:// (bloqueia
+                # javascript:, data:, ftp: etc.).
+                if link and not link.lower().startswith(
+                    ("http://", "https://")
+                ):
+                    raise ValueError(
+                        "O link deve começar com "
+                        "http:// ou https://."
                     )
 
             projeto.link = link
