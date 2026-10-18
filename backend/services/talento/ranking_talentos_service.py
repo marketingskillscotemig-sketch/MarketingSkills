@@ -1,3 +1,4 @@
+from models.vaga import Vaga
 from repositories.talento_repository import (
     TalentoRepository,
 )
@@ -6,6 +7,7 @@ from repositories.talento_repository import (
 class RankingTalentosService:
     @staticmethod
     def executar(
+        usuario,
         vaga_id,
     ):
         if not vaga_id:
@@ -29,6 +31,25 @@ class RankingTalentosService:
         if vaga_id <= 0:
             raise ValueError(
                 "O ID da vaga deve ser maior que zero."
+            )
+
+        # Autorização antes da consulta: a procedure
+        # só roda para vaga existente e da própria empresa.
+        vaga = Vaga.buscar_por_id(
+            vaga_id
+        )
+
+        if vaga is None:
+            raise LookupError(
+                "Vaga não encontrada."
+            )
+
+        if not vaga.pertence_ao_usuario(
+            usuario.id
+        ):
+            raise PermissionError(
+                "Você não possui permissão para "
+                "consultar o ranking desta vaga."
             )
 
         resultados = (

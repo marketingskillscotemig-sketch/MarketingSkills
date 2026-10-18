@@ -1,4 +1,4 @@
-from flask import jsonify, request
+from flask import g, jsonify, request
 
 from services.talento.listar_talentos_service import (
     ListarTalentosService,
@@ -42,15 +42,30 @@ class TalentoController:
             resultado = (
                 RankingTalentosService
                 .executar(
+                    g.usuario_autenticado,
                     request.args.get(
                         "vagaId"
-                    )
+                    ),
                 )
             )
 
             return jsonify(
                 resultado
             ), 200
+
+        except PermissionError as erro:
+            return jsonify(
+                {
+                    "erro": str(erro),
+                }
+            ), 403
+
+        except LookupError as erro:
+            return jsonify(
+                {
+                    "erro": str(erro),
+                }
+            ), 404
 
         except ValueError as erro:
             return jsonify(
