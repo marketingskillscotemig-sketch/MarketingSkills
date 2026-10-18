@@ -8,7 +8,7 @@ from repositories.vaga_repository import (
 
 class AtualizarRequisitoVagaService:
     @staticmethod
-    def executar(requisito_id, dados):
+    def executar(usuario, requisito_id, dados):
         requisito = RequisitoVaga.buscar_por_id(
             requisito_id
         )
@@ -16,6 +16,17 @@ class AtualizarRequisitoVagaService:
         if requisito is None:
             raise LookupError(
                 "Requisito da vaga não encontrado."
+            )
+
+        if (
+            requisito.vaga is None
+            or not requisito.vaga.pertence_ao_usuario(
+                usuario.id
+            )
+        ):
+            raise PermissionError(
+                "Você não possui permissão para "
+                "alterar os requisitos desta vaga."
             )
 
         if not dados:

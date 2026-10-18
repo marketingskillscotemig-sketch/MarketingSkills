@@ -9,7 +9,7 @@ from repositories.vaga_repository import (
 
 class CriarRequisitoVagaService:
     @staticmethod
-    def executar(dados):
+    def executar(usuario, dados):
         if not dados:
             raise ValueError(
                 "Os dados do requisito da vaga são obrigatórios."
@@ -42,6 +42,17 @@ class CriarRequisitoVagaService:
         if vaga is None:
             raise LookupError(
                 "Vaga não encontrada."
+            )
+
+        # O vagaId só indica a vaga; quem autoriza é a
+        # empresa da sessão. A posse é verificada antes
+        # de consultar habilidade ou duplicidade.
+        if not vaga.pertence_ao_usuario(
+            usuario.id
+        ):
+            raise PermissionError(
+                "Você não possui permissão para "
+                "alterar os requisitos desta vaga."
             )
 
         habilidade = Habilidade.buscar_por_id(
