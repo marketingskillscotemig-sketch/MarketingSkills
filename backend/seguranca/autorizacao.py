@@ -4,6 +4,7 @@ from flask import g, jsonify, session
 
 from models.empresa import Empresa
 from models.enums import StatusUsuario
+from models.perfil_profissional import PerfilProfissional
 from models.usuario import Usuario
 
 
@@ -265,6 +266,166 @@ def exigir_propria_empresa(funcao):
 
         g.usuario_autenticado = usuario
         g.empresa_autenticada = empresa
+
+        return funcao(
+            *args,
+            **kwargs,
+        )
+
+    return funcao_protegida
+
+
+def exigir_proprio_perfil(funcao):
+    """
+    Permite que somente o estudante dono do
+    perfil profissional altere o perfil e os
+    arquivos dele (foto e currículo).
+
+    Impede que um usuário manipule o ID de
+    outro perfil diretamente pela URL.
+    """
+
+    @wraps(funcao)
+    def funcao_protegida(
+        *args,
+        **kwargs,
+    ):
+        usuario = (
+            obter_usuario_autenticado()
+        )
+
+        if usuario is None:
+            return jsonify(
+                {
+                    "erro": (
+                        "Autenticação necessária."
+                    ),
+                }
+            ), 401
+
+        tipo_conta = (
+            usuario.tipo_conta.value
+            if usuario.tipo_conta
+            else None
+        )
+
+        if tipo_conta != "estudante":
+            return jsonify(
+                {
+                    "erro": (
+                        "Este recurso é exclusivo "
+                        "para contas de estudante."
+                    ),
+                }
+            ), 403
+
+        perfil = (
+            PerfilProfissional.buscar_por_id(
+                kwargs.get("perfil_id")
+            )
+        )
+
+        if perfil is None:
+            return jsonify(
+                {
+                    "erro": (
+                        "Perfil profissional não encontrado."
+                    ),
+                }
+            ), 404
+
+        if (
+            perfil.usuario_id !=
+            usuario.id
+        ):
+            return jsonify(
+                {
+                    "erro": (
+                        "Você não possui permissão "
+                        "para alterar este perfil."
+                    ),
+                }
+            ), 403
+
+        g.usuario_autenticado = usuario
+        g.perfil_autenticado = perfil
+
+        return funcao(
+            *args,
+            **kwargs,
+        )
+
+    return funcao_protegida
+
+
+def exigir_leitura_perfil(funcao):
+    """
+    Permite visualizar um perfil profissional,
+    a foto e o currículo somente ao estudante
+    dono do perfil ou a uma conta empresa.
+
+    Somente leitura: não libera alteração.
+    """
+
+    @wraps(funcao)
+    def funcao_protegida(
+        *args,
+        **kwargs,
+    ):
+        usuario = (
+            obter_usuario_autenticado()
+        )
+
+        if usuario is None:
+            return jsonify(
+                {
+                    "erro": (
+                        "Autenticação necessária."
+                    ),
+                }
+            ), 401
+
+        perfil = (
+            PerfilProfissional.buscar_por_id(
+                kwargs.get("perfil_id")
+            )
+        )
+
+        if perfil is None:
+            return jsonify(
+                {
+                    "erro": (
+                        "Perfil profissional não encontrado."
+                    ),
+                }
+            ), 404
+
+        tipo_conta = (
+            usuario.tipo_conta.value
+            if usuario.tipo_conta
+            else None
+        )
+
+        eh_dono = (
+            perfil.usuario_id ==
+            usuario.id
+        )
+
+        if (
+            not eh_dono
+            and tipo_conta != "empresa"
+        ):
+            return jsonify(
+                {
+                    "erro": (
+                        "Você não possui permissão "
+                        "para acessar este perfil."
+                    ),
+                }
+            ), 403
+
+        g.usuario_autenticado = usuario
+        g.perfil_autenticado = perfil
 
         return funcao(
             *args,

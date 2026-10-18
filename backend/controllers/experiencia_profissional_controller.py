@@ -1,4 +1,4 @@
-from flask import jsonify, request
+from flask import g, jsonify, request
 
 from services.experiencia_profissional.atualizar_experiencia_profissional_service import (
     AtualizarExperienciaProfissionalService,
@@ -27,7 +27,10 @@ class ExperienciaProfissionalController:
 
             experiencia = (
                 CriarExperienciaProfissionalService
-                .executar(dados)
+                .executar(
+                    g.usuario_autenticado,
+                    dados,
+                )
             )
 
             return jsonify(
@@ -48,7 +51,9 @@ class ExperienciaProfissionalController:
     def listar():
         experiencias = (
             ListarExperienciasProfissionaisService
-            .executar()
+            .executar(
+                g.usuario_autenticado
+            )
         )
 
         return jsonify(
@@ -63,12 +68,20 @@ class ExperienciaProfissionalController:
         try:
             experiencia = (
                 BuscarExperienciaProfissionalService
-                .executar(experiencia_id)
+                .executar(
+                    g.usuario_autenticado,
+                    experiencia_id,
+                )
             )
 
             return jsonify(
                 experiencia.to_dict()
             ), 200
+
+        except PermissionError as erro:
+            return jsonify(
+                {"erro": str(erro)}
+            ), 403
 
         except LookupError as erro:
             return jsonify(
@@ -85,6 +98,7 @@ class ExperienciaProfissionalController:
             experiencia = (
                 AtualizarExperienciaProfissionalService
                 .executar(
+                    g.usuario_autenticado,
                     experiencia_id,
                     dados,
                 )
@@ -93,6 +107,11 @@ class ExperienciaProfissionalController:
             return jsonify(
                 experiencia.to_dict()
             ), 200
+
+        except PermissionError as erro:
+            return jsonify(
+                {"erro": str(erro)}
+            ), 403
 
         except LookupError as erro:
             return jsonify(
@@ -109,10 +128,18 @@ class ExperienciaProfissionalController:
         try:
             (
                 DeletarExperienciaProfissionalService
-                .executar(experiencia_id)
+                .executar(
+                    g.usuario_autenticado,
+                    experiencia_id,
+                )
             )
 
             return "", 204
+
+        except PermissionError as erro:
+            return jsonify(
+                {"erro": str(erro)}
+            ), 403
 
         except LookupError as erro:
             return jsonify(

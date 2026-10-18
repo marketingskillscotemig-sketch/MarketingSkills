@@ -1,12 +1,11 @@
 from datetime import date
 
 from models.experiencia_profissional import ExperienciaProfissional
-from models.perfil_profissional import PerfilProfissional
 
 
 class AtualizarExperienciaProfissionalService:
     @staticmethod
-    def executar(experiencia_id, dados):
+    def executar(usuario, experiencia_id, dados):
         if not dados:
             raise ValueError(
                 "Os dados para atualização são obrigatórios."
@@ -23,30 +22,16 @@ class AtualizarExperienciaProfissionalService:
                 "Experiência profissional não encontrada."
             )
 
-        if "perfilProfissionalId" in dados:
-            perfil_id = dados.get(
-                "perfilProfissionalId"
+        if not experiencia.pertence_ao_usuario(
+            usuario.id
+        ):
+            raise PermissionError(
+                "Você não possui permissão para "
+                "acessar esta experiência profissional."
             )
 
-            if perfil_id is None:
-                raise ValueError(
-                    "O perfil profissional é obrigatório."
-                )
-
-            perfil = (
-                PerfilProfissional.buscar_por_id(
-                    perfil_id
-                )
-            )
-
-            if perfil is None:
-                raise LookupError(
-                    "Perfil profissional não encontrado."
-                )
-
-            experiencia.perfil_profissional_id = (
-                perfil_id
-            )
+        # "perfilProfissionalId" enviado pelo cliente é
+        # ignorado: o dono da experiência não pode mudar.
 
         if "empresa" in dados:
             empresa = dados.get("empresa")

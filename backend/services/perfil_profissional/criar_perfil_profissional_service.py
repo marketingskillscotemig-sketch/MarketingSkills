@@ -3,7 +3,6 @@ from models.enums import (
     NivelExperiencia,
 )
 from models.perfil_profissional import PerfilProfissional
-from models.usuario import Usuario
 from repositories.perfil_repository import (
     PerfilRepository,
 )
@@ -11,27 +10,21 @@ from repositories.perfil_repository import (
 
 class CriarPerfilProfissionalService:
     @staticmethod
-    def executar(dados):
+    def executar(usuario, dados):
         if not dados:
             raise ValueError(
                 "Os dados do perfil profissional são obrigatórios."
             )
 
-        usuario_id = dados.get("usuarioId")
-
-        if usuario_id is None:
+        # O dono do perfil vem sempre da sessão
+        # autenticada. Qualquer "usuarioId"
+        # enviado no JSON é ignorado.
+        if usuario is None:
             raise ValueError(
                 "O usuário é obrigatório."
             )
 
-        usuario = Usuario.buscar_por_id(
-            usuario_id
-        )
-
-        if usuario is None:
-            raise LookupError(
-                "Usuário não encontrado."
-            )
+        usuario_id = usuario.id
 
         perfil_existente = (
             PerfilRepository.buscar_perfil_por_usuario_id(

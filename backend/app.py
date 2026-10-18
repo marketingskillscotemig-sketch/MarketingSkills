@@ -1,10 +1,11 @@
-import os
-
 from flask import Flask, jsonify
 from flask_cors import CORS
 from flask_wtf.csrf import CSRFError
 
-from config.settings import Config
+from config.settings import (
+    Config,
+    validar_configuracao,
+)
 from extensions import csrf, db, migrate
 
 from routes.alerta_vaga_routes import (
@@ -55,6 +56,10 @@ def create_app() -> Flask:
     app = Flask(__name__)
 
     app.config.from_object(Config)
+
+    # Falha na inicialização se a configuração
+    # for insegura (ex.: debug em produção).
+    validar_configuracao(app)
 
     db.init_app(app)
 
@@ -175,16 +180,11 @@ def create_app() -> Flask:
 
 
 if __name__ == "__main__":
-    debug_enabled = (
-        os.getenv(
-            "FLASK_DEBUG",
-            "false",
-        ).lower()
-        == "true"
-    )
-
     application = create_app()
 
+    # Usa o mesmo valor de debug já validado
+    # por validar_configuracao (nunca True
+    # em produção).
     application.run(
-        debug=debug_enabled
+        debug=application.debug
     )

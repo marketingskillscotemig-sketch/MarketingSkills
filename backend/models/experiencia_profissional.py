@@ -94,6 +94,17 @@ class ExperienciaProfissional(db.Model):
         db.session.delete(self)
         db.session.commit()
 
+    def pertence_ao_usuario(self, usuario_id):
+        """
+        Indica se a experiência pertence ao perfil
+        profissional do usuário informado.
+        """
+        return (
+            self.perfil_profissional is not None
+            and self.perfil_profissional.usuario_id
+            == usuario_id
+        )
+
     @staticmethod
     def listar_todos():
         return db.session.execute(

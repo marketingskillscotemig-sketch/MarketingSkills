@@ -109,14 +109,14 @@ async function carregarDadosPerfil() {
             return;
         }
 
-        const perfis = await apiRequest("/perfis-profissionais");
+        const meuPerfil = await apiRequest("/perfis-profissionais/meu");
         const habilidades = await apiRequest("/habilidades");
         const perfilHabilidades = await apiRequest("/perfil-habilidades");
         const experiencias = await apiRequest("/experiencias-profissionais");
         const formacoes = await apiRequest("/formacoes-academicas");
         const projetos = await apiRequest("/projetos");
 
-        perfilPaginaPerfil = encontrarPerfilDoUsuarioPagina(perfis);
+        perfilPaginaPerfil = meuPerfil || null;
         habilidadesPaginaPerfil = habilidades || [];
 
         if (perfilPaginaPerfil) {
@@ -142,17 +142,6 @@ async function carregarDadosPerfil() {
     } finally {
         mostrarCarregamento(false);
     }
-}
-
-
-function encontrarPerfilDoUsuarioPagina(perfis) {
-    for (const perfil of perfis) {
-        if (perfil.usuarioId === usuarioPaginaPerfil.id) {
-            return perfil;
-        }
-    }
-
-    return null;
 }
 
 
@@ -1053,11 +1042,9 @@ async function salvarPerfil(evento) {
                 body: JSON.stringify(dados),
             });
         } else {
-            const dadosParaCriar = Object.assign({ usuarioId: usuarioPaginaPerfil.id }, dados);
-
             perfilSalvo = await apiRequest("/perfis-profissionais", {
                 method: "POST",
-                body: JSON.stringify(dadosParaCriar),
+                body: JSON.stringify(dados),
             });
         }
 

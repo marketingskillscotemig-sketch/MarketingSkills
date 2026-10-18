@@ -1,18 +1,16 @@
 from datetime import date
 
 from models.experiencia_profissional import ExperienciaProfissional
-from models.perfil_profissional import PerfilProfissional
 
 
 class CriarExperienciaProfissionalService:
     @staticmethod
-    def executar(dados):
+    def executar(usuario, dados):
         if not dados:
             raise ValueError(
                 "Os dados da experiência profissional são obrigatórios."
             )
 
-        perfil_id = dados.get("perfilProfissionalId")
         empresa = dados.get("empresa")
         cargo = dados.get("cargo")
         data_inicio = dados.get("dataInicio")
@@ -20,19 +18,17 @@ class CriarExperienciaProfissionalService:
         atual = dados.get("atual", False)
         descricao = dados.get("descricao")
 
-        if perfil_id is None:
-            raise ValueError(
-                "O perfil profissional é obrigatório."
-            )
-
-        perfil = PerfilProfissional.buscar_por_id(
-            perfil_id
-        )
+        # O perfil vem sempre da sessão autenticada.
+        # Qualquer "perfilProfissionalId" enviado no
+        # JSON é ignorado.
+        perfil = usuario.perfil_profissional
 
         if perfil is None:
             raise LookupError(
                 "Perfil profissional não encontrado."
             )
+
+        perfil_id = perfil.id
 
         if (
             not isinstance(empresa, str)

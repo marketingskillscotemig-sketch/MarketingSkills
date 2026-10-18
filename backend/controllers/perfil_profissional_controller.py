@@ -1,7 +1,10 @@
-from flask import jsonify, request, send_file
+from flask import g, jsonify, request, send_file
 
 from services.perfil_profissional.atualizar_perfil_profissional_service import (
     AtualizarPerfilProfissionalService,
+)
+from services.perfil_profissional.buscar_meu_perfil_profissional_service import (
+    BuscarMeuPerfilProfissionalService,
 )
 from services.perfil_profissional.buscar_perfil_profissional_service import (
     BuscarPerfilProfissionalService,
@@ -39,7 +42,10 @@ class PerfilProfissionalController:
 
             perfil = (
                 CriarPerfilProfissionalService
-                .executar(dados)
+                .executar(
+                    g.usuario_autenticado,
+                    dados,
+                )
             )
 
             return jsonify(
@@ -60,7 +66,9 @@ class PerfilProfissionalController:
     def listar():
         perfis = (
             ListarPerfisProfissionaisService
-            .executar()
+            .executar(
+                g.usuario_autenticado
+            )
         )
 
         return jsonify(
@@ -68,6 +76,21 @@ class PerfilProfissionalController:
                 perfil.to_dict()
                 for perfil in perfis
             ]
+        ), 200
+
+    @staticmethod
+    def meu():
+        perfil = (
+            BuscarMeuPerfilProfissionalService
+            .executar(
+                g.usuario_autenticado
+            )
+        )
+
+        return jsonify(
+            perfil.to_dict()
+            if perfil
+            else None
         ), 200
 
     @staticmethod
