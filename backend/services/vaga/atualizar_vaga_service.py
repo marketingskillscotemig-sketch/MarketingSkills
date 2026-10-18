@@ -1,6 +1,5 @@
 from datetime import date
 
-from models.empresa import Empresa
 from models.enums import (
     ModalidadeTrabalho,
     NivelExperiencia,
@@ -12,6 +11,7 @@ from models.vaga import Vaga
 class AtualizarVagaService:
     @staticmethod
     def executar(
+        usuario,
         vaga_id,
         dados,
     ):
@@ -24,14 +24,22 @@ class AtualizarVagaService:
                 "Vaga não encontrada."
             )
 
+        if not vaga.pertence_ao_usuario(
+            usuario.id
+        ):
+            raise PermissionError(
+                "Você não possui permissão para "
+                "alterar esta vaga."
+            )
+
         if not dados:
             raise ValueError(
                 "Informe ao menos um campo para atualização."
             )
 
-        empresa_id = dados.get(
-            "empresaId"
-        )
+        # "empresaId" (ou outro campo de proprietário)
+        # enviado pelo cliente é ignorado: a empresa
+        # dona da vaga não pode mudar.
 
         titulo = dados.get(
             "titulo"
@@ -80,16 +88,6 @@ class AtualizarVagaService:
         status = dados.get(
             "status"
         )
-
-        if empresa_id is not None:
-            empresa = Empresa.buscar_por_id(
-                empresa_id
-            )
-
-            if empresa is None:
-                raise LookupError(
-                    "Empresa não encontrada."
-                )
 
         if titulo is not None:
             if not isinstance(
@@ -254,7 +252,6 @@ class AtualizarVagaService:
                 ) from erro
 
         argumentos = {
-            "empresa_id": empresa_id,
             "titulo": titulo,
             "descricao": descricao,
             "beneficios": beneficios,

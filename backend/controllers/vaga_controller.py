@@ -1,4 +1,4 @@
-from flask import jsonify, request
+from flask import g, jsonify, request
 
 from services.vaga.atualizar_vaga_service import (
     AtualizarVagaService,
@@ -29,7 +29,8 @@ class VagaController:
             )
 
             vaga = CriarVagaService.executar(
-                dados
+                g.usuario_autenticado,
+                dados,
             )
 
             return jsonify(
@@ -119,6 +120,7 @@ class VagaController:
             )
 
             vaga = AtualizarVagaService.executar(
+                g.usuario_autenticado,
                 vaga_id,
                 dados,
             )
@@ -126,6 +128,11 @@ class VagaController:
             return jsonify(
                 vaga.to_dict()
             ), 200
+
+        except PermissionError as erro:
+            return jsonify(
+                {"erro": str(erro)}
+            ), 403
 
         except LookupError as erro:
             return jsonify(
@@ -141,10 +148,16 @@ class VagaController:
     def deletar(vaga_id):
         try:
             DeletarVagaService.executar(
-                vaga_id
+                g.usuario_autenticado,
+                vaga_id,
             )
 
             return "", 204
+
+        except PermissionError as erro:
+            return jsonify(
+                {"erro": str(erro)}
+            ), 403
 
         except LookupError as erro:
             return jsonify(

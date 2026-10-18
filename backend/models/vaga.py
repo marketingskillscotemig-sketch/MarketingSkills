@@ -162,6 +162,17 @@ class Vaga(db.Model):
         db.session.delete(self)
         db.session.commit()
 
+    def pertence_ao_usuario(self, usuario_id):
+        """
+        Indica se a vaga pertence à empresa
+        vinculada ao usuário informado.
+        """
+        return (
+            self.empresa is not None
+            and self.empresa.usuario_id
+            == usuario_id
+        )
+
     @staticmethod
     def listar_todos():
         return db.session.execute(

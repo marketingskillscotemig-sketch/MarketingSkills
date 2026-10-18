@@ -1,6 +1,5 @@
 from datetime import date
 
-from models.empresa import Empresa
 from models.enums import (
     ModalidadeTrabalho,
     NivelExperiencia,
@@ -11,13 +10,12 @@ from models.vaga import Vaga
 
 class CriarVagaService:
     @staticmethod
-    def executar(dados):
+    def executar(usuario, dados):
         if not dados:
             raise ValueError(
                 "Os dados da vaga são obrigatórios."
             )
 
-        empresa_id = dados.get("empresaId")
         titulo = dados.get("titulo")
         descricao = dados.get("descricao")
         beneficios = dados.get("beneficios")
@@ -37,19 +35,17 @@ class CriarVagaService:
         )
         status = dados.get("status")
 
-        if empresa_id is None:
-            raise ValueError(
-                "A empresa é obrigatória."
-            )
-
-        empresa = Empresa.buscar_por_id(
-            empresa_id
-        )
+        # A empresa vem sempre da sessão autenticada.
+        # "empresaId", "usuarioId" ou qualquer outro
+        # campo de proprietário enviado no JSON é ignorado.
+        empresa = usuario.empresa
 
         if empresa is None:
             raise LookupError(
                 "Empresa não encontrada."
             )
+
+        empresa_id = empresa.id
 
         if not titulo or not titulo.strip():
             raise ValueError(
