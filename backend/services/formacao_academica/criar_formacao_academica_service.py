@@ -1,18 +1,16 @@
 from datetime import date
 
 from models.formacao_academica import FormacaoAcademica
-from models.perfil_profissional import PerfilProfissional
 
 
 class CriarFormacaoAcademicaService:
     @staticmethod
-    def executar(dados):
+    def executar(usuario, dados):
         if not dados:
             raise ValueError(
                 "Os dados da formação acadêmica são obrigatórios."
             )
 
-        perfil_id = dados.get("perfilProfissionalId")
         instituicao = dados.get("instituicao")
         curso = dados.get("curso")
         tipo_formacao = dados.get("tipoFormacao")
@@ -21,19 +19,17 @@ class CriarFormacaoAcademicaService:
         em_andamento = dados.get("emAndamento", False)
         descricao = dados.get("descricao")
 
-        if perfil_id is None:
-            raise ValueError(
-                "O perfil profissional é obrigatório."
-            )
-
-        perfil = PerfilProfissional.buscar_por_id(
-            perfil_id
-        )
+        # O perfil vem sempre da sessão autenticada.
+        # Qualquer "perfilProfissionalId" enviado no
+        # JSON é ignorado.
+        perfil = usuario.perfil_profissional
 
         if perfil is None:
             raise LookupError(
                 "Perfil profissional não encontrado."
             )
+
+        perfil_id = perfil.id
 
         if (
             not isinstance(instituicao, str)

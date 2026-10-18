@@ -1,12 +1,11 @@
 from datetime import date
 
 from models.formacao_academica import FormacaoAcademica
-from models.perfil_profissional import PerfilProfissional
 
 
 class AtualizarFormacaoAcademicaService:
     @staticmethod
-    def executar(formacao_id, dados):
+    def executar(usuario, formacao_id, dados):
         if not dados:
             raise ValueError(
                 "Os dados para atualização são obrigatórios."
@@ -23,25 +22,16 @@ class AtualizarFormacaoAcademicaService:
                 "Formação acadêmica não encontrada."
             )
 
-        if "perfilProfissionalId" in dados:
-            perfil_id = dados.get(
-                "perfilProfissionalId"
+        if not formacao.pertence_ao_usuario(
+            usuario.id
+        ):
+            raise PermissionError(
+                "Você não possui permissão para "
+                "acessar esta formação acadêmica."
             )
 
-            perfil = (
-                PerfilProfissional.buscar_por_id(
-                    perfil_id
-                )
-            )
-
-            if perfil is None:
-                raise LookupError(
-                    "Perfil profissional não encontrado."
-                )
-
-            formacao.perfil_profissional_id = (
-                perfil_id
-            )
+        # "perfilProfissionalId" enviado pelo cliente é
+        # ignorado: o dono da formação não pode mudar.
 
         if "instituicao" in dados:
             instituicao = dados.get(

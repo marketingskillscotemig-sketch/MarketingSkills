@@ -1,4 +1,4 @@
-from flask import jsonify, request
+from flask import g, jsonify, request
 
 from services.formacao_academica.atualizar_formacao_academica_service import (
     AtualizarFormacaoAcademicaService,
@@ -27,7 +27,10 @@ class FormacaoAcademicaController:
 
             formacao = (
                 CriarFormacaoAcademicaService
-                .executar(dados)
+                .executar(
+                    g.usuario_autenticado,
+                    dados,
+                )
             )
 
             return jsonify(
@@ -48,7 +51,9 @@ class FormacaoAcademicaController:
     def listar():
         formacoes = (
             ListarFormacoesAcademicasService
-            .executar()
+            .executar(
+                g.usuario_autenticado
+            )
         )
 
         return jsonify(
@@ -63,12 +68,20 @@ class FormacaoAcademicaController:
         try:
             formacao = (
                 BuscarFormacaoAcademicaService
-                .executar(formacao_id)
+                .executar(
+                    g.usuario_autenticado,
+                    formacao_id,
+                )
             )
 
             return jsonify(
                 formacao.to_dict()
             ), 200
+
+        except PermissionError as erro:
+            return jsonify(
+                {"erro": str(erro)}
+            ), 403
 
         except LookupError as erro:
             return jsonify(
@@ -85,6 +98,7 @@ class FormacaoAcademicaController:
             formacao = (
                 AtualizarFormacaoAcademicaService
                 .executar(
+                    g.usuario_autenticado,
                     formacao_id,
                     dados,
                 )
@@ -93,6 +107,11 @@ class FormacaoAcademicaController:
             return jsonify(
                 formacao.to_dict()
             ), 200
+
+        except PermissionError as erro:
+            return jsonify(
+                {"erro": str(erro)}
+            ), 403
 
         except LookupError as erro:
             return jsonify(
@@ -109,10 +128,18 @@ class FormacaoAcademicaController:
         try:
             (
                 DeletarFormacaoAcademicaService
-                .executar(formacao_id)
+                .executar(
+                    g.usuario_autenticado,
+                    formacao_id,
+                )
             )
 
             return "", 204
+
+        except PermissionError as erro:
+            return jsonify(
+                {"erro": str(erro)}
+            ), 403
 
         except LookupError as erro:
             return jsonify(
