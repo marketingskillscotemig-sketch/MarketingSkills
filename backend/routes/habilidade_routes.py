@@ -12,22 +12,14 @@ habilidade_bp = Blueprint(
 )
 
 
-habilidade_bp.post("")(
-    HabilidadeController.criar
-)
-
+# Catálogo somente leitura pela API: as rotas de
+# escrita (POST, PUT e DELETE) foram removidas por
+# não existir perfil administrativo. O catálogo é
+# mantido diretamente no banco de dados.
 habilidade_bp.get("")(
     HabilidadeController.listar
 )
 
 habilidade_bp.get("/<int:habilidade_id>")(
     HabilidadeController.buscar_por_id
-)
-
-habilidade_bp.put("/<int:habilidade_id>")(
-    HabilidadeController.atualizar
-)
-
-habilidade_bp.delete("/<int:habilidade_id>")(
-    HabilidadeController.deletar
 )

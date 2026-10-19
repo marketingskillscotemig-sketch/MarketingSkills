@@ -12,10 +12,10 @@ tendencia_mercado_bp = Blueprint(
 )
 
 
-tendencia_mercado_bp.post("")(
-    TendenciaMercadoController.criar
-)
-
+# Catálogo somente leitura pela API: as rotas de
+# escrita (POST, PUT e DELETE) foram removidas por
+# não existir perfil administrativo. O catálogo é
+# mantido diretamente no banco de dados.
 tendencia_mercado_bp.get("")(
     TendenciaMercadoController.listar
 )
@@ -24,16 +24,4 @@ tendencia_mercado_bp.get(
     "/<int:tendencia_id>"
 )(
     TendenciaMercadoController.buscar_por_id
-)
-
-tendencia_mercado_bp.put(
-    "/<int:tendencia_id>"
-)(
-    TendenciaMercadoController.atualizar
-)
-
-tendencia_mercado_bp.delete(
-    "/<int:tendencia_id>"
-)(
-    TendenciaMercadoController.deletar
 )
