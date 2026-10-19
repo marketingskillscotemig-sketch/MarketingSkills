@@ -1,6 +1,7 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 from flask_wtf.csrf import CSRFError
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 from config.settings import (
     Config,
@@ -60,6 +61,21 @@ def create_app() -> Flask:
     # Falha na inicialização se a configuração
     # for insegura (ex.: debug em produção).
     validar_configuracao(app)
+
+    # Em produção a API fica atrás de exatamente
+    # 1 proxy reverso/load balancer. Confia só em
+    # X-Forwarded-For (IP real do cliente, usado
+    # pelo rate limit) e X-Forwarded-Proto
+    # (detecção de HTTPS).
+    if app.config["APP_ENV"] == "production":
+        app.wsgi_app = ProxyFix(
+            app.wsgi_app,
+            x_for=1,
+            x_proto=1,
+            x_host=0,
+            x_port=0,
+            x_prefix=0,
+        )
 
     db.init_app(app)
 
@@ -121,6 +137,64 @@ def create_app() -> Flask:
                 "codigo": "limite_excedido",
             }
         ), 429
+
+    @app.errorhandler(500)
+    def tratar_erro_interno(
+        erro,
+    ):
+        # Registra a exceção original no log do
+        # servidor (só método e caminho, sem query
+        # string, corpo, cookies ou headers) e
+        # devolve ao cliente uma mensagem genérica.
+        excecao = (
+            getattr(erro, "original_exception", None)
+            or erro
+        )
+
+        app.logger.exception(
+            "Erro interno não tratado em %s %s",
+            request.method,
+            request.path,
+            exc_info=excecao,
+        )
+
+        return jsonify(
+            {
+                "erro": "Erro interno do servidor.",
+            }
+        ), 500
+
+    @app.after_request
+    def adicionar_headers_seguranca(
+        resposta,
+    ):
+        resposta.headers[
+            "X-Content-Type-Options"
+        ] = "nosniff"
+
+        resposta.headers[
+            "X-Frame-Options"
+        ] = "SAMEORIGIN"
+
+        resposta.headers[
+            "Referrer-Policy"
+        ] = "strict-origin-when-cross-origin"
+
+        resposta.headers[
+            "Permissions-Policy"
+        ] = "geolocation=(), microphone=(), camera=()"
+
+        # HSTS só em produção e só quando a
+        # requisição chegou de fato via HTTPS.
+        if (
+            app.config["APP_ENV"] == "production"
+            and request.is_secure
+        ):
+            resposta.headers[
+                "Strict-Transport-Security"
+            ] = "max-age=31536000"
+
+        return resposta
 
     app.register_blueprint(
         health_bp
