@@ -9,7 +9,7 @@ from repositories.estudo_repository import (
 
 class AtualizarEtapaEstudoService:
     @staticmethod
-    def executar(etapa_id, dados):
+    def executar(usuario, etapa_id, dados):
         etapa = EtapaEstudo.buscar_por_id(
             etapa_id
         )
@@ -17,6 +17,17 @@ class AtualizarEtapaEstudoService:
         if etapa is None:
             raise LookupError(
                 "Etapa de estudo não encontrada."
+            )
+
+        if (
+            etapa.plano_estudo is None
+            or not etapa.plano_estudo.pertence_ao_usuario(
+                usuario.id
+            )
+        ):
+            raise PermissionError(
+                "Você não possui permissão para "
+                "acessar esta etapa de estudo."
             )
 
         if not dados:

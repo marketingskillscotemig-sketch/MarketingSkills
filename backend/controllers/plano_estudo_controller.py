@@ -1,4 +1,4 @@
-from flask import jsonify, request
+from flask import g, jsonify, request
 
 from services.plano_estudo.atualizar_plano_estudo_service import (
     AtualizarPlanoEstudoService,
@@ -24,12 +24,18 @@ class PlanoEstudoController:
             dados = request.get_json(silent=True)
 
             plano = CriarPlanoEstudoService.executar(
-                dados
+                g.usuario_autenticado,
+                dados,
             )
 
             return jsonify(
                 plano.to_dict()
             ), 201
+
+        except PermissionError as erro:
+            return jsonify(
+                {"erro": str(erro)}
+            ), 403
 
         except LookupError as erro:
             return jsonify(
@@ -43,7 +49,9 @@ class PlanoEstudoController:
 
     @staticmethod
     def listar():
-        planos = ListarPlanosEstudoService.executar()
+        planos = ListarPlanosEstudoService.executar(
+            g.usuario_autenticado
+        )
 
         return jsonify(
             [
@@ -56,12 +64,18 @@ class PlanoEstudoController:
     def buscar_por_id(plano_id):
         try:
             plano = BuscarPlanoEstudoService.executar(
-                plano_id
+                g.usuario_autenticado,
+                plano_id,
             )
 
             return jsonify(
                 plano.to_dict()
             ), 200
+
+        except PermissionError as erro:
+            return jsonify(
+                {"erro": str(erro)}
+            ), 403
 
         except LookupError as erro:
             return jsonify(
@@ -74,6 +88,7 @@ class PlanoEstudoController:
             dados = request.get_json(silent=True)
 
             plano = AtualizarPlanoEstudoService.executar(
+                g.usuario_autenticado,
                 plano_id,
                 dados,
             )
@@ -81,6 +96,11 @@ class PlanoEstudoController:
             return jsonify(
                 plano.to_dict()
             ), 200
+
+        except PermissionError as erro:
+            return jsonify(
+                {"erro": str(erro)}
+            ), 403
 
         except LookupError as erro:
             return jsonify(
@@ -96,10 +116,16 @@ class PlanoEstudoController:
     def deletar(plano_id):
         try:
             DeletarPlanoEstudoService.executar(
-                plano_id
+                g.usuario_autenticado,
+                plano_id,
             )
 
             return "", 204
+
+        except PermissionError as erro:
+            return jsonify(
+                {"erro": str(erro)}
+            ), 403
 
         except LookupError as erro:
             return jsonify(

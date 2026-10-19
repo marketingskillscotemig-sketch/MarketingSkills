@@ -1,4 +1,4 @@
-from flask import jsonify, request
+from flask import g, jsonify, request
 
 from services.etapa_estudo.atualizar_etapa_estudo_service import (
     AtualizarEtapaEstudoService,
@@ -24,12 +24,18 @@ class EtapaEstudoController:
             dados = request.get_json(silent=True)
 
             etapa = CriarEtapaEstudoService.executar(
-                dados
+                g.usuario_autenticado,
+                dados,
             )
 
             return jsonify(
                 etapa.to_dict()
             ), 201
+
+        except PermissionError as erro:
+            return jsonify(
+                {"erro": str(erro)}
+            ), 403
 
         except LookupError as erro:
             return jsonify(
@@ -43,7 +49,9 @@ class EtapaEstudoController:
 
     @staticmethod
     def listar():
-        etapas = ListarEtapasEstudoService.executar()
+        etapas = ListarEtapasEstudoService.executar(
+            g.usuario_autenticado
+        )
 
         return jsonify(
             [
@@ -56,12 +64,18 @@ class EtapaEstudoController:
     def buscar_por_id(etapa_id):
         try:
             etapa = BuscarEtapaEstudoService.executar(
-                etapa_id
+                g.usuario_autenticado,
+                etapa_id,
             )
 
             return jsonify(
                 etapa.to_dict()
             ), 200
+
+        except PermissionError as erro:
+            return jsonify(
+                {"erro": str(erro)}
+            ), 403
 
         except LookupError as erro:
             return jsonify(
@@ -74,6 +88,7 @@ class EtapaEstudoController:
             dados = request.get_json(silent=True)
 
             etapa = AtualizarEtapaEstudoService.executar(
+                g.usuario_autenticado,
                 etapa_id,
                 dados,
             )
@@ -81,6 +96,11 @@ class EtapaEstudoController:
             return jsonify(
                 etapa.to_dict()
             ), 200
+
+        except PermissionError as erro:
+            return jsonify(
+                {"erro": str(erro)}
+            ), 403
 
         except LookupError as erro:
             return jsonify(
@@ -96,10 +116,16 @@ class EtapaEstudoController:
     def deletar(etapa_id):
         try:
             DeletarEtapaEstudoService.executar(
-                etapa_id
+                g.usuario_autenticado,
+                etapa_id,
             )
 
             return "", 204
+
+        except PermissionError as erro:
+            return jsonify(
+                {"erro": str(erro)}
+            ), 403
 
         except LookupError as erro:
             return jsonify(

@@ -3,6 +3,9 @@ from flask import Blueprint
 from controllers.etapa_estudo_controller import (
     EtapaEstudoController,
 )
+from seguranca.autorizacao import (
+    exigir_tipo_conta,
+)
 
 
 etapa_estudo_bp = Blueprint(
@@ -13,27 +16,47 @@ etapa_estudo_bp = Blueprint(
 
 
 etapa_estudo_bp.post("")(
-    EtapaEstudoController.criar
+    exigir_tipo_conta(
+        "estudante"
+    )(
+        EtapaEstudoController.criar
+    )
 )
 
 etapa_estudo_bp.get("")(
-    EtapaEstudoController.listar
+    exigir_tipo_conta(
+        "estudante"
+    )(
+        EtapaEstudoController.listar
+    )
 )
 
 etapa_estudo_bp.get(
     "/<int:etapa_id>"
 )(
-    EtapaEstudoController.buscar_por_id
+    exigir_tipo_conta(
+        "estudante"
+    )(
+        EtapaEstudoController.buscar_por_id
+    )
 )
 
 etapa_estudo_bp.put(
     "/<int:etapa_id>"
 )(
-    EtapaEstudoController.atualizar
+    exigir_tipo_conta(
+        "estudante"
+    )(
+        EtapaEstudoController.atualizar
+    )
 )
 
 etapa_estudo_bp.delete(
     "/<int:etapa_id>"
 )(
-    EtapaEstudoController.deletar
+    exigir_tipo_conta(
+        "estudante"
+    )(
+        EtapaEstudoController.deletar
+    )
 )

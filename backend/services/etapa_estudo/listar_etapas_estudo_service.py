@@ -1,7 +1,16 @@
-from models.etapa_estudo import EtapaEstudo
-
-
 class ListarEtapasEstudoService:
     @staticmethod
-    def executar():
-        return EtapaEstudo.listar_todos()
+    def executar(usuario):
+        """
+        Retorna somente as etapas dos planos de
+        estudo do usuário autenticado.
+        """
+        etapas = []
+
+        for plano in usuario.planos_estudo:
+            etapas.extend(plano.etapas)
+
+        return sorted(
+            etapas,
+            key=lambda etapa: etapa.id,
+        )

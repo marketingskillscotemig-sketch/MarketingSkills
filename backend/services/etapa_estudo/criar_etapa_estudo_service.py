@@ -10,7 +10,7 @@ from repositories.estudo_repository import (
 
 class CriarEtapaEstudoService:
     @staticmethod
-    def executar(dados):
+    def executar(usuario, dados):
         if not dados:
             raise ValueError(
                 "Os dados da etapa de estudo são obrigatórios."
@@ -40,6 +40,16 @@ class CriarEtapaEstudoService:
         if plano is None:
             raise LookupError(
                 "Plano de estudo não encontrado."
+            )
+
+        # O planoEstudoId só indica o plano; a posse é
+        # verificada antes das demais validações.
+        if not plano.pertence_ao_usuario(
+            usuario.id
+        ):
+            raise PermissionError(
+                "Você não possui permissão para "
+                "acessar esta etapa de estudo."
             )
 
         if not isinstance(titulo, str) or not titulo.strip():

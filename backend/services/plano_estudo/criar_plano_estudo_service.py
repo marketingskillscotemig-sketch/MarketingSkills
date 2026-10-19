@@ -2,18 +2,16 @@ from datetime import date
 
 from models.enums import StatusPlano
 from models.plano_estudo import PlanoEstudo
-from models.usuario import Usuario
 
 
 class CriarPlanoEstudoService:
     @staticmethod
-    def executar(dados):
+    def executar(usuario, dados):
         if not dados:
             raise ValueError(
                 "Os dados do plano de estudo são obrigatórios."
             )
 
-        usuario_id = dados.get("usuarioId")
         titulo = dados.get("titulo")
         objetivo = dados.get("objetivo")
         data_inicio = dados.get("dataInicio")
@@ -27,19 +25,10 @@ class CriarPlanoEstudoService:
             StatusPlano.NAO_INICIADO.value,
         )
 
-        if usuario_id is None:
-            raise ValueError(
-                "O usuário é obrigatório."
-            )
-
-        usuario = Usuario.buscar_por_id(
-            usuario_id
-        )
-
-        if usuario is None:
-            raise LookupError(
-                "Usuário não encontrado."
-            )
+        # O dono do plano vem sempre da sessão
+        # autenticada. Qualquer "usuarioId" enviado
+        # no JSON é ignorado.
+        usuario_id = usuario.id
 
         if not isinstance(titulo, str) or not titulo.strip():
             raise ValueError(

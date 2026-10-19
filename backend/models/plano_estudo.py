@@ -141,6 +141,13 @@ class PlanoEstudo(db.Model):
         db.session.delete(self)
         db.session.commit()
 
+    def pertence_ao_usuario(self, usuario_id):
+        """
+        Indica se o plano de estudo pertence
+        ao usuário informado.
+        """
+        return self.usuario_id == usuario_id
+
     @staticmethod
     def listar_todos():
         return db.session.execute(

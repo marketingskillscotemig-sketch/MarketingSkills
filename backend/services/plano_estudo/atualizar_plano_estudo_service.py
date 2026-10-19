@@ -6,7 +6,7 @@ from models.plano_estudo import PlanoEstudo
 
 class AtualizarPlanoEstudoService:
     @staticmethod
-    def executar(plano_id, dados):
+    def executar(usuario, plano_id, dados):
         plano = PlanoEstudo.buscar_por_id(
             plano_id
         )
@@ -14,6 +14,14 @@ class AtualizarPlanoEstudoService:
         if plano is None:
             raise LookupError(
                 "Plano de estudo não encontrado."
+            )
+
+        if not plano.pertence_ao_usuario(
+            usuario.id
+        ):
+            raise PermissionError(
+                "Você não possui permissão para "
+                "acessar este plano de estudo."
             )
 
         if not dados:
