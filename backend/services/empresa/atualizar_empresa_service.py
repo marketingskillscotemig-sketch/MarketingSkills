@@ -1,8 +1,10 @@
-import re
-
 from models.empresa import Empresa
 from repositories.conta_repository import (
     ContaRepository,
+)
+from utils.validador_cnpj import (
+    cnpj_valido,
+    normalizar_cnpj,
 )
 
 
@@ -44,20 +46,21 @@ class AtualizarEmpresaService:
             ).strip()
 
         if "cnpj" in dados:
-            cnpj = (
-                dados.get("cnpj") or ""
-            ).strip()
+            cnpj = dados.get("cnpj")
 
-            if cnpj:
-                cnpj = re.sub(
-                    r"\D",
-                    "",
-                    cnpj,
+            # CNPJ vazio ou null é ignorado:
+            # o CNPJ atual é mantido.
+            if (
+                cnpj is not None
+                and str(cnpj).strip()
+            ):
+                cnpj = normalizar_cnpj(
+                    cnpj
                 )
 
-                if len(cnpj) != 14:
+                if not cnpj_valido(cnpj):
                     raise ValueError(
-                        "O CNPJ deve possuir 14 dígitos."
+                        "Informe um CNPJ válido."
                     )
 
                 empresa_existente = (
@@ -78,9 +81,6 @@ class AtualizarEmpresaService:
                     )
 
                 argumentos["cnpj"] = cnpj
-
-            else:
-                argumentos["cnpj"] = None
 
         if "setor" in dados:
             argumentos["setor"] = (

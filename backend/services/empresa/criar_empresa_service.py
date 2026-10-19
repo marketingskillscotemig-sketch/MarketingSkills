@@ -10,13 +10,20 @@ from utils.validador_cnpj import (
 
 class CriarEmpresaService:
     @staticmethod
-    def executar(dados):
+    def executar(usuario, dados):
         if not dados:
             raise ValueError(
                 "Os dados da empresa são obrigatórios."
             )
 
-        usuario_id = dados.get("usuarioId")
+        # O dono da empresa vem sempre da sessão
+        # autenticada. Qualquer "usuarioId" enviado
+        # no JSON é ignorado.
+        if usuario.empresa is not None:
+            raise ValueError(
+                "Esta conta já possui uma empresa cadastrada."
+            )
+
         nome = dados.get("nome")
         razao_social = dados.get("razaoSocial")
         cnpj = dados.get("cnpj")
@@ -34,11 +41,6 @@ class CriarEmpresaService:
             "stackTecnologico"
         )
         beneficios = dados.get("beneficios")
-
-        if not usuario_id:
-            raise ValueError(
-                "O usuário responsável pela empresa é obrigatório."
-            )
 
         if not nome or not nome.strip():
             raise ValueError(
@@ -107,33 +109,34 @@ class CriarEmpresaService:
             else None
         )
 
-        if cnpj:
-            cnpj = normalizar_cnpj(
+        if not cnpj:
+            raise ValueError(
+                "O CNPJ da empresa é obrigatório."
+            )
+
+        cnpj = normalizar_cnpj(
+            cnpj
+        )
+
+        if not cnpj_valido(cnpj):
+            raise ValueError(
+                "Informe um CNPJ válido."
+            )
+
+        empresa_existente = (
+            ContaRepository.buscar_empresa_por_cnpj(
                 cnpj
             )
+        )
 
-            if not cnpj_valido(cnpj):
-                raise ValueError(
-                    "Informe um CNPJ válido."
-                )
-
-            empresa_existente = (
-                ContaRepository.buscar_empresa_por_cnpj(
-                    cnpj
-                )
+        if empresa_existente:
+            raise ValueError(
+                "Já existe uma empresa cadastrada "
+                "com este CNPJ."
             )
 
-            if empresa_existente:
-                raise ValueError(
-                    "Já existe uma empresa cadastrada "
-                    "com este CNPJ."
-                )
-
-        else:
-            cnpj = None
-
         empresa = Empresa(
-            usuario_id=usuario_id,
+            usuario_id=usuario.id,
             nome=nome,
             razao_social=razao_social,
             cnpj=cnpj,

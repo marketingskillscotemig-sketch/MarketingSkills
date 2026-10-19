@@ -5,6 +5,7 @@ from controllers.empresa_controller import (
 )
 from seguranca.autorizacao import (
     exigir_propria_empresa,
+    exigir_tipo_conta,
 )
 
 
@@ -16,7 +17,11 @@ empresa_bp = Blueprint(
 
 
 empresa_bp.post("")(
-    EmpresaController.criar
+    exigir_tipo_conta(
+        "empresa"
+    )(
+        EmpresaController.criar
+    )
 )
 
 empresa_bp.get("")(

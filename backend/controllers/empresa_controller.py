@@ -1,4 +1,5 @@
 from flask import (
+    g,
     jsonify,
     request,
     send_file,
@@ -41,7 +42,10 @@ class EmpresaController:
 
             empresa = (
                 CriarEmpresaService
-                .executar(dados)
+                .executar(
+                    g.usuario_autenticado,
+                    dados,
+                )
             )
 
             usuario = (
