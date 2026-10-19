@@ -3,7 +3,7 @@ from models.alerta_vaga import AlertaVaga
 
 class BuscarAlertaVagaService:
     @staticmethod
-    def executar(alerta_id):
+    def executar(usuario, alerta_id):
         alerta = AlertaVaga.buscar_por_id(
             alerta_id
         )
@@ -11,6 +11,14 @@ class BuscarAlertaVagaService:
         if alerta is None:
             raise LookupError(
                 "Alerta de vaga não encontrado."
+            )
+
+        if not alerta.pertence_ao_usuario(
+            usuario.id
+        ):
+            raise PermissionError(
+                "Você não possui permissão para "
+                "acessar este alerta de vaga."
             )
 
         return alerta

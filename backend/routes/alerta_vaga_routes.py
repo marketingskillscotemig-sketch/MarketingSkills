@@ -3,6 +3,9 @@ from flask import Blueprint
 from controllers.alerta_vaga_controller import (
     AlertaVagaController,
 )
+from seguranca.autorizacao import (
+    exigir_tipo_conta,
+)
 
 
 alerta_vaga_bp = Blueprint(
@@ -13,27 +16,47 @@ alerta_vaga_bp = Blueprint(
 
 
 alerta_vaga_bp.post("")(
-    AlertaVagaController.criar
+    exigir_tipo_conta(
+        "estudante"
+    )(
+        AlertaVagaController.criar
+    )
 )
 
 alerta_vaga_bp.get("")(
-    AlertaVagaController.listar
+    exigir_tipo_conta(
+        "estudante"
+    )(
+        AlertaVagaController.listar
+    )
 )
 
 alerta_vaga_bp.get(
     "/<int:alerta_id>"
 )(
-    AlertaVagaController.buscar_por_id
+    exigir_tipo_conta(
+        "estudante"
+    )(
+        AlertaVagaController.buscar_por_id
+    )
 )
 
 alerta_vaga_bp.put(
     "/<int:alerta_id>"
 )(
-    AlertaVagaController.atualizar
+    exigir_tipo_conta(
+        "estudante"
+    )(
+        AlertaVagaController.atualizar
+    )
 )
 
 alerta_vaga_bp.delete(
     "/<int:alerta_id>"
 )(
-    AlertaVagaController.deletar
+    exigir_tipo_conta(
+        "estudante"
+    )(
+        AlertaVagaController.deletar
+    )
 )

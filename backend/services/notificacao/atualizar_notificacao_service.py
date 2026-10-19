@@ -3,7 +3,7 @@ from models.notificacao import Notificacao
 
 class AtualizarNotificacaoService:
     @staticmethod
-    def executar(notificacao_id, dados):
+    def executar(usuario, notificacao_id, dados):
         notificacao = Notificacao.buscar_por_id(
             notificacao_id
         )
@@ -11,6 +11,14 @@ class AtualizarNotificacaoService:
         if notificacao is None:
             raise LookupError(
                 "Notificação não encontrada."
+            )
+
+        if not notificacao.pertence_ao_usuario(
+            usuario.id
+        ):
+            raise PermissionError(
+                "Você não possui permissão para "
+                "acessar esta notificação."
             )
 
         if not dados:

@@ -3,18 +3,16 @@ from models.enums import (
     ModalidadeTrabalho,
     NivelExperiencia,
 )
-from models.usuario import Usuario
 
 
 class CriarAlertaVagaService:
     @staticmethod
-    def executar(dados):
+    def executar(usuario, dados):
         if not dados:
             raise ValueError(
                 "Os dados do alerta de vaga são obrigatórios."
             )
 
-        usuario_id = dados.get("usuarioId")
         palavra_chave = dados.get("palavraChave")
         cidade = dados.get("cidade")
         modalidade = dados.get("modalidade")
@@ -23,19 +21,10 @@ class CriarAlertaVagaService:
         )
         ativo = dados.get("ativo", True)
 
-        if usuario_id is None:
-            raise ValueError(
-                "O usuário é obrigatório."
-            )
-
-        usuario = Usuario.buscar_por_id(
-            usuario_id
-        )
-
-        if usuario is None:
-            raise LookupError(
-                "Usuário não encontrado."
-            )
+        # O dono do alerta vem sempre da sessão
+        # autenticada. Qualquer "usuarioId" enviado
+        # no JSON é ignorado.
+        usuario_id = usuario.id
 
         if palavra_chave is not None:
             if not isinstance(

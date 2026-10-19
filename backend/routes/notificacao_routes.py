@@ -3,6 +3,9 @@ from flask import Blueprint
 from controllers.notificacao_controller import (
     NotificacaoController,
 )
+from seguranca.autorizacao import (
+    exigir_tipo_conta,
+)
 
 
 notificacao_bp = Blueprint(
@@ -13,27 +16,47 @@ notificacao_bp = Blueprint(
 
 
 notificacao_bp.post("")(
-    NotificacaoController.criar
+    exigir_tipo_conta(
+        "estudante"
+    )(
+        NotificacaoController.criar
+    )
 )
 
 notificacao_bp.get("")(
-    NotificacaoController.listar
+    exigir_tipo_conta(
+        "estudante"
+    )(
+        NotificacaoController.listar
+    )
 )
 
 notificacao_bp.get(
     "/<int:notificacao_id>"
 )(
-    NotificacaoController.buscar_por_id
+    exigir_tipo_conta(
+        "estudante"
+    )(
+        NotificacaoController.buscar_por_id
+    )
 )
 
 notificacao_bp.put(
     "/<int:notificacao_id>"
 )(
-    NotificacaoController.atualizar
+    exigir_tipo_conta(
+        "estudante"
+    )(
+        NotificacaoController.atualizar
+    )
 )
 
 notificacao_bp.delete(
     "/<int:notificacao_id>"
 )(
-    NotificacaoController.deletar
+    exigir_tipo_conta(
+        "estudante"
+    )(
+        NotificacaoController.deletar
+    )
 )

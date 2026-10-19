@@ -1,7 +1,11 @@
-from models.alerta_vaga import AlertaVaga
-
-
 class ListarAlertasVagaService:
     @staticmethod
-    def executar():
-        return AlertaVaga.listar_todos()
+    def executar(usuario):
+        """
+        Retorna somente os alertas de vaga
+        do usuário autenticado.
+        """
+        return sorted(
+            usuario.alertas_vaga,
+            key=lambda alerta: alerta.id,
+        )

@@ -7,7 +7,7 @@ from models.enums import (
 
 class AtualizarAlertaVagaService:
     @staticmethod
-    def executar(alerta_id, dados):
+    def executar(usuario, alerta_id, dados):
         alerta = AlertaVaga.buscar_por_id(
             alerta_id
         )
@@ -15,6 +15,14 @@ class AtualizarAlertaVagaService:
         if alerta is None:
             raise LookupError(
                 "Alerta de vaga não encontrado."
+            )
+
+        if not alerta.pertence_ao_usuario(
+            usuario.id
+        ):
+            raise PermissionError(
+                "Você não possui permissão para "
+                "acessar este alerta de vaga."
             )
 
         if not dados:

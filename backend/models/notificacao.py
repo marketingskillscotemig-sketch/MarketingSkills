@@ -72,6 +72,18 @@ class Notificacao(db.Model):
         db.session.delete(self)
         db.session.commit()
 
+    def pertence_ao_usuario(self, usuario_id):
+        """
+        Indica se a notificação pertence ao usuário
+        informado, por meio do alerta de vaga.
+        """
+        return (
+            self.alerta_vaga is not None
+            and self.alerta_vaga.pertence_ao_usuario(
+                usuario_id
+            )
+        )
+
     @staticmethod
     def listar_todos():
         return db.session.execute(

@@ -1,4 +1,4 @@
-from flask import jsonify, request
+from flask import g, jsonify, request
 
 from services.notificacao.atualizar_notificacao_service import (
     AtualizarNotificacaoService,
@@ -24,12 +24,18 @@ class NotificacaoController:
             dados = request.get_json(silent=True)
 
             notificacao = CriarNotificacaoService.executar(
-                dados
+                g.usuario_autenticado,
+                dados,
             )
 
             return jsonify(
                 notificacao.to_dict()
             ), 201
+
+        except PermissionError as erro:
+            return jsonify(
+                {"erro": str(erro)}
+            ), 403
 
         except LookupError as erro:
             return jsonify(
@@ -44,7 +50,9 @@ class NotificacaoController:
     @staticmethod
     def listar():
         notificacoes = (
-            ListarNotificacoesService.executar()
+            ListarNotificacoesService.executar(
+                g.usuario_autenticado
+            )
         )
 
         return jsonify(
@@ -59,13 +67,19 @@ class NotificacaoController:
         try:
             notificacao = (
                 BuscarNotificacaoService.executar(
-                    notificacao_id
+                    g.usuario_autenticado,
+                    notificacao_id,
                 )
             )
 
             return jsonify(
                 notificacao.to_dict()
             ), 200
+
+        except PermissionError as erro:
+            return jsonify(
+                {"erro": str(erro)}
+            ), 403
 
         except LookupError as erro:
             return jsonify(
@@ -79,6 +93,7 @@ class NotificacaoController:
 
             notificacao = (
                 AtualizarNotificacaoService.executar(
+                    g.usuario_autenticado,
                     notificacao_id,
                     dados,
                 )
@@ -87,6 +102,11 @@ class NotificacaoController:
             return jsonify(
                 notificacao.to_dict()
             ), 200
+
+        except PermissionError as erro:
+            return jsonify(
+                {"erro": str(erro)}
+            ), 403
 
         except LookupError as erro:
             return jsonify(
@@ -102,10 +122,16 @@ class NotificacaoController:
     def deletar(notificacao_id):
         try:
             DeletarNotificacaoService.executar(
-                notificacao_id
+                g.usuario_autenticado,
+                notificacao_id,
             )
 
             return "", 204
+
+        except PermissionError as erro:
+            return jsonify(
+                {"erro": str(erro)}
+            ), 403
 
         except LookupError as erro:
             return jsonify(
