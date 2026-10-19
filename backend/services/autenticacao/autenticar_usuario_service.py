@@ -1,4 +1,7 @@
-from werkzeug.security import check_password_hash
+from werkzeug.security import (
+    check_password_hash,
+    generate_password_hash,
+)
 
 from models.enums import StatusUsuario
 from repositories.conta_repository import (
@@ -6,10 +9,18 @@ from repositories.conta_repository import (
 )
 
 
+# Hash fixo usado quando o e-mail não existe: o login
+# gasta o mesmo tempo com e sem conta cadastrada e
+# não revela quais e-mails existem.
+_HASH_FICTICIO = generate_password_hash(
+    "senha-ficticia-para-comparacao-de-tempo"
+)
+
+
 class AutenticarUsuarioService:
     @staticmethod
     def executar(dados):
-        if not dados:
+        if not dados or not isinstance(dados, dict):
             raise ValueError(
                 "Os dados de login são obrigatórios."
             )
@@ -17,7 +28,10 @@ class AutenticarUsuarioService:
         email = dados.get("email")
         senha = dados.get("senha")
 
-        if not email or not email.strip():
+        if not email or (
+            isinstance(email, str)
+            and not email.strip()
+        ):
             raise ValueError(
                 "O e-mail é obrigatório."
             )
@@ -27,6 +41,14 @@ class AutenticarUsuarioService:
                 "A senha é obrigatória."
             )
 
+        if (
+            not isinstance(email, str)
+            or not isinstance(senha, str)
+        ):
+            raise ValueError(
+                "E-mail ou senha inválidos."
+            )
+
         email = email.strip().lower()
 
         usuario = ContaRepository.buscar_usuario_por_email(
@@ -34,6 +56,11 @@ class AutenticarUsuarioService:
         )
 
         if usuario is None:
+            check_password_hash(
+                _HASH_FICTICIO,
+                senha,
+            )
+
             raise ValueError(
                 "E-mail ou senha inválidos."
             )

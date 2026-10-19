@@ -6,7 +6,7 @@ from config.settings import (
     Config,
     validar_configuracao,
 )
-from extensions import csrf, db, migrate
+from extensions import csrf, db, limiter, migrate
 
 from routes.alerta_vaga_routes import (
     alerta_vaga_bp,
@@ -70,6 +70,10 @@ def create_app() -> Flask:
         db,
     )
 
+    # Limite de requisições contra força bruta.
+    # Os limites ficam nas rotas de autenticação.
+    limiter.init_app(app)
+
     csrf.init_app(app)
 
     CORS(
@@ -103,6 +107,20 @@ def create_app() -> Flask:
                 "codigo": "csrf_invalido",
             }
         ), 400
+
+    @app.errorhandler(429)
+    def tratar_limite_requisicoes(
+        erro,
+    ):
+        return jsonify(
+            {
+                "erro": (
+                    "Muitas tentativas. Aguarde alguns "
+                    "minutos e tente novamente."
+                ),
+                "codigo": "limite_excedido",
+            }
+        ), 429
 
     app.register_blueprint(
         health_bp

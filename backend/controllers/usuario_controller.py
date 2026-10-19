@@ -133,8 +133,13 @@ class UsuarioController:
         usuario_id
     ):
         try:
+            dados = request.get_json(
+                silent=True
+            )
+
             DeletarUsuarioService.executar(
-                usuario_id
+                usuario_id,
+                dados,
             )
 
             return "", 204
@@ -145,3 +150,10 @@ class UsuarioController:
                     "erro": str(erro),
                 }
             ), 404
+
+        except PermissionError as erro:
+            return jsonify(
+                {
+                    "erro": str(erro),
+                }
+            ), 403

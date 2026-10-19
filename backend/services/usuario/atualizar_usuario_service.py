@@ -1,4 +1,7 @@
-from werkzeug.security import generate_password_hash
+from werkzeug.security import (
+    check_password_hash,
+    generate_password_hash,
+)
 
 from models.enums import (
     StatusUsuario,
@@ -7,6 +10,11 @@ from models.enums import (
 from models.usuario import Usuario
 from repositories.conta_repository import (
     ContaRepository,
+)
+from services.usuario.criar_usuario_service import (
+    validar_email,
+    validar_nome,
+    validar_senha,
 )
 
 
@@ -25,7 +33,7 @@ class AtualizarUsuarioService:
                 "Usuário não encontrado."
             )
 
-        if not dados:
+        if not dados or not isinstance(dados, dict):
             raise ValueError(
                 "Informe ao menos um campo para atualização."
             )
@@ -51,30 +59,49 @@ class AtualizarUsuarioService:
                 "o tipo da própria conta."
             )
 
-        nome = dados.get("nome")
-        email = dados.get("email")
-        senha = dados.get("senha")
+        altera_email = "email" in dados
+        altera_senha = "senha" in dados
+
+        # Alterar e-mail ou senha exige a senha
+        # atual. Ela só é conferida, nunca salva.
+        senha_atual = dados.get("senhaAtual")
+
+        if altera_email or altera_senha:
+            if (
+                not isinstance(senha_atual, str)
+                or not senha_atual
+            ):
+                raise PermissionError(
+                    "Informe a senha atual para "
+                    "alterar o e-mail ou a senha."
+                )
+
+            if not check_password_hash(
+                usuario.senha_hash,
+                senha_atual,
+            ):
+                raise PermissionError(
+                    "Senha atual incorreta."
+                )
+
         status = dados.get("status")
         tipo_conta = dados.get(
             "tipoConta"
         )
 
-        if nome is not None:
-            nome = nome.strip()
+        nome = None
 
-            if len(nome) < 2:
-                raise ValueError(
-                    "O nome deve possuir pelo menos "
-                    "2 caracteres."
-                )
+        if "nome" in dados:
+            nome = validar_nome(
+                dados.get("nome")
+            )
 
-        if email is not None:
-            email = email.strip().lower()
+        email = None
 
-            if "@" not in email:
-                raise ValueError(
-                    "Informe um e-mail válido."
-                )
+        if altera_email:
+            email = validar_email(
+                dados.get("email")
+            )
 
             usuario_com_email = (
                 ContaRepository.buscar_usuario_por_email(
@@ -93,15 +120,27 @@ class AtualizarUsuarioService:
 
         senha_hash = None
 
-        if senha is not None:
-            if len(senha) < 6:
-                raise ValueError(
-                    "A senha deve possuir pelo menos "
-                    "6 caracteres."
-                )
+        if altera_senha:
+            senha = validar_senha(
+                dados.get("senha"),
+                (
+                    email
+                    if email is not None
+                    else usuario.email
+                ),
+            )
 
             senha_hash = generate_password_hash(
                 senha
+            )
+
+        elif (
+            altera_email
+            and senha_atual.strip().lower()
+            == email
+        ):
+            raise ValueError(
+                "A senha não pode ser igual ao e-mail."
             )
 
         status_enum = None

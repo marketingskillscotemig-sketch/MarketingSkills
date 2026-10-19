@@ -16,14 +16,9 @@ usuario_bp = Blueprint(
 )
 
 
-# Mantida por compatibilidade com o CRUD
-# já desenvolvido.
-#
-# O fluxo oficial de cadastro do sistema é:
+# O POST /api/usuarios legado (público) foi
+# removido. O fluxo oficial de cadastro é:
 # POST /api/autenticacao/cadastro
-usuario_bp.post("")(
-    UsuarioController.criar
-)
 
 
 # Um usuário autenticado pode consultar

@@ -2,6 +2,7 @@ from flask import jsonify, request, session
 from flask_wtf.csrf import generate_csrf
 
 from seguranca.autorizacao import (
+    iniciar_sessao,
     obter_usuario_autenticado,
 )
 from services.autenticacao.autenticar_usuario_service import (
@@ -39,13 +40,11 @@ class AutenticacaoController:
                 )
             )
 
-            session.clear()
-
-            session["usuario_id"] = (
-                usuario.id
+            # Limpa a sessão anterior e cria uma
+            # nova (proteção contra session fixation).
+            iniciar_sessao(
+                usuario
             )
-
-            session.permanent = True
 
             novo_token_csrf = (
                 generate_csrf()
@@ -83,13 +82,11 @@ class AutenticacaoController:
                 )
             )
 
-            session.clear()
-
-            session["usuario_id"] = (
-                usuario.id
+            # Limpa a sessão anterior e cria uma
+            # nova (proteção contra session fixation).
+            iniciar_sessao(
+                usuario
             )
-
-            session.permanent = True
 
             novo_token_csrf = (
                 generate_csrf()

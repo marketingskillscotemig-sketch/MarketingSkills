@@ -1,6 +1,9 @@
+import hashlib
+import hmac
+import time
 from functools import wraps
 
-from flask import g, jsonify, session
+from flask import current_app, g, jsonify, session
 
 from models.empresa import Empresa
 from models.enums import StatusUsuario
@@ -8,12 +11,60 @@ from models.perfil_profissional import PerfilProfissional
 from models.usuario import Usuario
 
 
+# Tempo máximo de uma sessão desde o login,
+# mesmo que ela continue sendo usada.
+DURACAO_MAXIMA_SESSAO_SEGUNDOS = 8 * 60 * 60
+
+
+def gerar_impressao_senha(usuario):
+    """
+    Impressão derivada do senha_hash atual
+    (HMAC-SHA256 com a SECRET_KEY).
+
+    Não contém a senha nem o próprio hash e
+    muda sempre que a senha é alterada.
+    """
+    return hmac.new(
+        str(
+            current_app.config["SECRET_KEY"]
+        ).encode("utf-8"),
+        str(
+            usuario.senha_hash or ""
+        ).encode("utf-8"),
+        hashlib.sha256,
+    ).hexdigest()
+
+
+def iniciar_sessao(usuario):
+    """
+    Cria uma sessão nova para o usuário.
+
+    session.clear() antes de gravar os dados
+    impede session fixation.
+    """
+    session.clear()
+
+    session["usuario_id"] = usuario.id
+
+    session["impressao_senha"] = (
+        gerar_impressao_senha(usuario)
+    )
+
+    session["login_em"] = int(
+        time.time()
+    )
+
+    session.permanent = True
+
+
 def obter_usuario_autenticado():
     """
     Retorna o usuário autenticado da sessão atual.
 
-    Se a sessão não existir, o usuário não existir
-    ou a conta estiver inativa, retorna None.
+    Retorna None (e limpa a sessão) se a sessão não
+    existir, o usuário não existir, a conta estiver
+    inativa, a senha tiver sido alterada depois do
+    login ou o login tiver mais de 8 horas.
     """
     usuario_id = session.get(
         "usuario_id"
@@ -33,6 +84,31 @@ def obter_usuario_autenticado():
     if (
         usuario.status !=
         StatusUsuario.ATIVO
+    ):
+        session.clear()
+        return None
+
+    impressao_senha = session.get(
+        "impressao_senha"
+    )
+
+    if (
+        not isinstance(impressao_senha, str)
+        or not hmac.compare_digest(
+            impressao_senha,
+            gerar_impressao_senha(usuario),
+        )
+    ):
+        session.clear()
+        return None
+
+    login_em = session.get("login_em")
+
+    if (
+        not isinstance(login_em, int)
+        or isinstance(login_em, bool)
+        or time.time() - login_em
+        > DURACAO_MAXIMA_SESSAO_SEGUNDOS
     ):
         session.clear()
         return None

@@ -1,3 +1,5 @@
+import re
+
 from werkzeug.security import generate_password_hash
 
 from extensions import db
@@ -13,17 +15,139 @@ from utils.validador_cnpj import (
 )
 
 
+TAMANHO_MAXIMO_NOME = 120
+TAMANHO_MAXIMO_EMAIL = 180
+TAMANHO_MINIMO_SENHA = 8
+TAMANHO_MAXIMO_SENHA = 128
+
+# Formato simples: algo@dominio.tld
+_PADRAO_EMAIL = re.compile(
+    r"[^@\s]+@"
+    r"(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+"
+    r"[a-z]{2,}"
+)
+
+
+def validar_nome(nome):
+    """
+    Valida e normaliza o nome do usuário.
+    Mesma regra no cadastro e na atualização.
+    """
+    if nome is None or (
+        isinstance(nome, str)
+        and not nome.strip()
+    ):
+        raise ValueError(
+            "O nome é obrigatório."
+        )
+
+    if not isinstance(nome, str):
+        raise ValueError(
+            "O nome deve ser um texto."
+        )
+
+    nome = nome.strip()
+
+    if len(nome) < 2:
+        raise ValueError(
+            "O nome deve possuir pelo menos 2 caracteres."
+        )
+
+    if len(nome) > TAMANHO_MAXIMO_NOME:
+        raise ValueError(
+            "O nome deve possuir no máximo 120 caracteres."
+        )
+
+    return nome
+
+
+def validar_email(email):
+    """
+    Valida e normaliza o e-mail.
+    Mesma regra no cadastro e na atualização.
+    """
+    if email is None or (
+        isinstance(email, str)
+        and not email.strip()
+    ):
+        raise ValueError(
+            "O e-mail é obrigatório."
+        )
+
+    if not isinstance(email, str):
+        raise ValueError(
+            "Informe um e-mail válido."
+        )
+
+    email = email.strip().lower()
+
+    if len(email) > TAMANHO_MAXIMO_EMAIL:
+        raise ValueError(
+            "O e-mail deve possuir no máximo "
+            "180 caracteres."
+        )
+
+    if not _PADRAO_EMAIL.fullmatch(email):
+        raise ValueError(
+            "Informe um e-mail válido."
+        )
+
+    return email
+
+
+def validar_senha(senha, email):
+    """
+    Política de senha. Mesma regra no cadastro
+    e na alteração de senha.
+    """
+    if senha is None or senha == "":
+        raise ValueError(
+            "A senha é obrigatória."
+        )
+
+    if not isinstance(senha, str):
+        raise ValueError(
+            "A senha deve ser um texto."
+        )
+
+    if len(senha) < TAMANHO_MINIMO_SENHA:
+        raise ValueError(
+            "A senha deve possuir pelo menos 8 caracteres."
+        )
+
+    if len(senha) > TAMANHO_MAXIMO_SENHA:
+        raise ValueError(
+            "A senha deve possuir no máximo 128 caracteres."
+        )
+
+    if senha.strip().lower() == email.strip().lower():
+        raise ValueError(
+            "A senha não pode ser igual ao e-mail."
+        )
+
+    return senha
+
+
 class CriarUsuarioService:
     @staticmethod
     def executar(dados):
-        if not dados:
+        if not dados or not isinstance(dados, dict):
             raise ValueError(
                 "Os dados do usuário são obrigatórios."
             )
 
-        nome = dados.get("nome")
-        email = dados.get("email")
-        senha = dados.get("senha")
+        nome = validar_nome(
+            dados.get("nome")
+        )
+
+        email = validar_email(
+            dados.get("email")
+        )
+
+        senha = validar_senha(
+            dados.get("senha"),
+            email,
+        )
 
         tipo_conta = dados.get(
             "tipoConta",
@@ -41,44 +165,6 @@ class CriarUsuarioService:
         cnpj = dados.get(
             "cnpj"
         )
-
-        if not nome or not nome.strip():
-            raise ValueError(
-                "O nome é obrigatório."
-            )
-
-        if not email or not email.strip():
-            raise ValueError(
-                "O e-mail é obrigatório."
-            )
-
-        if not senha:
-            raise ValueError(
-                "A senha é obrigatória."
-            )
-
-        nome = nome.strip()
-        email = email.strip().lower()
-
-        if len(nome) < 2:
-            raise ValueError(
-                "O nome deve possuir pelo menos 2 caracteres."
-            )
-
-        if len(nome) > 120:
-            raise ValueError(
-                "O nome deve possuir no máximo 120 caracteres."
-            )
-
-        if "@" not in email:
-            raise ValueError(
-                "Informe um e-mail válido."
-            )
-
-        if len(senha) < 6:
-            raise ValueError(
-                "A senha deve possuir pelo menos 6 caracteres."
-            )
 
         usuario_existente = (
             ContaRepository.buscar_usuario_por_email(
@@ -107,7 +193,7 @@ class CriarUsuarioService:
             TipoConta.EMPRESA
         ):
             if (
-                not nome_empresa
+                not isinstance(nome_empresa, str)
                 or not nome_empresa.strip()
             ):
                 raise ValueError(
@@ -115,7 +201,7 @@ class CriarUsuarioService:
                 )
 
             if (
-                not razao_social
+                not isinstance(razao_social, str)
                 or not razao_social.strip()
             ):
                 raise ValueError(
