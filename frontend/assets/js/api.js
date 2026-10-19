@@ -1,5 +1,18 @@
+// Local (localhost ou 127.0.0.1): backend Flask na porta 5000.
+// Produção: frontend e API na mesma origem, com /api
+// encaminhado para o Flask.
+const HOSTS_LOCAIS =
+    new Set([
+        "localhost",
+        "127.0.0.1",
+    ]);
+
 const API_BASE_URL =
-    "http://127.0.0.1:5000/api";
+    HOSTS_LOCAIS.has(
+        window.location.hostname
+    )
+        ? "http://127.0.0.1:5000/api"
+        : "/api";
 
 
 let tokenCsrf = null;
