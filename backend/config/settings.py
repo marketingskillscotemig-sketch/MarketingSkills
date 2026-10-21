@@ -158,6 +158,13 @@ class Config:
 
     SESSION_REFRESH_EACH_REQUEST = True
 
+    # Tamanho máximo do corpo da requisição.
+    # O maior upload aceito é de 5 MiB (currículo
+    # e banner); 6 MiB dá folga ao multipart.
+    # Acima disso, a requisição é recusada com
+    # HTTP 413 antes de o corpo ser lido.
+    MAX_CONTENT_LENGTH = 6 * 1024 * 1024
+
 
 def validar_configuracao(app) -> None:
     """

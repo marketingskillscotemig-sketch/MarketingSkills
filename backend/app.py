@@ -138,6 +138,20 @@ def create_app() -> Flask:
             }
         ), 429
 
+    @app.errorhandler(413)
+    def tratar_corpo_muito_grande(
+        erro,
+    ):
+        return jsonify(
+            {
+                "erro": (
+                    "O arquivo enviado excede o "
+                    "tamanho máximo permitido."
+                ),
+                "codigo": "arquivo_muito_grande",
+            }
+        ), 413
+
     @app.errorhandler(500)
     def tratar_erro_interno(
         erro,
