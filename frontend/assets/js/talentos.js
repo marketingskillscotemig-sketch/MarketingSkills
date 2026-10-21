@@ -1032,7 +1032,11 @@ function renderizarFotoTalento(talento, grande) {
     const nome = escaparHtmlTalentos(talento.usuario.nome);
 
     if (talento.perfil.fotoUrl) {
-        const url = obterUrlBackendTalentos(talento.perfil.fotoUrl);
+        // A URL vem do banco: é escapada para não
+        // fechar o atributo src nem criar eventos HTML.
+        const url = escaparHtmlTalentos(
+            obterUrlBackendTalentos(talento.perfil.fotoUrl)
+        );
 
         return `
             <div class="${classe}">

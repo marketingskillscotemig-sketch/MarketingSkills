@@ -80,16 +80,8 @@ class AtualizarPerfilProfissionalService:
             "pretensaoSalarial"
         )
 
-        foto_url = dados.get(
-            "fotoUrl"
-        )
-
         sobre_mim = dados.get(
             "sobreMim"
-        )
-
-        curriculo_url = dados.get(
-            "curriculoUrl"
         )
 
         if (
@@ -129,16 +121,6 @@ class AtualizarPerfilProfissionalService:
                 "A pretensão salarial não pode ser negativa."
             )
 
-        if "fotoUrl" in dados:
-            foto_url = (
-                AtualizarPerfilProfissionalService
-                .validar_texto_opcional(
-                    foto_url,
-                    "A URL da foto",
-                    500,
-                )
-            )
-
         if "sobreMim" in dados:
             sobre_mim = (
                 AtualizarPerfilProfissionalService
@@ -149,16 +131,9 @@ class AtualizarPerfilProfissionalService:
                 )
             )
 
-        if "curriculoUrl" in dados:
-            curriculo_url = (
-                AtualizarPerfilProfissionalService
-                .validar_texto_opcional(
-                    curriculo_url,
-                    "A URL do currículo",
-                    500,
-                )
-            )
-
+        # fotoUrl e curriculoUrl enviados no JSON são
+        # ignorados: essas URLs só são alteradas pelos
+        # serviços de upload de foto e de currículo.
         return perfil.atualizar(
             nivel_experiencia=nivel_enum,
             objetivo_profissional=objetivo_profissional,
@@ -166,9 +141,7 @@ class AtualizarPerfilProfissionalService:
             localizacao_preferida=localizacao_preferida,
             horas_semanais_estudo=horas_semanais_estudo,
             pretensao_salarial=pretensao_salarial,
-            foto_url=foto_url,
             sobre_mim=sobre_mim,
-            curriculo_url=curriculo_url,
         )
 
     @staticmethod

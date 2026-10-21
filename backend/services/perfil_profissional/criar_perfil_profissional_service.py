@@ -61,16 +61,8 @@ class CriarPerfilProfissionalService:
             "pretensaoSalarial"
         )
 
-        foto_url = dados.get(
-            "fotoUrl"
-        )
-
         sobre_mim = dados.get(
             "sobreMim"
-        )
-
-        curriculo_url = dados.get(
-            "curriculoUrl"
         )
 
         nivel_enum = None
@@ -136,15 +128,6 @@ class CriarPerfilProfissionalService:
                 "A pretensão salarial não pode ser negativa."
             )
 
-        foto_url = (
-            CriarPerfilProfissionalService
-            .validar_texto_opcional(
-                foto_url,
-                "A URL da foto",
-                500,
-            )
-        )
-
         sobre_mim = (
             CriarPerfilProfissionalService
             .validar_texto_opcional(
@@ -154,15 +137,9 @@ class CriarPerfilProfissionalService:
             )
         )
 
-        curriculo_url = (
-            CriarPerfilProfissionalService
-            .validar_texto_opcional(
-                curriculo_url,
-                "A URL do currículo",
-                500,
-            )
-        )
-
+        # fotoUrl e curriculoUrl enviados no JSON são
+        # ignorados: essas URLs só são definidas pelos
+        # serviços de upload de foto e de currículo.
         perfil = PerfilProfissional(
             usuario_id=usuario_id,
             nivel_experiencia=nivel_enum,
@@ -171,9 +148,9 @@ class CriarPerfilProfissionalService:
             localizacao_preferida=localizacao_preferida,
             horas_semanais_estudo=horas_semanais_estudo,
             pretensao_salarial=pretensao_salarial,
-            foto_url=foto_url,
+            foto_url=None,
             sobre_mim=sobre_mim,
-            curriculo_url=curriculo_url,
+            curriculo_url=None,
         )
 
         return perfil.salvar()
