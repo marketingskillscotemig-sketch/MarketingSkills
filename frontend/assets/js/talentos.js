@@ -789,11 +789,6 @@ function renderizarPainelTalento(talento) {
         botaoCurriculoHtml = '<button id="botao-visualizar-curriculo-talento" type="button" class="botao-copiar-contato">Visualizar currículo</button>';
     }
 
-    let atributoDesabilitado = "";
-    if (!talento.usuario.email) {
-        atributoDesabilitado = "disabled";
-    }
-
     return `
         <div class="conteudo-painel-talento">
             <div class="cabecalho-painel-talento">
@@ -854,7 +849,7 @@ function renderizarPainelTalento(talento) {
 
             <div class="acoes-painel-talento">
                 ${botaoCurriculoHtml}
-                <button id="botao-copiar-contato-talento" type="button" class="botao-copiar-contato" ${atributoDesabilitado}>
+                <button id="botao-copiar-contato-talento" type="button" class="botao-copiar-contato">
                     Copiar contato
                 </button>
             </div>
@@ -1057,8 +1052,20 @@ function renderizarFotoTalento(talento, grande) {
 
 // ----- Ações do painel: copiar contato e ver currículo -----
 
+// O e-mail não vem na lista de talentos: é buscado
+// só quando a empresa pede o contato de um talento.
 async function copiarContatoTalento(talento) {
-    const email = talento.usuario.email;
+    let email = null;
+
+    try {
+        const contato = await apiRequest("/talentos/" + talento.usuario.id + "/contato");
+        if (contato) {
+            email = contato.email;
+        }
+    } catch (erro) {
+        mostrarMensagemTalentos(erro.message || "Não foi possível obter o contato.");
+        return;
+    }
 
     if (!email) {
         mostrarMensagemTalentos("Este profissional não possui contato disponível.");

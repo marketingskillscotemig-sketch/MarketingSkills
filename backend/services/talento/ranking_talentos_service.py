@@ -70,9 +70,6 @@ class RankingTalentosService:
                 "nome":
                     item["nome"],
 
-                "email":
-                    item["email"],
-
                 "requisitosTotais":
                     int(
                         item[

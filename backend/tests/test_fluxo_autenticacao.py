@@ -81,6 +81,9 @@ PERMISSOES_ESPERADAS = {
     },
 }
 
+# Contato de um talento, entregue um por vez.
+ROTA_CONTATO_TALENTO = "/api/talentos/{}/contato"
+
 # ID que não existe: mesmo que o CSRF falhasse, a
 # exclusão não encontraria registro algum.
 ID_INEXISTENTE = 2147483647
@@ -310,6 +313,16 @@ class TesteSemSessao(TesteSomenteLeitura):
                     {"erro": "Autenticação necessária."},
                 )
 
+    def test_contato_de_talento_exige_login(self):
+        resposta = ClienteApi().get(
+            ROTA_CONTATO_TALENTO.format(1)
+        )
+
+        self.assertEqual(
+            resposta.status_code,
+            401,
+        )
+
     def test_sessao_informa_nao_autenticado(self):
         resposta = ClienteApi().get(
             "/api/autenticacao/sessao"
@@ -535,12 +548,84 @@ class TesteContaEstudante(
 ):
     TIPO_CONTA = "estudante"
 
+    # Roda depois de test_2 e antes do logout (test_3).
+    def test_2a_estudante_nao_acessa_contato(self):
+        resposta = self.cliente.get(
+            ROTA_CONTATO_TALENTO.format(1)
+        )
+
+        self.assertEqual(
+            resposta.status_code,
+            403,
+        )
+
 
 class TesteContaEmpresa(
     TestePermissoesPorConta,
     TesteSomenteLeitura,
 ):
     TIPO_CONTA = "empresa"
+
+    # Roda depois de test_2 e antes do logout (test_3).
+    def test_2a_talentos_sem_email(self):
+        talentos = self.cliente.get(
+            "/api/talentos"
+        ).get_json()
+
+        self.assertIsInstance(talentos, list)
+
+        for talento in talentos:
+            with self.subTest(talento=talento.get("id")):
+                # Só a presença da chave é verificada:
+                # nenhum e-mail é exibido pelo teste.
+                self.assertNotIn(
+                    "email",
+                    talento,
+                    "GET /api/talentos expõe e-mail",
+                )
+
+        if not talentos:
+            self.skipTest(
+                "Nenhum talento cadastrado para "
+                "testar a rota de contato."
+            )
+
+        resposta = self.cliente.get(
+            ROTA_CONTATO_TALENTO.format(
+                talentos[0]["id"]
+            )
+        )
+
+        self.assertEqual(
+            resposta.status_code,
+            200,
+        )
+
+        self.assertEqual(
+            set(resposta.get_json()),
+            {"email"},
+        )
+
+        self.assertEqual(
+            resposta.headers.get("Cache-Control"),
+            "no-store",
+        )
+
+    def test_2b_contato_de_quem_nao_e_talento(self):
+        propria_conta = self.cliente.get(
+            "/api/autenticacao/sessao"
+        ).get_json()["usuario"]
+
+        resposta = self.cliente.get(
+            ROTA_CONTATO_TALENTO.format(
+                propria_conta["id"]
+            )
+        )
+
+        self.assertEqual(
+            resposta.status_code,
+            404,
+        )
 
 
 if __name__ == "__main__":

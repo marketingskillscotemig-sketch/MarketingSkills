@@ -3,6 +3,9 @@ from flask import g, jsonify, request
 from services.talento.listar_talentos_service import (
     ListarTalentosService,
 )
+from services.talento.obter_contato_talento_service import (
+    ObterContatoTalentoService,
+)
 from services.talento.ranking_talentos_service import (
     RankingTalentosService,
 )
@@ -20,7 +23,6 @@ class TalentoController:
                 {
                     "id": talento.id,
                     "nome": talento.nome,
-                    "email": talento.email,
                     "status": (
                         talento.status.value
                         if talento.status
@@ -73,3 +75,33 @@ class TalentoController:
                     "erro": str(erro),
                 }
             ), 400
+
+    @staticmethod
+    def contato(usuario_id):
+        """
+        E-mail de um único talento, sob demanda
+        (botão "Copiar contato"). Não fica em
+        cache no navegador nem em proxies.
+        """
+        try:
+            contato = (
+                ObterContatoTalentoService
+                .executar(usuario_id)
+            )
+
+            resposta = jsonify(
+                contato
+            )
+
+            resposta.headers[
+                "Cache-Control"
+            ] = "no-store"
+
+            return resposta, 200
+
+        except LookupError as erro:
+            return jsonify(
+                {
+                    "erro": str(erro),
+                }
+            ), 404
