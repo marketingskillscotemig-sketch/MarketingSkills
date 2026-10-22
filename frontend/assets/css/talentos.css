@@ -682,6 +682,21 @@
 }
 
 
+.item-trajetoria-talento .link-projeto-talento {
+    display: inline-block;
+    margin-top: 8px;
+    color: #a8cbff;
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+
+.item-trajetoria-talento .link-projeto-talento:hover {
+    text-decoration: underline;
+}
+
+
 .requisitos-painel-talento {
     display: flex;
     flex-direction: column;

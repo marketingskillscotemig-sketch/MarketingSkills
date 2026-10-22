@@ -1005,16 +1005,46 @@ function renderizarProjetosTalento(projetos) {
             descricaoHtml = `<p>${escaparHtmlTalentos(projeto.descricao)}</p>`;
         }
 
+        let linkHtml = "";
+        const link = obterLinkSeguroTalentos(projeto.link);
+        if (link) {
+            linkHtml = `<a class="link-projeto-talento" href="${escaparHtmlTalentos(link)}" target="_blank" rel="noopener noreferrer">Abrir projeto</a>`;
+        }
+
         html += `
             <div class="item-trajetoria-talento">
                 <strong>${nome}</strong>
                 ${tecnologiasHtml}
                 ${descricaoHtml}
+                ${linkHtml}
             </div>
         `;
     }
 
     return html;
+}
+
+
+// Só vira link uma URL absoluta com http: ou https:.
+// Dados antigos do banco com outro protocolo
+// (javascript:, data:, vbscript:...) não geram link.
+function obterLinkSeguroTalentos(valor) {
+    if (typeof valor !== "string" || !valor.trim()) {
+        return null;
+    }
+
+    let url;
+    try {
+        url = new URL(valor.trim());
+    } catch (erro) {
+        return null;
+    }
+
+    if (url.protocol !== "http:" && url.protocol !== "https:") {
+        return null;
+    }
+
+    return url.href;
 }
 
 

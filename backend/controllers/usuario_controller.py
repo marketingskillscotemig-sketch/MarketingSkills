@@ -6,9 +6,6 @@ from services.usuario.atualizar_usuario_service import (
 from services.usuario.buscar_usuario_service import (
     BuscarUsuarioService,
 )
-from services.usuario.criar_usuario_service import (
-    CriarUsuarioService,
-)
 from services.usuario.deletar_usuario_service import (
     DeletarUsuarioService,
 )
@@ -16,37 +13,10 @@ from services.usuario.deletar_usuario_service import (
 
 class UsuarioController:
     @staticmethod
-    def criar():
-        try:
-            dados = request.get_json(
-                silent=True
-            )
-
-            usuario = (
-                CriarUsuarioService.executar(
-                    dados
-                )
-            )
-
-            return jsonify(
-                usuario.to_dict()
-            ), 201
-
-        except ValueError as erro:
-            return jsonify(
-                {
-                    "erro": str(erro),
-                }
-            ), 400
-
-    @staticmethod
     def listar():
         """
-        Retorna somente o usuário autenticado.
-
-        Mantemos uma lista como resposta para
-        preservar compatibilidade temporária
-        com o frontend antigo de Perfil.
+        Retorna somente o usuário autenticado,
+        dentro de uma lista.
         """
 
         usuario = (

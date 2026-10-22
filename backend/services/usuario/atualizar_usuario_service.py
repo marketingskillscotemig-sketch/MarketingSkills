@@ -3,10 +3,6 @@ from werkzeug.security import (
     generate_password_hash,
 )
 
-from models.enums import (
-    StatusUsuario,
-    TipoConta,
-)
 from models.usuario import Usuario
 from repositories.conta_repository import (
     ContaRepository,
@@ -84,11 +80,6 @@ class AtualizarUsuarioService:
                     "Senha atual incorreta."
                 )
 
-        status = dados.get("status")
-        tipo_conta = dados.get(
-            "tipoConta"
-        )
-
         nome = None
 
         if "nome" in dados:
@@ -143,38 +134,8 @@ class AtualizarUsuarioService:
                 "A senha não pode ser igual ao e-mail."
             )
 
-        status_enum = None
-
-        if status is not None:
-            try:
-                status_enum = StatusUsuario(
-                    status
-                )
-
-            except ValueError as erro:
-                raise ValueError(
-                    "Status inválido. "
-                    "Use 'ativo' ou 'inativo'."
-                ) from erro
-
-        tipo_conta_enum = None
-
-        if tipo_conta is not None:
-            try:
-                tipo_conta_enum = TipoConta(
-                    tipo_conta
-                )
-
-            except ValueError as erro:
-                raise ValueError(
-                    "Tipo de conta inválido. "
-                    "Use 'estudante' ou 'empresa'."
-                ) from erro
-
         return usuario.atualizar(
             nome=nome,
             email=email,
             senha_hash=senha_hash,
-            status=status_enum,
-            tipo_conta=tipo_conta_enum,
         )

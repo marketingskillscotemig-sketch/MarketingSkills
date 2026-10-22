@@ -14,4 +14,3 @@ class BuscarRequisitoVagaService:
             )
 
         return requisito
-    
