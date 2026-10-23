@@ -134,3 +134,27 @@ Stored Procedure / MySQL
 9. **Comparar e rankear talentos por vaga** — Frontend (`talentos.html` + `talentos.js`) chama a API Flask em `GET /api/talentos/ranking`. O `TalentoController` delega ao `RankingTalentosService`, que utiliza o **Repository** `TalentoRepository` para executar a **Stored Procedure** `sp_ranking_talentos_por_vaga` diretamente no banco MySQL, retornando os talentos ordenados por percentual de compatibilidade com a vaga informada.
 
 10. **Excluir vaga** — Frontend (`vagas.html` + `vagas.js`) chama a API Flask em `DELETE /api/vagas/<vaga_id>`. O `VagaController` delega ao `DeletarVagaService`, que verifica a existência da vaga e remove o registro através do Model `Vaga` na tabela `vagas`.
+
+11. **Atualizar experiência profissional** — Frontend (`perfil.html` + `perfil.js`) chama a API Flask em `PUT /api/experiencias-profissionais/<experiencia_id>`. O `ExperienciaProfissionalController` delega ao `AtualizarExperienciaProfissionalService`, que verifica se a experiência pertence ao estudante autenticado, valida os dados e atualiza o registro através do Model `ExperienciaProfissional` na tabela `experiencias_profissionais`.
+
+12. **Excluir experiência profissional** — Frontend (`perfil.html` + `perfil.js`) chama a API Flask em `DELETE /api/experiencias-profissionais/<experiencia_id>`. O `ExperienciaProfissionalController` delega ao `DeletarExperienciaProfissionalService`, que verifica se a experiência pertence ao estudante autenticado e remove o registro através do Model `ExperienciaProfissional` na tabela `experiencias_profissionais`.
+
+13. **Atualizar formação acadêmica** — Frontend (`perfil.html` + `perfil.js`) chama a API Flask em `PUT /api/formacoes-academicas/<formacao_id>`. O `FormacaoAcademicaController` delega ao `AtualizarFormacaoAcademicaService`, que verifica se a formação pertence ao estudante autenticado, valida os dados e atualiza o registro através do Model `FormacaoAcademica` na tabela `formacoes_academicas`.
+
+14. **Excluir formação acadêmica** — Frontend (`perfil.html` + `perfil.js`) chama a API Flask em `DELETE /api/formacoes-academicas/<formacao_id>`. O `FormacaoAcademicaController` delega ao `DeletarFormacaoAcademicaService`, que verifica se a formação pertence ao estudante autenticado e remove o registro através do Model `FormacaoAcademica` na tabela `formacoes_academicas`.
+
+15. **Atualizar projeto** — Frontend (`perfil.html` + `perfil.js`) chama a API Flask em `PUT /api/projetos/<projeto_id>`. O `ProjetoController` delega ao `AtualizarProjetoService`, que verifica se o projeto pertence ao estudante autenticado, valida os dados e atualiza o registro através do Model `Projeto` na tabela `projetos`.
+
+16. **Excluir projeto** — Frontend (`perfil.html` + `perfil.js`) chama a API Flask em `DELETE /api/projetos/<projeto_id>`. O `ProjetoController` delega ao `DeletarProjetoService`, que verifica se o projeto pertence ao estudante autenticado e remove o registro através do Model `Projeto` na tabela `projetos`.
+
+17. **Remover habilidade do perfil** — Frontend (`perfil.html` + `perfil.js`) chama a API Flask em `DELETE /api/perfil-habilidades/<perfil_habilidade_id>`. O `PerfilHabilidadeController` delega ao `DeletarPerfilHabilidadeService`, que verifica se o vínculo pertence ao estudante autenticado e remove o registro através do Model `PerfilHabilidade` na tabela `perfil_habilidades` (a habilidade continua no catálogo `habilidades`).
+
+18. **Atualizar vaga** — Frontend (`vagas.html` + `vagas.js`) chama a API Flask em `PUT /api/vagas/<vaga_id>`. O `VagaController` delega ao `AtualizarVagaService`, que verifica se a vaga pertence à empresa autenticada, valida os dados e atualiza o registro através do Model `Vaga` na tabela `vagas`.
+
+19. **Criar plano de estudos** — Frontend (`estudos.html` + `estudos.js`) chama a API Flask em `POST /api/planos-estudo`. O `PlanoEstudoController` delega ao `CriarPlanoEstudoService`, que valida os dados e grava o plano do estudante autenticado através do Model `PlanoEstudo` na tabela `planos_estudo`.
+
+20. **Atualizar status de etapa de estudo** — Frontend (`estudos.html` + `estudos.js`) chama a API Flask em `PUT /api/etapas-estudo/<etapa_id>` com o novo `status`. O `EtapaEstudoController` delega ao `AtualizarEtapaEstudoService`, que verifica se o plano da etapa pertence ao estudante autenticado, valida o status (`pendente`, `em_andamento` ou `concluida`) e atualiza o registro através do Model `EtapaEstudo` na tabela `etapas_estudo` (se a `ordem` também for enviada, o `EstudoRepository` impede ordem repetida no mesmo plano).
+
+## Diagrama de Classes
+
+O diagrama de classes do domínio (Models, atributos, relacionamentos e cardinalidades), em Mermaid, está em [`docs/diagrama-classes.md`](docs/diagrama-classes.md).
