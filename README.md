@@ -90,26 +90,110 @@ O sistema também possui uma experiência específica para empresas, permitindo:
 
 # Arquitetura
 
-O backend foi organizado com separação de responsabilidades.
+O Market Skills segue a arquitetura **cliente-servidor**: o **frontend** e a **API** são aplicações separadas, que rodam em servidores distintos e se comunicam apenas por requisições HTTP com dados em JSON.
 
 ```text
-Cliente / Frontend
-        |
-        v
-     Routes
-        |
-        v
-   Controller
-        |
-        v
-     Service
-        |
-        v
-   Repository
-        |
-        v
-Stored Procedure / MySQL
+┌─────────────────────────────┐        HTTP (JSON)        ┌─────────────────────────────┐
+│  FRONTEND (cliente)         │  ───────────────────────► │  API (servidor)             │
+│  HTML + CSS + JavaScript    │                           │  Python + Flask             │
+│  pasta: frontend/           │  ◄─────────────────────── │  pasta: backend/            │
+│                             │                           │                             │
+│  Local: Live Server :5500   │                           │  Local: Flask :5000         │
+│  AWS:   Nginx (HTTPS)       │                           │  AWS:   Gunicorn :5000      │
+└─────────────────────────────┘                           └──────────────┬──────────────┘
+                                                                         │ SQLAlchemy
+                                                                         ▼
+                                                          ┌─────────────────────────────┐
+                                                          │  Banco de dados MySQL       │
+                                                          │  Local: WAMP | AWS: RDS     │
+                                                          └─────────────────────────────┘
 ```
+
+## Frontend e API em servidores separados
+
+| | Frontend | API |
+|---|---|---|
+| Pasta no repositório | `frontend/` | `backend/` |
+| Tecnologia | HTML, CSS e JavaScript | Python + Flask |
+| Servidor local | Live Server do VS Code — `http://127.0.0.1:5500` | Servidor do Flask — `http://127.0.0.1:5000` |
+| Servidor na AWS | Nginx (arquivos estáticos, HTTPS) | Gunicorn (serviço `market-skills` no systemd) |
+
+O frontend **não acessa o banco de dados**: toda informação é obtida por requisições à API. Essas requisições ficam centralizadas em `frontend/assets/js/api.js`, que escolhe o endereço da API conforme o ambiente:
+
+```javascript
+// frontend/assets/js/api.js
+const API_BASE_URL =
+    HOSTS_LOCAIS.has(window.location.hostname)
+        ? "http://127.0.0.1:5000/api"  // local: API em outro servidor (porta 5000)
+        : "/api";                       // AWS: Nginx encaminha /api para o Gunicorn
+```
+
+Como, no ambiente local, frontend (porta 5500) e API (porta 5000) estão em origens diferentes, a API libera o acesso do frontend com **CORS** (`Flask-Cors`, configurado em `backend/app.py` pela variável `CORS_ORIGINS`). As requisições que alteram dados enviam um **token CSRF** no cabeçalho `X-CSRFToken`.
+
+## Organização da API em camadas
+
+```text
+Requisição HTTP do frontend
+        │
+        ▼
+     Routes          backend/routes/         Liga cada URL ao Controller
+        │
+        ▼
+   Controllers       backend/controllers/    Recebe a requisição e aciona o caso de uso
+        │
+        ▼
+    Services         backend/services/       Um Service por caso de uso, com as regras da aplicação
+        │
+        ▼
+  Repositories       backend/repositories/   Consultas ao banco (SQL e Stored Procedures)
+        │
+        ▼
+     Models          backend/models/         Classes do domínio mapeadas para tabelas (ORM SQLAlchemy)
+        │
+        ▼
+ MySQL / Stored Procedures   backend/database/procedures.sql
+```
+
+| Camada | Exemplos |
+|---|---|
+| Controllers | `vaga_controller.py`, `talento_controller.py`, `autenticacao_controller.py` |
+| Services (um por caso de uso) | `services/vaga/buscar_vagas_avancado_service.py`, `services/talento/ranking_talentos_service.py`, `services/usuario/criar_usuario_service.py` |
+| Repositories | `vaga_repository.py` (`CALL sp_buscar_vagas_avancado`), `talento_repository.py` (`CALL sp_ranking_talentos_por_vaga`), `conta_repository.py` |
+| Models | `usuario.py`, `vaga.py`, `empresa.py`, `perfil_profissional.py`, `habilidade.py` |
+
+## Hospedagem
+
+O sistema está publicado na AWS:
+
+- **EC2 (Ubuntu):** Nginx serve o frontend com HTTPS e encaminha as rotas `/api/` para a API rodando no Gunicorn.
+- **RDS (MySQL):** banco de dados de produção, acessível apenas pela EC2.
+
+## Como executar localmente
+
+São dois servidores, iniciados separadamente.
+
+**1. Banco de dados**
+- Inicie o MySQL (WAMP).
+- Execute `backend/database/create_database.sql` para criar o banco `market_skills`.
+
+**2. API (servidor 1)**
+```powershell
+python -m venv .venv
+.venv\Scripts\pip install -r backend\requirements.txt
+copy backend\.env.example backend\.env
+```
+No `backend/.env`, use `APP_ENV=development`, `SESSION_COOKIE_SECURE=false` e os dados do seu MySQL. Depois:
+```powershell
+cd backend
+..\.venv\Scripts\flask --app app db upgrade
+..\.venv\Scripts\python.exe app.py
+```
+Execute também `backend/database/procedures.sql` no MySQL para criar as Stored Procedures.
+A API fica disponível em `http://127.0.0.1:5000` (teste: `http://127.0.0.1:5000/api/health`).
+
+**3. Frontend (servidor 2)**
+- No VS Code, clique com o botão direito em `frontend/index.html` → **Open with Live Server**.
+- O site abre em `http://127.0.0.1:5500/frontend/index.html` e consome a API da porta 5000.
 
 ---
 
@@ -158,3 +242,10 @@ Stored Procedure / MySQL
 ## Diagrama de Classes
 
 O diagrama de classes do domínio (Models, atributos, relacionamentos e cardinalidades), em Mermaid, está em [`docs/diagrama-classes.md`](docs/diagrama-classes.md).
+
+## Fluxogramas dos Casos de Uso
+
+Fluxogramas com o passo a passo pelas camadas (Frontend → Controller → Service → Repository → banco):
+
+- **Recuperação de dados:** [`docs/fluxograma-busca-vagas.md`](docs/fluxograma-busca-vagas.md) — Buscar vagas com filtros avançados
+- **Entrada de dados:** [`docs/fluxograma-cadastro-usuario.md`](docs/fluxograma-cadastro-usuario.md) — Cadastrar usuário (estudante ou empresa)
