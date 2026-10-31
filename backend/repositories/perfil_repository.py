@@ -37,3 +37,22 @@ class PerfilRepository:
                 == habilidade_id,
             )
         ).scalar_one_or_none()
+
+    @staticmethod
+    def listar_ids_habilidades_do_perfil(
+        perfil_profissional_id,
+    ):
+        """
+        IDs das habilidades que o estudante
+        cadastrou no próprio perfil.
+        """
+        return set(
+            db.session.execute(
+                db.select(
+                    PerfilHabilidade.habilidade_id
+                ).where(
+                    PerfilHabilidade.perfil_profissional_id
+                    == perfil_profissional_id
+                )
+            ).scalars().all()
+        )

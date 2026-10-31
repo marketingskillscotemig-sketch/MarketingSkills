@@ -40,6 +40,18 @@ vaga_bp.get(
     VagaController.buscar_por_id
 )
 
+# Compatibilidade do perfil do estudante
+# autenticado com a vaga.
+vaga_bp.get(
+    "/<int:vaga_id>/compatibilidade"
+)(
+    exigir_tipo_conta(
+        "estudante"
+    )(
+        VagaController.compatibilidade
+    )
+)
+
 vaga_bp.put(
     "/<int:vaga_id>"
 )(

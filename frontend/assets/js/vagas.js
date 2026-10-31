@@ -331,42 +331,62 @@ function selecionarVaga(id) {
 }
 
 
-function mostrarDetalheEstudante(vaga) {
+async function mostrarDetalheEstudante(vaga) {
     const empresa =
         buscarEmpresa(vaga.empresaId);
 
     const requisitosVaga =
         buscarRequisitos(vaga.id);
 
-    const idsHabilidades =
-        habilidadesPerfil.map(
-            item => item.habilidadeId
+    // A compatibilidade é calculada pela API
+    // (CalcularCompatibilidadeVagaService).
+    let resultado = null;
+
+    try {
+        resultado = await apiRequest(
+            `/vagas/${vaga.id}/compatibilidade`
         );
 
-    let atendidos = 0;
-
-    requisitosVaga.forEach(function (requisito) {
-        if (
-            idsHabilidades.includes(
-                requisito.habilidadeId
-            )
-        ) {
-            atendidos++;
-        }
-    });
-
-    let compatibilidade = null;
-
-    if (
-        perfil &&
-        requisitosVaga.length > 0
-    ) {
-        compatibilidade = Math.round(
-            atendidos /
-            requisitosVaga.length *
-            100
-        );
+    } catch (erro) {
+        console.error(erro);
     }
+
+    // Se o estudante clicou em outra vaga enquanto
+    // a resposta chegava, não sobrescreve a tela.
+    if (vagaSelecionadaId !== vaga.id) {
+        return;
+    }
+
+    const atendidoPorHabilidade = new Map();
+
+    if (resultado) {
+        resultado.requisitos.forEach(function (item) {
+            atendidoPorHabilidade.set(
+                item.habilidadeId,
+                item.atendido
+            );
+        });
+    }
+
+    const possuiPerfil =
+        resultado
+            ? resultado.possuiPerfil
+            : Boolean(perfil);
+
+    const atendidos =
+        resultado
+            ? resultado.requisitosAtendidos
+            : 0;
+
+    const totalRequisitos =
+        resultado
+            ? resultado.totalRequisitos
+            : requisitosVaga.length;
+
+    const compatibilidade =
+        resultado
+            ? resultado.percentual
+            : null;
 
     let htmlRequisitos = "";
 
@@ -377,9 +397,9 @@ function mostrarDetalheEstudante(vaga) {
             );
 
         const possui =
-            idsHabilidades.includes(
+            atendidoPorHabilidade.get(
                 requisito.habilidadeId
-            );
+            ) === true;
 
         htmlRequisitos += `
             <div class="
@@ -434,11 +454,19 @@ function mostrarDetalheEstudante(vaga) {
 
     let htmlCompatibilidade = "";
 
-    if (!perfil) {
+    if (!possuiPerfil) {
         htmlCompatibilidade = `
             <div class="compatibilidade-vaga">
                 Complete seu perfil para comparar
                 suas habilidades.
+            </div>
+        `;
+
+    } else if (!resultado) {
+        htmlCompatibilidade = `
+            <div class="compatibilidade-vaga">
+                Não foi possível calcular a
+                compatibilidade agora.
             </div>
         `;
 
@@ -463,7 +491,7 @@ function mostrarDetalheEstudante(vaga) {
 
                 <p class="texto-compatibilidade">
                     Você possui ${atendidos} de
-                    ${requisitosVaga.length}
+                    ${totalRequisitos}
                     requisito(s).
                 </p>
             </div>

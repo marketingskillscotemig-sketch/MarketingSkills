@@ -54,3 +54,19 @@ class VagaRepository:
                 RequisitoVaga.habilidade_id == habilidade_id,
             )
         ).scalar_one_or_none()
+
+    @staticmethod
+    def listar_requisitos_da_vaga(vaga_id):
+        """
+        Requisitos de uma vaga, usados no cálculo
+        de compatibilidade com o perfil do estudante.
+        """
+        return db.session.execute(
+            db.select(RequisitoVaga)
+            .where(
+                RequisitoVaga.vaga_id == vaga_id
+            )
+            .order_by(
+                RequisitoVaga.id
+            )
+        ).scalars().all()

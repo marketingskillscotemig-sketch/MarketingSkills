@@ -9,6 +9,9 @@ from services.vaga.buscar_vaga_service import (
 from services.vaga.buscar_vagas_avancado_service import (
     BuscarVagasAvancadoService,
 )
+from services.vaga.calcular_compatibilidade_vaga_service import (
+    CalcularCompatibilidadeVagaService,
+)
 from services.vaga.criar_vaga_service import (
     CriarVagaService,
 )
@@ -105,6 +108,26 @@ class VagaController:
 
             return jsonify(
                 vaga.to_dict()
+            ), 200
+
+        except LookupError as erro:
+            return jsonify(
+                {"erro": str(erro)}
+            ), 404
+
+    @staticmethod
+    def compatibilidade(vaga_id):
+        try:
+            resultado = (
+                CalcularCompatibilidadeVagaService
+                .executar(
+                    g.usuario_autenticado,
+                    vaga_id,
+                )
+            )
+
+            return jsonify(
+                resultado
             ), 200
 
         except LookupError as erro:

@@ -239,6 +239,8 @@ A API fica disponível em `http://127.0.0.1:5000` (teste: `http://127.0.0.1:5000
 
 20. **Atualizar status de etapa de estudo** — Frontend (`estudos.html` + `estudos.js`) chama a API Flask em `PUT /api/etapas-estudo/<etapa_id>` com o novo `status`. O `EtapaEstudoController` delega ao `AtualizarEtapaEstudoService`, que verifica se o plano da etapa pertence ao estudante autenticado, valida o status (`pendente`, `em_andamento` ou `concluida`) e atualiza o registro através do Model `EtapaEstudo` na tabela `etapas_estudo` (se a `ordem` também for enviada, o `EstudoRepository` impede ordem repetida no mesmo plano).
 
+21. **Calcular compatibilidade do perfil com a vaga** — Frontend (`vagas.html` + `vagas.js`) chama a API Flask em `GET /api/vagas/<vaga_id>/compatibilidade` (somente estudante autenticado). O `VagaController` delega ao `CalcularCompatibilidadeVagaService`, que usa o **Repository** `VagaRepository` para buscar os requisitos da vaga e o `PerfilRepository` para buscar as habilidades do perfil do estudante. O Service aplica a regra do caso de uso — percentual = requisitos atendidos ÷ total de requisitos × 100 — e devolve o percentual, quantos requisitos obrigatórios ainda faltam e quais requisitos estão atendidos, exibidos na tela de detalhe da vaga.
+
 ## Diagrama de Classes
 
 O diagrama de classes do domínio (Models, atributos, relacionamentos e cardinalidades), em Mermaid, está em [`docs/diagrama-classes.md`](docs/diagrama-classes.md).
