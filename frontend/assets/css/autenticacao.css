@@ -132,7 +132,7 @@
 
     color: #6e9fff;
 
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 700;
 }
 
@@ -187,7 +187,7 @@
 
     color: var(--azul-claro);
 
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 750;
 
     letter-spacing: 0.09em;
@@ -230,7 +230,7 @@
 .campo-autenticacao > span {
     color: #aab4cb;
 
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
 }
 
@@ -335,7 +335,7 @@
 
     color: #75839f;
 
-    font-size: 9px;
+    font-size: 11px;
     line-height: 1.55;
 }
 
@@ -363,7 +363,7 @@
 
     color: var(--erro);
 
-    font-size: 11px;
+    font-size: 12px;
     line-height: 1.5;
 }
 
@@ -439,4 +439,239 @@
 }
 .campo-autenticacao[hidden] {
     display: none !important;
+}
+
+
+/* =========================================================
+   ACABAMENTO VISUAL (login e cadastro)
+   Só aparência: nenhuma classe ou id usado
+   pelo autenticacao.js foi alterado.
+   ========================================================= */
+
+/* Linha divisória sutil entre os dois lados */
+.lado-apresentacao {
+    border-right:
+        1px solid rgba(95, 129, 255, 0.1);
+}
+
+.conteudo-apresentacao h1 {
+    font-size:
+        clamp(
+            38px,
+            4.2vw,
+            56px
+        );
+
+    letter-spacing: -2px;
+}
+
+.beneficio {
+    padding: 15px 17px;
+
+    transition:
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.beneficio:hover {
+    border-color: rgba(95, 129, 255, 0.4);
+
+    transform: translateX(4px);
+}
+
+.beneficio > span {
+    display: grid;
+    place-items: center;
+
+    width: 28px;
+    height: 28px;
+
+    border-radius: 8px;
+
+    background: rgba(33, 118, 255, 0.12);
+
+    font-size: 12px;
+}
+
+.beneficio p {
+    font-size: 13px;
+}
+
+/* Formulário dentro de um cartão */
+.cartao-autenticacao {
+    position: relative;
+
+    width: min(460px, 100%);
+
+    padding: 42px 40px 34px;
+
+    border: 1px solid rgba(70, 100, 170, 0.25);
+    border-radius: 20px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(14, 22, 46, 0.85),
+            rgba(8, 13, 30, 0.85)
+        );
+
+    box-shadow:
+        0 30px 80px rgba(0, 0, 0, 0.45),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04);
+
+    backdrop-filter: blur(12px);
+}
+
+/* Faixa em degradê no topo do cartão */
+.cartao-autenticacao::before {
+    content: "";
+
+    position: absolute;
+    top: -1px;
+    left: 40px;
+    right: 40px;
+
+    height: 2px;
+
+    border-radius: 2px;
+
+    background: var(--gradiente);
+}
+
+.cartao-cadastro {
+    width: min(540px, 100%);
+}
+
+.cabecalho-autenticacao h2 {
+    font-size: 28px;
+}
+
+.cabecalho-autenticacao p {
+    font-size: 14px;
+}
+
+.campo-autenticacao > span {
+    color: #b8c1d6;
+
+    font-size: 12px;
+}
+
+.campo-autenticacao input {
+    min-height: 48px;
+
+    border-color: #233457;
+
+    background: #060c1c;
+
+    font-size: 14px;
+}
+
+.campo-autenticacao input::placeholder {
+    color: #56627e;
+}
+
+.campo-autenticacao input:hover {
+    border-color: #31528e;
+}
+
+.campo-autenticacao input:focus {
+    border-color: #477fea;
+
+    box-shadow:
+        0 0 0 4px rgba(33, 118, 255, 0.14);
+}
+
+/* Preenchimento automático do navegador:
+   impede o campo de ficar branco. */
+.campo-autenticacao input:-webkit-autofill,
+.campo-autenticacao input:-webkit-autofill:hover,
+.campo-autenticacao input:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--texto);
+
+    caret-color: var(--texto);
+
+    box-shadow:
+        0 0 0 1000px #060c1c inset;
+
+    transition:
+        background-color 9999s ease-out 0s;
+}
+
+.botao-largo {
+    min-height: 50px;
+
+    margin-top: 6px;
+
+    font-size: 15px;
+}
+
+/* Sem mensagem: não ocupa espaço
+   (evita o vão antes do botão). */
+.mensagem-formulario:empty {
+    display: none;
+}
+
+.mensagem-formulario {
+    font-size: 12px;
+}
+
+/* Cartões Estudante / Empresa */
+.conteudo-tipo-conta {
+    min-height: 110px;
+
+    padding: 18px;
+
+    border-color: #233457;
+    border-radius: 14px;
+
+    background: #060c1c;
+}
+
+.opcao-tipo-conta:hover .conteudo-tipo-conta {
+    border-color: #31528e;
+}
+
+.conteudo-tipo-conta strong {
+    font-size: 14px;
+}
+
+.conteudo-tipo-conta small {
+    margin-top: 8px;
+
+    color: #8590ab;
+
+    font-size: 12px;
+}
+
+.rodape-autenticacao {
+    margin-top: 26px;
+    padding-top: 22px;
+
+    border-top:
+        1px solid rgba(255, 255, 255, 0.06);
+
+    font-size: 13px;
+}
+
+
+@media (max-width: 900px) {
+    .lado-apresentacao {
+        border-right: none;
+        border-bottom:
+            1px solid rgba(95, 129, 255, 0.1);
+    }
+}
+
+@media (max-width: 550px) {
+    .cartao-autenticacao {
+        padding: 32px 22px 26px;
+    }
+
+    .conteudo-apresentacao h1 {
+        font-size: 36px;
+    }
+
+    .conteudo-tipo-conta {
+        min-height: auto;
+    }
 }

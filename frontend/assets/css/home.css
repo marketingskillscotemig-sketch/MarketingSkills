@@ -327,7 +327,7 @@ a.ativo::after {
 
     color: #66adff;
 
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 700;
 
     letter-spacing: 1.5px;
@@ -350,7 +350,7 @@ a.ativo::after {
 
     color: #7e8aa8;
 
-    font-size: 11px;
+    font-size: 12px;
     line-height: 1.6;
 }
 
@@ -412,7 +412,7 @@ a.ativo::after {
 .compatibilidade-valor span {
     color: #8792ae;
 
-    font-size: 11px;
+    font-size: 12px;
 }
 
 .barra-compatibilidade {
@@ -475,7 +475,7 @@ a.ativo::after {
 
     color: #aab4cc;
 
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 700;
 
     text-transform: uppercase;
@@ -549,7 +549,7 @@ a.ativo::after {
 
     color: #f1f4fd;
 
-    font-size: 11px;
+    font-size: 12px;
 }
 
 .competencia small {
@@ -557,7 +557,7 @@ a.ativo::after {
 
     color: #6f7a97;
 
-    font-size: 8px;
+    font-size: 11px;
 }
 
 .compatibilidade-rodape {
@@ -594,13 +594,13 @@ a.ativo::after {
 
     color: #8994af;
 
-    font-size: 8px;
+    font-size: 11px;
 }
 
 .compatibilidade-rodape a {
     color: #84a7ff;
 
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 700;
 
     text-decoration: none;
@@ -712,7 +712,7 @@ a.ativo::after {
 
     color: #505c79;
 
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
 }
 
@@ -762,7 +762,7 @@ a.ativo::after {
 
     color: #84a7ff;
 
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
 
     text-decoration: none;
@@ -852,7 +852,7 @@ a.ativo::after {
 
     color: #64718f;
 
-    font-size: 9px;
+    font-size: 11px;
     font-weight: 700;
 
     letter-spacing: 1px;
@@ -983,76 +983,231 @@ a.ativo::after {
    ========================================================= */
 
 .rodape-home {
-    padding: 65px 0 25px;
+    position: relative;
 
-    border-top:
-        1px solid rgba(255, 255, 255, 0.055);
+    padding: 80px 0 30px;
+
+    overflow: hidden;
 
     background:
-        rgba(1, 4, 14, 0.7);
+        radial-gradient(
+            circle at 15% 0%,
+            rgba(33, 118, 255, 0.1),
+            transparent 40%
+        ),
+        radial-gradient(
+            circle at 85% 100%,
+            rgba(155, 53, 255, 0.08),
+            transparent 40%
+        ),
+        #02050f;
+}
+
+/* Linha superior em degradê azul → roxo */
+.rodape-home::before {
+    content: "";
+
+    position: absolute;
+    top: 0;
+    left: 50%;
+
+    width: min(1180px, 100% - 40px);
+    height: 1px;
+
+    transform: translateX(-50%);
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(73, 161, 255, 0.55),
+            rgba(155, 53, 255, 0.55),
+            transparent
+        );
 }
 
 .grade-rodape-home {
     display: grid;
 
     grid-template-columns:
-        2fr 1fr 1fr;
+        1.8fr 1fr 1.2fr;
 
-    gap: 60px;
+    gap: 70px;
 
-    padding-bottom: 45px;
+    padding-bottom: 55px;
 }
 
 .rodape-identidade p {
-    max-width: 320px;
+    max-width: 340px;
 
-    margin-top: 18px;
+    margin-top: 20px;
 
-    color: #75809b;
+    color: #8a94ad;
+
+    font-size: 14px;
+    line-height: 1.75;
+}
+
+.selo-rodape {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 8px;
+
+    margin-top: 22px;
+    padding: 7px 13px;
+
+    border: 1px solid rgba(73, 161, 255, 0.22);
+    border-radius: 999px;
+
+    background: rgba(33, 118, 255, 0.07);
+
+    color: #8fb8ff;
 
     font-size: 12px;
-    line-height: 1.7;
+    font-weight: 600;
+
+    letter-spacing: 0.3px;
+}
+
+.ponto-selo-rodape {
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: var(--sucesso);
+
+    box-shadow:
+        0 0 0 3px rgba(54, 211, 153, 0.15);
 }
 
 .coluna-rodape {
     display: flex;
     flex-direction: column;
 
-    gap: 11px;
+    gap: 14px;
 }
 
 .coluna-rodape strong {
-    margin-bottom: 5px;
+    margin-bottom: 4px;
 
-    color: #c9d1e6;
+    color: #e3e8f5;
 
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
 
     text-transform: uppercase;
 
-    letter-spacing: 0.8px;
+    letter-spacing: 1.2px;
 }
 
-.coluna-rodape a,
-.coluna-rodape span {
-    color: #737e99;
+/* Links um embaixo do outro (antes ficavam
+   todos na mesma linha). */
+.links-rodape {
+    display: flex;
+    flex-direction: column;
 
-    font-size: 12px;
+    gap: 12px;
+}
+
+.links-rodape a {
+    width: fit-content;
+
+    color: #8a94ad;
+
+    font-size: 14px;
 
     text-decoration: none;
+
+    transition:
+        color 0.2s ease,
+        transform 0.2s ease;
 }
 
-.coluna-rodape a {
-    transition: color 0.2s ease;
+.links-rodape a:hover {
+    color: #ffffff;
+
+    transform: translateX(4px);
 }
 
-.coluna-rodape a:hover {
+.texto-coluna-rodape {
+    max-width: 260px;
+
+    color: #8a94ad;
+
+    font-size: 14px;
+    line-height: 1.65;
+}
+
+.cartao-rede-rodape {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    width: fit-content;
+
+    padding: 11px 18px 11px 11px;
+
+    border: 1px solid #1f2d4d;
+    border-radius: 12px;
+
+    background: rgba(11, 17, 36, 0.8);
+
+    text-decoration: none;
+
+    transition:
+        border-color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.cartao-rede-rodape:hover {
+    border-color: #4e7ce0;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 12px 30px rgba(33, 118, 255, 0.15);
+}
+
+.icone-rede-rodape {
+    display: grid;
+    place-items: center;
+
+    width: 38px;
+    height: 38px;
+
+    border-radius: 10px;
+
+    background: var(--gradiente);
+
     color: #ffffff;
 }
 
+.texto-rede-rodape {
+    display: flex;
+    flex-direction: column;
+
+    gap: 2px;
+}
+
+.texto-rede-rodape > span {
+    color: #f1f4fb;
+
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.texto-rede-rodape small {
+    color: #7d88a3;
+
+    font-size: 12px;
+}
+
 .base-rodape-home {
-    padding-top: 22px;
+    padding-top: 26px;
 
     display: flex;
     align-items: center;
@@ -1061,11 +1216,26 @@ a.ativo::after {
     gap: 20px;
 
     border-top:
-        1px solid rgba(255, 255, 255, 0.05);
+        1px solid rgba(255, 255, 255, 0.06);
 
-    color: #535f7a;
+    color: #66718c;
 
-    font-size: 10px;
+    font-size: 13px;
+}
+
+.voltar-topo-rodape {
+    color: #8a94ad;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    text-decoration: none;
+
+    transition: color 0.2s ease;
+}
+
+.voltar-topo-rodape:hover {
+    color: #ffffff;
 }
 
 
@@ -1248,4 +1418,64 @@ a.ativo::after {
         display: none;
     }
 
+}
+
+
+/* =========================================================
+   ANIMAÇÕES AO ROLAR (página inicial)
+   A classe "revelar" só é adicionada pelo animacoes.js.
+   Sem JavaScript, nada fica escondido.
+   ========================================================= */
+
+.revelar {
+    opacity: 0;
+
+    transform: translateY(28px);
+
+    transition:
+        opacity 0.7s ease,
+        transform 0.7s ease;
+}
+
+.revelar.visivel {
+    opacity: 1;
+
+    transform: none;
+}
+
+@keyframes subir-item-home {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+/* Cartões entram um depois do outro */
+.revelar.visivel .etapa-market,
+.revelar.visivel .item-proposta {
+    animation: subir-item-home 0.55s ease both;
+}
+
+.revelar.visivel .etapa-market:nth-child(2),
+.revelar.visivel .item-proposta:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.revelar.visivel .etapa-market:nth-child(3),
+.revelar.visivel .item-proposta:nth-child(3) {
+    animation-delay: 0.2s;
+}
+
+.revelar.visivel .etapa-market:nth-child(4),
+.revelar.visivel .item-proposta:nth-child(4) {
+    animation-delay: 0.3s;
+}
+
+.revelar.visivel .item-proposta:nth-child(5) {
+    animation-delay: 0.4s;
 }

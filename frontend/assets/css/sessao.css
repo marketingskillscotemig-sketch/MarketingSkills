@@ -78,7 +78,7 @@
 
     color: #edf2ff;
 
-    font-size: 11px;
+    font-size: 12px;
 
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -90,7 +90,7 @@
 
     color: #7585a3;
 
-    font-size: 8px;
+    font-size: 11px;
 }
 
 
@@ -99,7 +99,7 @@
 
     color: #71809e;
 
-    font-size: 10px;
+    font-size: 12px;
 }
 
 
@@ -180,7 +180,7 @@
 
     color: #7b89a7;
 
-    font-size: 9px;
+    font-size: 11px;
 }
 
 
@@ -198,7 +198,7 @@
 
     color: #78a7ff;
 
-    font-size: 8px;
+    font-size: 11px;
 }
 
 
@@ -228,7 +228,7 @@
     cursor: pointer;
 
     font: inherit;
-    font-size: 10px;
+    font-size: 12px;
 
     text-align: left;
     text-decoration: none;

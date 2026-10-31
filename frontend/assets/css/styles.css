@@ -16,7 +16,7 @@
 
     --texto: #f7f9ff;
     --texto-secundario: #98a2bd;
-    --texto-suave: #6f7892;
+    --texto-suave: #828ca6;
 
     --azul: #2176ff;
     --azul-claro: #49a1ff;
@@ -508,7 +508,7 @@ a {
 .rotulo-painel {
     color: #72809e;
 
-    font-size: 10px;
+    font-size: 12px;
 
     text-transform: uppercase;
     letter-spacing: 0.09em;
@@ -546,7 +546,7 @@ a {
 
     color: #939ebb;
 
-    font-size: 10px;
+    font-size: 12px;
 }
 
 .valor-metrica {
@@ -566,7 +566,7 @@ a {
 
     color: #5f6d8b;
 
-    font-size: 9px;
+    font-size: 11px;
 }
 
 .colunas-painel {
@@ -617,7 +617,7 @@ a {
 
     color: #52627f;
 
-    font-size: 8px;
+    font-size: 11px;
 
     text-transform: uppercase;
     letter-spacing: 0.07em;
@@ -626,13 +626,13 @@ a {
 .cabecalho-painel h2 {
     color: #dce4f9;
 
-    font-size: 11px;
+    font-size: 12px;
 }
 
 .cabecalho-painel a {
     color: #8a7bff;
 
-    font-size: 8px;
+    font-size: 11px;
 
     text-decoration: none;
 }
@@ -660,7 +660,7 @@ a {
 
     color: #b8c1d9;
 
-    font-size: 9px;
+    font-size: 11px;
 
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -689,7 +689,7 @@ a {
 .demanda-tecnologia {
     color: #71809d;
 
-    font-size: 8px;
+    font-size: 11px;
 
     text-align: right;
 }
@@ -739,7 +739,7 @@ a {
 
     color: #60a5fa;
 
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 800;
 }
 
@@ -755,7 +755,7 @@ a {
 
     color: #d9e1f5;
 
-    font-size: 9px;
+    font-size: 11px;
 
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -770,7 +770,7 @@ a {
 
     color: #64728e;
 
-    font-size: 8px;
+    font-size: 11px;
 
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -781,7 +781,7 @@ a {
 
     color: #8e9ab5;
 
-    font-size: 7px;
+    font-size: 11px;
 
     text-align: right;
 }
@@ -795,7 +795,7 @@ a {
 
     color: #566581;
 
-    font-size: 10px;
+    font-size: 12px;
 
     text-align: center;
 }
@@ -833,7 +833,7 @@ a {
 .rodape-painel span {
     color: #64728d;
 
-    font-size: 8px;
+    font-size: 11px;
 }
 
 .rodape-painel strong {
@@ -1083,4 +1083,74 @@ a {
         flex-direction: column;
         align-items: flex-start;
     }
+}
+
+/* =========================================================
+   TRANSIÇÃO ENTRE PÁGINAS
+   Chrome, Edge e Opera fazem um fade suave ao trocar
+   de página. Navegadores sem suporte ignoram esta regra
+   e trocam de página normalmente.
+   ========================================================= */
+
+@view-transition {
+    navigation: auto;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation-duration: 0.28s;
+    animation-timing-function: ease;
+}
+
+
+/* Conteúdo sobe levemente ao carregar a página.
+   Termina em "transform: none" para não afetar
+   elementos fixos (modais, avisos). */
+
+@keyframes entrada-pagina {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+main {
+    animation: entrada-pagina 0.45s ease both;
+}
+
+
+/* Quem pediu menos movimento no sistema
+   não recebe as animações. */
+
+@media (prefers-reduced-motion: reduce) {
+    main {
+        animation: none;
+    }
+
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+        animation: none;
+    }
+}
+
+
+/* =========================================================
+   ACABAMENTO: BARRA DE ROLAGEM E SELEÇÃO DE TEXTO
+   ========================================================= */
+
+/* Barra de rolagem escura, combinando com o tema */
+html {
+    scrollbar-color: #2a3a63 #030716;
+}
+
+/* Texto selecionado na cor da marca */
+::selection {
+    background: rgba(33, 118, 255, 0.45);
+
+    color: #ffffff;
 }

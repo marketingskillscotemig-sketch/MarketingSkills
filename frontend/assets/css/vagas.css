@@ -111,7 +111,7 @@ a.ativo::after {
 
     color: #68adff;
 
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 700;
 
     letter-spacing: 1.5px;
@@ -148,6 +148,13 @@ a.ativo::after {
     margin-top: 22px;
 }
 
+/* Só contas de empresa veem o botão
+   "Criar nova vaga" (vagas.js remove
+   a classe "oculto" para empresas). */
+.acao-hero-empresa.oculto {
+    display: none;
+}
+
 
 /* RESUMO */
 
@@ -182,7 +189,7 @@ a.ativo::after {
 .resumo-vagas span {
     color: #77839f;
 
-    font-size: 10px;
+    font-size: 12px;
 }
 
 .resumo-vagas strong {
@@ -233,7 +240,7 @@ a.ativo::after {
 .campo-filtro > span {
     color: #717d99;
 
-    font-size: 9px;
+    font-size: 11px;
     font-weight: 600;
 }
 
@@ -258,7 +265,7 @@ a.ativo::after {
 
     font: inherit;
 
-    font-size: 11px;
+    font-size: 12px;
 }
 
 .campo-filtro input::placeholder {
@@ -332,7 +339,7 @@ a.ativo::after {
 #quantidade-resultados {
     color: #6c7895;
 
-    font-size: 10px;
+    font-size: 12px;
 }
 
 .lista-vagas {
@@ -420,7 +427,7 @@ a.ativo::after {
 
     color: #7f8ba6;
 
-    font-size: 9px;
+    font-size: 11px;
 }
 
 .tag-vaga {
@@ -436,7 +443,7 @@ a.ativo::after {
 
     color: #4bd9a6;
 
-    font-size: 7px;
+    font-size: 11px;
     font-weight: 700;
 
     white-space: nowrap;
@@ -461,7 +468,7 @@ a.ativo::after {
 
     color: #77839e;
 
-    font-size: 8px;
+    font-size: 11px;
 }
 
 .rodape-cartao-vaga {
@@ -481,14 +488,14 @@ a.ativo::after {
 .salario-cartao {
     color: #cfd7e9;
 
-    font-size: 9px;
+    font-size: 11px;
     font-weight: 600;
 }
 
 .data-cartao {
     color: #5e6983;
 
-    font-size: 8px;
+    font-size: 11px;
 }
 
 
@@ -550,7 +557,7 @@ a.ativo::after {
 
     color: #707b96;
 
-    font-size: 11px;
+    font-size: 12px;
     line-height: 1.65;
 }
 
@@ -567,7 +574,7 @@ a.ativo::after {
 .empresa-detalhe {
     color: #68adff;
 
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 700;
 }
 
@@ -606,7 +613,7 @@ a.ativo::after {
 
     color: #808ba7;
 
-    font-size: 9px;
+    font-size: 11px;
 }
 
 .salario-detalhe {
@@ -650,7 +657,7 @@ a.ativo::after {
 .topo-compatibilidade span {
     color: #8d98b4;
 
-    font-size: 10px;
+    font-size: 12px;
 }
 
 .topo-compatibilidade strong {
@@ -692,7 +699,7 @@ a.ativo::after {
 
     color: #68748e;
 
-    font-size: 9px;
+    font-size: 11px;
 }
 
 
@@ -713,7 +720,7 @@ a.ativo::after {
 .secao-detalhe p {
     color: #8994ae;
 
-    font-size: 11px;
+    font-size: 12px;
     line-height: 1.75;
 
     white-space: pre-line;
@@ -763,7 +770,7 @@ a.ativo::after {
 
     border-radius: 7px;
 
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 700;
 }
 
@@ -788,7 +795,7 @@ a.ativo::after {
 
     color: #e9eef9;
 
-    font-size: 10px;
+    font-size: 12px;
 }
 
 .requisito-identidade small {
@@ -798,13 +805,13 @@ a.ativo::after {
 
     color: #68748e;
 
-    font-size: 8px;
+    font-size: 11px;
 }
 
 .tipo-requisito {
     color: #66718b;
 
-    font-size: 8px;
+    font-size: 11px;
 
     white-space: nowrap;
 }
@@ -839,7 +846,7 @@ a.ativo::after {
 
     color: #6f7b97;
 
-    font-size: 9px;
+    font-size: 11px;
 }
 
 .bloco-empresa p {
@@ -882,7 +889,7 @@ a.ativo::after {
 
     font: inherit;
 
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 700;
 }
 
@@ -890,6 +897,65 @@ a.ativo::after {
     opacity: 0.45;
 
     cursor: not-allowed;
+}
+
+/* Aviso "Candidaturas em breve" (substitui
+   o antigo botão desativado). */
+.aviso-candidatura {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+
+    gap: 14px;
+
+    padding: 15px 18px;
+
+    border: 1px solid rgba(73, 161, 255, 0.25);
+    border-radius: 12px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(33, 118, 255, 0.1),
+            rgba(155, 53, 255, 0.07)
+        );
+}
+
+.icone-aviso-candidatura {
+    flex-shrink: 0;
+
+    display: grid;
+    place-items: center;
+
+    width: 38px;
+    height: 38px;
+
+    border-radius: 10px;
+
+    background: var(--gradiente);
+
+    color: #ffffff;
+}
+
+.texto-aviso-candidatura {
+    display: flex;
+    flex-direction: column;
+
+    gap: 3px;
+}
+
+.texto-aviso-candidatura strong {
+    color: #f1f4fb;
+
+    font-size: 14px;
+}
+
+.texto-aviso-candidatura span {
+    color: #98a2bd;
+
+    font-size: 13px;
+    line-height: 1.5;
 }
 
 .link-empresa {
@@ -908,7 +974,7 @@ a.ativo::after {
 
     color: #d8deec;
 
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 600;
 
     text-decoration: none;
@@ -933,7 +999,7 @@ a.ativo::after {
 
     color: #68738e;
 
-    font-size: 10px;
+    font-size: 12px;
 
     text-align: center;
 }
@@ -1031,7 +1097,7 @@ a.ativo::after {
 
     color: #77839d;
 
-    font-size: 11px;
+    font-size: 12px;
     line-height: 1.6;
 }
 
@@ -1098,7 +1164,7 @@ a.ativo::after {
 
     color: #5f9eff;
 
-    font-size: 9px;
+    font-size: 11px;
     font-weight: 800;
 
     letter-spacing: 1.3px;
@@ -1117,7 +1183,7 @@ a.ativo::after {
 
     color: #727e99;
 
-    font-size: 10px;
+    font-size: 12px;
     line-height: 1.55;
 }
 
@@ -1148,7 +1214,7 @@ a.ativo::after {
 .campo-formulario-vaga > span {
     color: #98a4bc;
 
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 700;
 }
 
@@ -1157,7 +1223,7 @@ a.ativo::after {
 
     color: #5f6b84;
 
-    font-size: 8px;
+    font-size: 11px;
     font-weight: 500;
 }
 
@@ -1181,7 +1247,7 @@ a.ativo::after {
 
     font: inherit;
 
-    font-size: 11px;
+    font-size: 12px;
 
     transition:
         border-color 0.2s ease,
@@ -1231,7 +1297,7 @@ a.ativo::after {
 .ajuda-campo-vaga {
     color: #5e6a82;
 
-    font-size: 9px;
+    font-size: 11px;
     line-height: 1.5;
 }
 
@@ -1272,7 +1338,7 @@ a.ativo::after {
 
     color: #e9eef8;
 
-    font-size: 10px;
+    font-size: 12px;
 }
 
 .opcao-salario-definir small {
@@ -1282,7 +1348,7 @@ a.ativo::after {
 
     color: #68748d;
 
-    font-size: 9px;
+    font-size: 11px;
     line-height: 1.45;
 }
 
@@ -1330,7 +1396,7 @@ a.ativo::after {
 .requisito-vaga label > span {
     color: #7d89a3;
 
-    font-size: 9px;
+    font-size: 11px;
     font-weight: 600;
 }
 
@@ -1358,7 +1424,7 @@ a.ativo::after {
 
     font: inherit;
 
-    font-size: 9px;
+    font-size: 11px;
     font-weight: 700;
 
     cursor: pointer;
@@ -1402,7 +1468,7 @@ a.ativo::after {
 
     color: #ff8da0;
 
-    font-size: 10px;
+    font-size: 12px;
 }
 
 .acoes-modal-vaga {

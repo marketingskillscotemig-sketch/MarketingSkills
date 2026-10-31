@@ -560,12 +560,32 @@ function mostrarDetalheEstudante(vaga) {
         </section>
 
         <div class="acoes-detalhe">
-            <button
-                class="botao-candidatura"
-                disabled
-            >
-                Candidatura em breve
-            </button>
+            <div class="aviso-candidatura">
+                <span class="icone-aviso-candidatura">
+                    <svg
+                        viewBox="0 0 24 24"
+                        width="18"
+                        height="18"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        aria-hidden="true"
+                    >
+                        <circle cx="12" cy="12" r="9"></circle>
+                        <path d="M12 7v5l3 2"></path>
+                    </svg>
+                </span>
+
+                <div class="texto-aviso-candidatura">
+                    <strong>Candidaturas em breve</strong>
+                    <span>
+                        Em breve você poderá se candidatar
+                        direto pela plataforma. Use a
+                        compatibilidade acima para se preparar.
+                    </span>
+                </div>
+            </div>
         </div>
     `;
 }

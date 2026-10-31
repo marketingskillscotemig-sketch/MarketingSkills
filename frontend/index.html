@@ -18,6 +18,12 @@
     <title>Market Skills</title>
 
     <link
+        rel="icon"
+        type="image/svg+xml"
+        href="./assets/img/favicon.svg"
+    >
+
+    <link
         rel="stylesheet"
         href="./assets/css/styles.css"
     >
@@ -705,6 +711,11 @@
                         única experiência.
                     </p>
 
+                    <span class="selo-rodape">
+                        <span class="ponto-selo-rodape"></span>
+                        Carreira orientada por dados
+                    </span>
+
                 </div>
 
 
@@ -714,7 +725,12 @@
                         Plataforma
                     </strong>
 
-                    <div id="links-plataforma-home">
+                    <!-- O app.js troca estes links
+                         quando a conta é de empresa. -->
+                    <div
+                        id="links-plataforma-home"
+                        class="links-rodape"
+                    >
 
                         <a href="./pages/vagas.html">
                             Vagas
@@ -740,15 +756,43 @@
                 <div class="coluna-rodape">
 
                     <strong>
-                        Redes
+                        Conecte-se
                     </strong>
 
+                    <p class="texto-coluna-rodape">
+                        Acompanhe as novidades do
+                        projeto nas redes.
+                    </p>
+
                     <a
+                        class="cartao-rede-rodape"
                         href="https://www.instagram.com/marketingskillscotemig?igsi=MWd1dHNzcThkMjF3dw=="
                         target="_blank"
                         rel="noopener noreferrer"
+                        aria-label="Instagram do Market Skills (abre em nova aba)"
                     >
-                        Instagram
+
+                        <span class="icone-rede-rodape">
+                            <svg
+                                viewBox="0 0 24 24"
+                                width="18"
+                                height="18"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="1.8"
+                                aria-hidden="true"
+                            >
+                                <rect x="3" y="3" width="18" height="18" rx="5"></rect>
+                                <circle cx="12" cy="12" r="4"></circle>
+                                <circle cx="17.3" cy="6.7" r="0.6" fill="currentColor"></circle>
+                            </svg>
+                        </span>
+
+                        <span class="texto-rede-rodape">
+                            <span>Instagram</span>
+                            <small>@marketingskillscotemig</small>
+                        </span>
+
                     </a>
 
                 </div>
@@ -759,12 +803,16 @@
             <div class="base-rodape-home">
 
                 <span>
-                    © 2026 Market Skills
+                    © 2026 Market Skills. Desenvolvido
+                    como projeto acadêmico.
                 </span>
 
-                <span>
-                    Desenvolvido como projeto acadêmico.
-                </span>
+                <a
+                    href="#"
+                    class="voltar-topo-rodape"
+                >
+                    Voltar ao topo ↑
+                </a>
 
             </div>
 
@@ -776,6 +824,7 @@
     <script src="./assets/js/api.js"></script>
     <script src="./assets/js/sessao.js"></script>
     <script src="./assets/js/app.js?v=20260826-2"></script>
+    <script src="./assets/js/animacoes.js"></script>
 
 </body>
 
