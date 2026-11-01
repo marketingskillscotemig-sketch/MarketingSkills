@@ -16,6 +16,8 @@ classDiagram
         +date data_cadastro
         +StatusUsuario status
         +TipoConta tipo_conta
+        +datetime termos_aceitos_em
+        +str versao_termos
     }
 
     class PerfilProfissional {

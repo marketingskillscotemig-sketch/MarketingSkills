@@ -168,6 +168,15 @@ O sistema está publicado na AWS:
 - **EC2 (Ubuntu):** Nginx serve o frontend com HTTPS e encaminha as rotas `/api/` para a API rodando no Gunicorn.
 - **RDS (MySQL):** banco de dados de produção, acessível apenas pela EC2.
 
+## Termos de consentimento
+
+Na criação da conta (`frontend/pages/cadastro.html`), o usuário precisa marcar **"Li e aceito os Termos de Uso e a Política de Privacidade"**, com link para `frontend/pages/termos.html`.
+
+- O frontend (`autenticacao.js`) envia a decisão para a API no campo `aceiteTermos`.
+- O `CriarUsuarioService` recusa o cadastro (HTTP 400) se o aceite não for enviado.
+- Com o aceite, a decisão fica registrada na tabela `usuarios`: `termos_aceitos_em` (data e hora) e `versao_termos` (versão aceita).
+- Teste automático: `backend/tests/test_termos_consentimento.py`.
+
 ## Como executar localmente
 
 São dois servidores, iniciados separadamente.
@@ -199,7 +208,7 @@ A API fica disponível em `http://127.0.0.1:5000` (teste: `http://127.0.0.1:5000
 
 ## Funcionalidades Implementadas
 
-1. **Cadastrar estudante** — Frontend (`cadastro.html` + `autenticacao.js`) envia os dados do formulário de cadastro para a API Flask em `POST /api/autenticacao/cadastro`. A rota aciona o `AutenticacaoController`, que delega a criação para o `CriarUsuarioService`. O Service valida os dados e persiste um novo registro através do Model `Usuario` na tabela `usuarios` do banco de dados.
+1. **Cadastrar estudante** — Frontend (`cadastro.html` + `autenticacao.js`) envia os dados do formulário de cadastro para a API Flask em `POST /api/autenticacao/cadastro`. A rota aciona o `AutenticacaoController`, que delega a criação para o `CriarUsuarioService`. O Service valida os dados e persiste um novo registro através do Model `Usuario` na tabela `usuarios` do banco de dados. O cadastro só é concluído se o usuário aceitar os **Termos de Uso e a Política de Privacidade** (`termos.html`): o Service recusa o cadastro sem o aceite e grava a data/hora e a versão aceita nos campos `termos_aceitos_em` e `versao_termos` do Model `Usuario`.
 
 2. **Atualizar perfil profissional** — Frontend (`perfil.html` + `perfil.js`) chama a API Flask em `PUT /api/perfis-profissionais/<perfil_id>`. O `PerfilProfissionalController` recebe a requisição e delega a atualização ao `AtualizarPerfilProfissionalService`, que aplica as validações e atualiza o registro através do Model `PerfilProfissional` na tabela `perfis_profissionais`.
 

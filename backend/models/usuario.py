@@ -60,6 +60,20 @@ class Usuario(db.Model):
         server_default=TipoConta.ESTUDANTE.value,
     )
 
+    # Consentimento: data/hora em que o usuário aceitou
+    # os Termos de Uso e a Política de Privacidade, e a
+    # versão aceita. Vazio para contas criadas antes
+    # da existência dos termos.
+    termos_aceitos_em = db.Column(
+        db.DateTime,
+        nullable=True,
+    )
+
+    versao_termos = db.Column(
+        db.String(20),
+        nullable=True,
+    )
+
     perfil_profissional = db.relationship(
         "PerfilProfissional",
         back_populates="usuario",
@@ -154,4 +168,10 @@ class Usuario(db.Model):
                 if self.tipo_conta
                 else None
             ),
+            "termosAceitosEm": (
+                self.termos_aceitos_em.isoformat()
+                if self.termos_aceitos_em
+                else None
+            ),
+            "versaoTermos": self.versao_termos,
         }

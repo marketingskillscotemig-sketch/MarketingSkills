@@ -1,4 +1,5 @@
 import re
+from datetime import datetime, timezone
 
 from werkzeug.security import generate_password_hash
 
@@ -19,6 +20,11 @@ TAMANHO_MAXIMO_NOME = 120
 TAMANHO_MAXIMO_EMAIL = 180
 TAMANHO_MINIMO_SENHA = 8
 TAMANHO_MAXIMO_SENHA = 128
+
+# Versão dos Termos de Uso e da Política de Privacidade
+# (frontend/pages/termos.html). Ao mudar o texto dos
+# termos, aumente a versão.
+VERSAO_TERMOS_ATUAL = "1.0"
 
 # Formato simples: algo@dominio.tld
 _PADRAO_EMAIL = re.compile(
@@ -149,6 +155,14 @@ class CriarUsuarioService:
             email,
         )
 
+        # Consentimento obrigatório: a conta só é criada
+        # se o usuário aceitar os termos.
+        if dados.get("aceiteTermos") is not True:
+            raise ValueError(
+                "Para criar a conta, é necessário aceitar "
+                "os Termos de Uso e a Política de Privacidade."
+            )
+
         tipo_conta = dados.get(
             "tipoConta",
             TipoConta.ESTUDANTE.value,
@@ -275,6 +289,10 @@ class CriarUsuarioService:
                 senha
             ),
             tipo_conta=tipo_conta_enum,
+            termos_aceitos_em=datetime.now(
+                timezone.utc
+            ).replace(tzinfo=None),
+            versao_termos=VERSAO_TERMOS_ATUAL,
         )
 
         try:

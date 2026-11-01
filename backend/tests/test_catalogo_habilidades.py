@@ -224,6 +224,7 @@ class TesteHabilidadesDoPerfil(unittest.TestCase):
                 "email": "estudante.catalogo@teste.local",
                 "senha": "senha-de-teste-123",
                 "tipoConta": "estudante",
+                "aceiteTermos": True,
             },
         )
         self.assertEqual(resposta.status_code, 201)

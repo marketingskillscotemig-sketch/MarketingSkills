@@ -24,7 +24,7 @@
 
     <link
         rel="stylesheet"
-        href="../assets/css/autenticacao.css?v=2"
+        href="../assets/css/autenticacao.css?v=3"
     >
 </head>
 
@@ -288,6 +288,29 @@
                     </label>
 
 
+                    <!-- Consentimento: a decisão é enviada à API
+                         e gravada no cadastro do usuário. -->
+                    <label class="aceite-termos">
+
+                        <input
+                            id="cadastro-aceite-termos"
+                            type="checkbox"
+                            required
+                        >
+
+                        <span>
+                            Li e aceito os
+                            <a
+                                href="./termos.html"
+                                target="_blank"
+                                rel="noopener"
+                            >Termos de Uso e a Política de Privacidade</a>
+                            do Market Skills.
+                        </span>
+
+                    </label>
+
+
                     <div
                         id="mensagem-cadastro"
                         class="mensagem-formulario"
@@ -325,7 +348,7 @@
 
 
     <script src="../assets/js/api.js"></script>
-    <script src="../assets/js/autenticacao.js?v=2"></script>
+    <script src="../assets/js/autenticacao.js?v=3"></script>
 
 </body>
 

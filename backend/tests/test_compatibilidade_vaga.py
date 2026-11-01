@@ -219,6 +219,7 @@ def cadastrar_estudante(email):
             "email": email,
             "senha": "senha-de-teste-123",
             "tipoConta": "estudante",
+            "aceiteTermos": True,
         },
     )
     assert resposta.status_code == 201, resposta.get_json()

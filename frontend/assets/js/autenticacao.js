@@ -181,6 +181,21 @@ async function realizarCadastro(evento) {
             )
             : "";
 
+    const aceiteTermos =
+        document.getElementById(
+            "cadastro-aceite-termos"
+        ).checked;
+
+    if (!aceiteTermos) {
+        mostrarMensagem(
+            mensagem,
+            "Para criar a conta, aceite os Termos de Uso e a Política de Privacidade.",
+            "erro"
+        );
+
+        return;
+    }
+
     if (
         senha !==
         confirmarSenha
@@ -247,6 +262,7 @@ async function realizarCadastro(evento) {
                         email,
                         senha,
                         tipoConta,
+                        aceiteTermos,
 
                         nomeEmpresa:
                             tipoConta ===

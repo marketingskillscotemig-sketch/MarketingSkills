@@ -675,3 +675,71 @@
         min-height: auto;
     }
 }
+
+
+/* =========================================================
+   CONSENTIMENTO (cadastro)
+   ========================================================= */
+
+.aceite-termos {
+    display: flex;
+    align-items: flex-start;
+
+    gap: 11px;
+
+    padding: 14px 15px;
+
+    border: 1px solid #233457;
+    border-radius: 12px;
+
+    background: #060c1c;
+
+    color: #aab4cb;
+
+    font-size: 13px;
+    line-height: 1.55;
+
+    cursor: pointer;
+
+    transition: border-color 0.2s ease;
+}
+
+.aceite-termos:hover {
+    border-color: #31528e;
+}
+
+.aceite-termos input {
+    flex-shrink: 0;
+
+    width: 18px;
+    height: 18px;
+
+    margin-top: 1px;
+
+    accent-color: var(--azul);
+
+    cursor: pointer;
+}
+
+.aceite-termos a {
+    color: #75a3ff;
+
+    font-weight: 700;
+
+    text-decoration: none;
+}
+
+.aceite-termos a:hover {
+    text-decoration: underline;
+}
+
+.aceite-termos:has(input:checked) {
+    border-color: #4e7ce0;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(33, 118, 255, 0.1),
+            rgba(155, 53, 255, 0.06)
+        );
+}
